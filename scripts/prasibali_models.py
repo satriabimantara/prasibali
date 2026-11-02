@@ -17,6 +17,7 @@ pernah menerima path pickle dari input pengguna aplikasi.
 """
 from __future__ import annotations
 
+import contextlib
 import functools
 import hashlib
 import inspect
@@ -25,6 +26,7 @@ import pickle
 import time
 from collections.abc import Callable
 from pathlib import Path
+from typing import ClassVar
 
 MODELS_ENV_VAR = "PRETRAINED_MODELS_DIR"
 MODELS_REL = Path("_reference") / "old_web" / "website" / "balinarrativenlp" / "pretrained-models"
@@ -130,7 +132,7 @@ class PlaceholderObject:
 
 
 class _PlaceholderUnpickler(pickle.Unpickler):
-    _classes: dict = {}
+    _classes: ClassVar[dict] = {}
 
     def find_class(self, module, name):
         if module in PLACEHOLDER_MODULES:
@@ -419,7 +421,7 @@ def load_fasttext(repo_id: str, filename: str):
             from gensim.models import FastText
 
             return FastText.load(filename)  # file milik sendiri; gensim memakai pickle
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             raise ModelError(f"Gagal memuat FastText lokal {filename}: {exc!r}") from exc
     try:
         from balinese_nlp.embeddings.gensims import BaliFastText
@@ -427,7 +429,7 @@ def load_fasttext(repo_id: str, filename: str):
         raise ModelError(f"balinese_nlp.embeddings.gensims.BaliFastText tidak bisa diimpor: {exc!r}") from exc
     try:
         return BaliFastText(huggingface_repo_ID=repo_id, pretrained_model_bin_filename=filename).load_pretrained_model()
-    except Exception as exc:  # noqa: BLE001 - jaringan, token, atau nama file
+    except Exception as exc:  # jaringan, token, atau nama file
         raise ModelError(f"Gagal memuat FastText {repo_id}/{filename} dari Hugging Face: {exc!r}") from exc
 
 
@@ -445,7 +447,7 @@ def average_word_vectors(model, contexts: list[str]):
             WordEmbeddingFeatureExtraction,
         )
     except ImportError:
-        WordEmbeddingFeatureExtraction = None  # noqa: N806
+        WordEmbeddingFeatureExtraction = None
     if WordEmbeddingFeatureExtraction is not None:
         return WordEmbeddingFeatureExtraction(pretrained_word_embedding=model).fit(list(contexts)).transform()
     rows = []
@@ -584,8 +586,6 @@ def score_and_probability(estimator, features) -> tuple[list, list]:
         raw = np.asarray(estimator.decision_function(features))
         scores = [round(float(v if raw.ndim == 1 else np.max(v)), 4) for v in raw]
     if callable(getattr(estimator, "predict_proba", None)):
-        try:
+        with contextlib.suppress(Exception):  # mis. SVC tanpa probability=True
             probabilities = [round(float(np.max(row)), 4) for row in estimator.predict_proba(features)]
-        except Exception:  # noqa: BLE001 - mis. SVC tanpa probability=True
-            pass
     return scores, probabilities
