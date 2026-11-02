@@ -9,6 +9,8 @@ extend-exclude = ["_reference", "models", "saved_file", "staticfiles", "src/**/m
 select = ["E", "F", "W", "I", "B", "UP", "DJ", "S", "BLE", "RUF"]
 # Django declares class-level lists/dicts by design (Meta.fields, REQUIRED_FIELDS, ...).
 ignore = ["RUF012"]
+# The en dash is the agreed placeholder for a missing thesis F1 value.
+allowed-confusables = ["–"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "S105", "S106"]  # asserts and throwaway test passwords
@@ -25,6 +27,8 @@ addopts = "-ra --strict-markers"
 filterwarnings = [
     # STATIC_ROOT only exists after collectstatic (Docker image / production).
     "ignore:No directory at:UserWarning:django.core.handlers.base",
+    # balinese-nlp 2.4.2 uses importlib.resources.path() when loading its data files.
+    "ignore:path is deprecated:DeprecationWarning:balinese_nlp",
 ]
 markers = [
     "model: needs pretrained pickles in PRETRAINED_MODELS_DIR (skipped when the folder is missing)",

@@ -95,8 +95,8 @@ ACCOUNT_ADAPTER = "apps.accounts.adapters.AccountAdapter"
 # ACCOUNT_RATE_LIMITS keeps allauth's defaults (failed logins, password reset, confirmation emails).
 # They use the default cache; with several Gunicorn workers a shared cache is needed (session 7).
 LOGIN_URL = "account_login"
-LOGIN_REDIRECT_URL = "accounts:profile"  # becomes the analysis workspace in session 4
-ACCOUNT_LOGOUT_REDIRECT_URL = "account_login"  # becomes the landing page in session 5
+LOGIN_REDIRECT_URL = "analysis:workspace"
+ACCOUNT_LOGOUT_REDIRECT_URL = "pages:landing"
 
 # --- Email ---------------------------------------------------------------------
 EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
@@ -123,8 +123,17 @@ STATIC_ROOT = REPO_ROOT / "staticfiles"
 # --- AI / NLP ------------------------------------------------------------------
 # Folder holding the thesis pickles (character-classification/, label-encoder/, ...).
 PRETRAINED_MODELS_DIR = env("PRETRAINED_MODELS_DIR", default="")
-# FastText for feature TF5; empty means the defaults in scripts/prasibali_models.py.
+# FastText for feature TF5: <PRETRAINED_MODELS_DIR>/balinese-word-embedding/<file> when present, otherwise
+# Hugging Face. Empty means the defaults in apps/analysis/services/embeddings.py (300_fasttext_model.bin).
 TF5_HF_REPO_ID = env("TF5_HF_REPO_ID", default="")
 TF5_FASTTEXT_FILENAME = env("TF5_FASTTEXT_FILENAME", default="")
+# Writable folder for balinese-nlp's RuleBasedSentenceGrouping ("saved_file"); empty = <system temp>/prasibali.
+BALINESE_NLP_WORK_DIR = env("BALINESE_NLP_WORK_DIR", default="")
+# Load the default models when the WSGI app starts (use with gunicorn --preload in production).
+ANALYSIS_WARM_ON_START = env.bool("ANALYSIS_WARM_ON_START", default=False)
+# At most this many classifier pickles stay in memory (an M1 file holds six algorithms).
+ANALYSIS_CLASSIFIER_CACHE_SIZE = env.int("ANALYSIS_CLASSIFIER_CACHE_SIZE", default=4)
+# Character groups with fewer context words get a "little context, less reliable" warning.
+ANALYSIS_LOW_CONTEXT_WORDS = env.int("ANALYSIS_LOW_CONTEXT_WORDS", default=20)
 # Maximum length of a submitted satua.
 ANALYSIS_MAX_CHARS = 20_000
