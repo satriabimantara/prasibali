@@ -1,0 +1,31 @@
+{% load static i18n %}<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}PrasiBali.ai{% endblock title %}</title>
+  {# Theme and mode before any CSS to avoid a flash of the wrong theme (DESIGN.md "Tema dan mode"). #}
+  <script>
+    (function () {
+      var theme = null, mode = null;
+      try {
+        theme = localStorage.getItem("prasibali-theme");
+        mode = localStorage.getItem("prasibali-mode");
+      } catch (e) {}
+      document.documentElement.classList.toggle("dark", theme === "dark");
+      document.documentElement.dataset.mode = mode === "advanced" ? "advanced" : "simple";
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Balinese&family=Schibsted+Grotesk:wght@400;500;600&display=swap">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  <script src="{% static 'js/theme.js' %}" defer></script>
+  {% block extra_head %}{% endblock extra_head %}
+</head>
+<body class="min-h-screen antialiased">
+  {% block body %}{% endblock body %}
+  {% block extra_body %}{% endblock extra_body %}
+</body>
+</html>

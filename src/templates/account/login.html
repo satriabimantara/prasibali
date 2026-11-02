@@ -1,0 +1,21 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n allauth %}
+{% block head_title %}{% translate "Sign in" %}{% endblock head_title %}
+{% block content %}
+  <div class="grid gap-2">
+    <h1 class="text-page-title">{% translate "Sign in to your account" %}</h1>
+    <p class="text-muted">{% translate "Recognise characters, group their other names, and see whether they are protagonists or antagonists." %}</p>
+  </div>
+  {% url 'account_login' as login_url %}
+  {% element form form=form method="post" action=login_url tags="entrance,login" %}
+    {% slot body %}
+      {% csrf_token %}
+      {% element fields form=form %}{% endelement %}
+      {{ redirect_field }}
+    {% endslot %}
+    {% slot actions %}
+      <button type="submit" class="btn btn-primary">{% translate "Sign in" %}</button>
+      <a class="btn" href="{% url 'account_signup' %}">{% translate "Create a new account" %}</a>
+    {% endslot %}
+  {% endelement %}
+{% endblock content %}

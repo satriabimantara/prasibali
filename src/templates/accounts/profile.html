@@ -1,0 +1,23 @@
+{% extends "accounts/base_account.html" %}
+{% load i18n form_tags %}
+{% block head_title %}{% translate "Profile" %}{% endblock head_title %}
+{% block content %}
+  <div class="grid gap-2">
+    <h1 class="text-page-title">{% translate "Profile" %}</h1>
+    <p class="text-muted">{{ user.email }}</p>
+  </div>
+  <form method="post" class="grid gap-5" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="alert alert--danger" role="alert">{{ form.non_field_errors|join:" " }}</div>{% endif %}
+    {% for field in form %}{% form_field field %}{% endfor %}
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-primary">{% translate "Save profile" %}</button>
+    </div>
+  </form>
+  <hr class="border-line">
+  <section class="grid gap-3" aria-labelledby="delete-account-title">
+    <h2 id="delete-account-title" class="text-panel-title">{% translate "Delete account" %}</h2>
+    <p class="text-muted">{% translate "Deleting your account also deletes your analysis history. This cannot be undone." %}</p>
+    <div><a class="btn btn-danger" href="{% url 'accounts:delete' %}">{% translate "Delete account" %}</a></div>
+  </section>
+{% endblock content %}

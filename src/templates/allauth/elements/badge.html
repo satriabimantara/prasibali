@@ -1,0 +1,1 @@
+{% load allauth %}<span class="inline-block rounded-sm px-2 py-0.5 text-caption {% if "success" in attrs.tags %}bg-success-bg text-success{% elif "warning" in attrs.tags %}bg-warning-bg text-warning{% else %}bg-surface-selected text-ink{% endif %}">{% slot %}{% endslot %}</span>

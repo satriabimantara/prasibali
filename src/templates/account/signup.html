@@ -1,0 +1,38 @@
+{% extends "account/base_entrance.html" %}
+{% load i18n allauth form_tags %}
+{% block head_title %}{% translate "Create account" %}{% endblock head_title %}
+{% block content %}
+  <div class="grid gap-2">
+    <h1 class="text-page-title">{% translate "Create a new account" %}</h1>
+    <p class="text-muted">{% translate "We will send a link to your email. Open it to activate your account before signing in." %}</p>
+  </div>
+  {% url 'account_signup' as action_url %}
+  {% element form form=form method="post" action=action_url tags="entrance,signup" %}
+    {% slot body %}
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="alert alert--danger" role="alert">{{ form.non_field_errors|join:" " }}</div>{% endif %}
+      {% form_field form.email %}
+      {% form_field form.full_name %}
+      {% form_field form.institution %}
+      {% form_field form.role %}
+      {% form_field form.password1 %}
+      {% form_field form.password2 %}
+      {% form_field form.language %}
+      {% with field=form.accept_privacy %}
+        {% url 'pages:privacy' as privacy_url %}
+        <div class="field">
+          <label class="check" for="{{ field.auto_id }}">
+            <input type="checkbox" class="checkbox" name="{{ field.html_name }}" id="{{ field.auto_id }}" required{% if field.value %} checked{% endif %}{% if field.errors %} aria-invalid="true" aria-describedby="{{ field.auto_id }}_error"{% endif %}>
+            <span>{% blocktranslate %}I have read and agree to the <a class="link" href="{{ privacy_url }}" target="_blank" rel="noopener">privacy policy</a>.{% endblocktranslate %}</span>
+          </label>
+          {% if field.errors %}<p class="field-error" id="{{ field.auto_id }}_error">{{ field.errors|join:" " }}</p>{% endif %}
+        </div>
+      {% endwith %}
+      {{ redirect_field }}
+    {% endslot %}
+    {% slot actions %}
+      <button type="submit" class="btn btn-primary">{% translate "Create account" %}</button>
+      <p class="text-center text-muted">{% translate "Already have an account?" %} <a class="link" href="{% url 'account_login' %}">{% translate "Sign in" %}</a></p>
+    {% endslot %}
+  {% endelement %}
+{% endblock content %}

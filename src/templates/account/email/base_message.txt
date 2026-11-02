@@ -1,0 +1,6 @@
+{% load i18n %}{% autoescape off %}{% translate "Hello from PrasiBali.ai!" %}
+
+{% block content %}{% endblock content %}
+
+{% translate "Thank you for using PrasiBali.ai." %}
+{{ current_site.domain }}{% endautoescape %}

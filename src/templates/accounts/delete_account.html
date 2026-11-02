@@ -1,0 +1,17 @@
+{% extends "accounts/base_account.html" %}
+{% load i18n form_tags %}
+{% block head_title %}{% translate "Delete account" %}{% endblock head_title %}
+{% block content %}
+  <div class="grid gap-2">
+    <h1 class="text-page-title">{% translate "Delete account" %}</h1>
+    <p class="text-muted">{% translate "Your account, profile, and analysis history will be deleted permanently. Enter your password to confirm." %}</p>
+  </div>
+  <form method="post" class="grid gap-5" novalidate>
+    {% csrf_token %}
+    {% form_field form.password %}
+    <div class="flex flex-wrap gap-3">
+      <button type="submit" class="btn btn-danger">{% translate "Delete my account permanently" %}</button>
+      <a class="btn" href="{% url 'accounts:profile' %}">{% translate "Cancel" %}</a>
+    </div>
+  </form>
+{% endblock content %}

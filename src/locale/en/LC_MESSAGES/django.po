@@ -1,0 +1,243 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-03 01:02+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Profile"
+msgstr ""
+
+msgid "Privacy"
+msgstr ""
+
+msgid "Permissions"
+msgstr ""
+
+msgid "Important dates"
+msgstr ""
+
+msgid "Full name"
+msgstr ""
+
+msgid "Institution"
+msgstr ""
+
+msgid "School, university, or organisation. Optional."
+msgstr ""
+
+msgid "I am a"
+msgstr ""
+
+msgid "Choose your role"
+msgstr ""
+
+msgid "Interface language"
+msgstr ""
+
+msgid "I have read and agree to the privacy policy."
+msgstr ""
+
+msgid "Agree to the privacy policy to create an account."
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "The password is incorrect."
+msgstr ""
+
+msgid "Student"
+msgstr ""
+
+msgid "Teacher"
+msgstr ""
+
+msgid "Researcher"
+msgstr ""
+
+msgid "General public"
+msgstr ""
+
+msgid "email address"
+msgstr ""
+
+msgid "full name"
+msgstr ""
+
+msgid "institution"
+msgstr ""
+
+msgid "role"
+msgstr ""
+
+msgid "preferred language"
+msgstr ""
+
+msgid "privacy policy accepted at"
+msgstr ""
+
+msgid "privacy policy version"
+msgstr ""
+
+msgid "Your profile has been saved."
+msgstr ""
+
+msgid "Your account and all of its data have been deleted."
+msgstr ""
+
+msgid "Indonesian"
+msgstr ""
+
+msgid "English"
+msgstr ""
+
+msgid "Hello from PrasiBali.ai!"
+msgstr ""
+
+msgid "Thank you for using PrasiBali.ai."
+msgstr ""
+
+msgid "Sign in"
+msgstr ""
+
+msgid "Sign in to your account"
+msgstr ""
+
+msgid ""
+"Recognise characters, group their other names, and see whether they are "
+"protagonists or antagonists."
+msgstr ""
+
+msgid "Create a new account"
+msgstr ""
+
+msgid "Create account"
+msgstr ""
+
+msgid ""
+"We will send a link to your email. Open it to activate your account before "
+"signing in."
+msgstr ""
+
+#, python-format
+msgid ""
+"I have read and agree to the <a class=\"link\" href=\"%(privacy_url)s\" "
+"target=\"_blank\" rel=\"noopener\">privacy policy</a>."
+msgstr ""
+
+msgid "Already have an account?"
+msgstr ""
+
+msgid "Sign out"
+msgstr ""
+
+msgid "Account"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Delete account"
+msgstr ""
+
+msgid ""
+"Your account, profile, and analysis history will be deleted permanently. "
+"Enter your password to confirm."
+msgstr ""
+
+msgid "Delete my account permanently"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Save profile"
+msgstr ""
+
+msgid ""
+"Deleting your account also deletes your analysis history. This cannot be "
+"undone."
+msgstr ""
+
+msgid "Prasi in Balinese script"
+msgstr ""
+
+msgid "Privacy policy"
+msgstr ""
+
+#, python-format
+msgid "Version %(version)s"
+msgstr ""
+
+msgid "Data we store"
+msgstr ""
+
+msgid ""
+"Your account: email address, full name, institution (optional), role, "
+"preferred interface language, and the time you agreed to this policy."
+msgstr ""
+
+msgid ""
+"Your analyses: the satua texts you submit, the analysis results, and the "
+"model settings used, so that you can open them again in your history."
+msgstr ""
+
+msgid "How your texts are processed"
+msgstr ""
+
+msgid ""
+"All AI models run on the PrasiBali.ai server. Your texts are not sent to "
+"third-party AI services."
+msgstr ""
+
+msgid "What we use the data for"
+msgstr ""
+
+msgid ""
+"To sign you in, verify your email address, reset your password, apply the "
+"daily analysis quota, and show your analysis history. We do not sell or "
+"share your data."
+msgstr ""
+
+msgid ""
+"Verification and password reset emails are sent through an email delivery "
+"service (Gmail SMTP)."
+msgstr ""
+
+msgid "Cookies and browser storage"
+msgstr ""
+
+msgid ""
+"We use only the cookies needed to keep you signed in, protect forms, and "
+"remember your language. Your theme choice is stored in your browser. There "
+"are no tracking or advertising cookies."
+msgstr ""
+
+msgid "Your control over your data"
+msgstr ""
+
+msgid ""
+"You can delete individual analyses or your whole history. You can delete "
+"your account from the profile page; this permanently deletes your account "
+"and all of your analyses."
+msgstr ""
+
+msgid "Dark theme"
+msgstr ""
+
+msgid "Light theme"
+msgstr ""

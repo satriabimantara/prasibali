@@ -1,0 +1,14 @@
+{% if kind == "hidden" %}{{ widget }}{% elif kind == "checkbox" %}
+<div class="field">
+  <label class="check" for="{{ field.id_for_label }}">{{ widget }}<span>{{ label }}</span></label>
+  {% if field.help_text %}<p class="help" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</p>{% endif %}
+  {% if field.errors %}<p class="field-error" id="{{ field.auto_id }}_error">{{ field.errors|join:" " }}</p>{% endif %}
+</div>
+{% else %}
+<div class="field">
+  <label class="field-label" for="{{ field.id_for_label }}">{{ label }}</label>
+  {{ widget }}
+  {% if field.help_text %}<p class="help" id="{{ field.auto_id }}_helptext">{{ field.help_text }}</p>{% endif %}
+  {% if field.errors %}<p class="field-error" id="{{ field.auto_id }}_error">{{ field.errors|join:" " }}</p>{% endif %}
+</div>
+{% endif %}

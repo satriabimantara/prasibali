@@ -1,0 +1,22 @@
+{% load allauth %}
+{# Used by allauth pages that render single inputs (email management). Same pattern as partials/form_field.html. #}
+{% if attrs.type == "checkbox" or attrs.type == "radio" %}
+<div class="field">
+  <label class="check" for="{{ attrs.id }}">
+    <input class="checkbox" type="{{ attrs.type }}"{% if attrs.name %} name="{{ attrs.name }}"{% endif %}{% if attrs.id %} id="{{ attrs.id }}"{% endif %}{% if attrs.value is not None %} value="{{ attrs.value }}"{% endif %}{% if attrs.checked %} checked{% endif %}{% if attrs.required %} required{% endif %}{% if attrs.disabled %} disabled{% endif %}>
+    <span>{% slot label %}{% endslot %}</span>
+  </label>
+  {% if slots.help_text %}<p class="help">{% slot help_text %}{% endslot %}</p>{% endif %}
+</div>
+{% else %}
+<div class="field">
+  <label class="field-label" for="{{ attrs.id }}">{% slot label %}{% endslot %}</label>
+  {% if attrs.type == "textarea" %}
+    <textarea class="input py-3"{% if attrs.name %} name="{{ attrs.name }}"{% endif %}{% if attrs.id %} id="{{ attrs.id }}"{% endif %}{% if attrs.rows %} rows="{{ attrs.rows }}"{% endif %}{% if attrs.required %} required{% endif %}{% if attrs.disabled %} disabled{% endif %}{% if attrs.readonly %} readonly{% endif %}{% if attrs.errors %} aria-invalid="true" aria-describedby="{{ attrs.id }}_error"{% endif %}>{% slot value %}{% endslot %}</textarea>
+  {% else %}
+    <input class="input" type="{{ attrs.type }}"{% if attrs.name %} name="{{ attrs.name }}"{% endif %}{% if attrs.id %} id="{{ attrs.id }}"{% endif %}{% if attrs.value is not None %} value="{{ attrs.value }}"{% endif %}{% if attrs.autocomplete %} autocomplete="{{ attrs.autocomplete }}"{% endif %}{% if attrs.required %} required{% endif %}{% if attrs.disabled %} disabled{% endif %}{% if attrs.readonly %} readonly{% endif %}{% if attrs.errors %} aria-invalid="true" aria-describedby="{{ attrs.id }}_error"{% endif %}>
+  {% endif %}
+  {% if slots.help_text %}<p class="help">{% slot help_text %}{% endslot %}</p>{% endif %}
+  {% if attrs.errors %}<p class="field-error" id="{{ attrs.id }}_error">{{ attrs.errors|join:" " }}</p>{% endif %}
+</div>
+{% endif %}

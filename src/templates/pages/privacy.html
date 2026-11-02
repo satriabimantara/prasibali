@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% translate "Privacy policy" %} · PrasiBali.ai{% endblock title %}
+{% block body %}
+<div class="flex min-h-screen flex-col">
+  <header class="border-b border-line bg-surface">
+    <div class="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-[clamp(16px,3vw,32px)] py-3">
+      <a href="{% if user.is_authenticated %}{% url 'accounts:profile' %}{% else %}{% url 'account_login' %}{% endif %}" class="text-section-title text-ink no-underline">PrasiBali.ai</a>
+      <div class="flex flex-wrap items-center gap-2">
+        {% include "partials/lang_switch.html" %}
+        {% include "partials/theme_toggle.html" %}
+      </div>
+    </div>
+  </header>
+  <main class="mx-auto grid w-full max-w-[72ch] content-start gap-6 px-[clamp(16px,3vw,32px)] py-8">
+    <div class="grid gap-2">
+      <h1 class="text-page-title">{% translate "Privacy policy" %}</h1>
+      <p class="text-caption text-muted">{% blocktranslate with version=policy_version %}Version {{ version }}{% endblocktranslate %}</p>
+    </div>
+    <article class="panel grid gap-6">
+      <section class="grid gap-2">
+        <h2 class="text-section-title">{% translate "Data we store" %}</h2>
+        <p>{% translate "Your account: email address, full name, institution (optional), role, preferred interface language, and the time you agreed to this policy." %}</p>
+        <p>{% translate "Your analyses: the satua texts you submit, the analysis results, and the model settings used, so that you can open them again in your history." %}</p>
+      </section>
+      <section class="grid gap-2">
+        <h2 class="text-section-title">{% translate "How your texts are processed" %}</h2>
+        <p>{% translate "All AI models run on the PrasiBali.ai server. Your texts are not sent to third-party AI services." %}</p>
+      </section>
+      <section class="grid gap-2">
+        <h2 class="text-section-title">{% translate "What we use the data for" %}</h2>
+        <p>{% translate "To sign you in, verify your email address, reset your password, apply the daily analysis quota, and show your analysis history. We do not sell or share your data." %}</p>
+        <p>{% translate "Verification and password reset emails are sent through an email delivery service (Gmail SMTP)." %}</p>
+      </section>
+      <section class="grid gap-2">
+        <h2 class="text-section-title">{% translate "Cookies and browser storage" %}</h2>
+        <p>{% translate "We use only the cookies needed to keep you signed in, protect forms, and remember your language. Your theme choice is stored in your browser. There are no tracking or advertising cookies." %}</p>
+      </section>
+      <section class="grid gap-2">
+        <h2 class="text-section-title">{% translate "Your control over your data" %}</h2>
+        <p>{% translate "You can delete individual analyses or your whole history. You can delete your account from the profile page; this permanently deletes your account and all of your analyses." %}</p>
+      </section>
+    </article>
+  </main>
+</div>
+{% endblock body %}

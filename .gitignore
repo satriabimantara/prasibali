@@ -229,3 +229,6 @@ __marimo__/
 staticfiles/
 media/
 var/
+.tools/
+# Compiled translations are committed so Docker and CI need no gettext.
+!src/locale/**/LC_MESSAGES/*.mo

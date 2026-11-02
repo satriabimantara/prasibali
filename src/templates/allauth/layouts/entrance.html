@@ -1,0 +1,29 @@
+{% extends "allauth/layouts/base.html" %}
+{% load i18n %}
+{# Sign-in, sign-up and activation pages: one centred card with the Prasi script and the ikat ribbon (DESIGN.md). #}
+{% block body %}
+<div class="flex min-h-screen flex-col">
+  <header class="flex flex-wrap items-center justify-between gap-3 px-[clamp(16px,5vw,64px)] py-4">
+    <a href="{% url 'account_login' %}" class="text-section-title text-ink no-underline">PrasiBali.ai</a>
+    <div class="flex flex-wrap items-center gap-2">
+      {% include "partials/lang_switch.html" %}
+      {% include "partials/theme_toggle.html" %}
+    </div>
+  </header>
+  <main class="flex flex-1 justify-center px-[clamp(16px,5vw,64px)] pb-16 pt-2">
+    <div class="grid w-full max-w-[480px] content-start gap-6">
+      <div lang="ban" role="img" aria-label="{% translate 'Prasi in Balinese script' %}" class="font-aksara text-center text-accent leading-tight text-[clamp(56px,7vw,96px)]">&#x1B27;&#x1B44;&#x1B2D;&#x1B32;&#x1B36;</div>
+      <div class="overflow-hidden rounded-lg border border-line bg-surface">
+        {% include "partials/ikat.html" %}
+        <div class="grid gap-6 p-6">
+          {% include "partials/messages.html" %}
+          {% block content %}{% endblock content %}
+        </div>
+      </div>
+      <p class="text-center text-caption text-muted">
+        <a class="link" href="{% url 'pages:privacy' %}">{% translate "Privacy policy" %}</a>
+      </p>
+    </div>
+  </main>
+</div>
+{% endblock body %}

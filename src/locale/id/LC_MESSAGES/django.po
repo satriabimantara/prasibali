@@ -1,0 +1,242 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-03 01:02+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: id\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+msgid "Profile"
+msgstr "Profil"
+
+msgid "Privacy"
+msgstr "Privasi"
+
+msgid "Permissions"
+msgstr "Izin"
+
+msgid "Important dates"
+msgstr "Tanggal penting"
+
+msgid "Full name"
+msgstr "Nama lengkap"
+
+msgid "Institution"
+msgstr "Institusi"
+
+msgid "School, university, or organisation. Optional."
+msgstr "Sekolah, universitas, atau lembaga. Opsional."
+
+msgid "I am a"
+msgstr "Saya seorang"
+
+msgid "Choose your role"
+msgstr "Pilih peran Anda"
+
+msgid "Interface language"
+msgstr "Bahasa antarmuka"
+
+msgid "I have read and agree to the privacy policy."
+msgstr "Saya sudah membaca dan menyetujui kebijakan privasi."
+
+msgid "Agree to the privacy policy to create an account."
+msgstr "Setujui kebijakan privasi untuk membuat akun."
+
+msgid "Password"
+msgstr "Kata sandi"
+
+msgid "The password is incorrect."
+msgstr "Kata sandi salah."
+
+msgid "Student"
+msgstr "Pelajar"
+
+msgid "Teacher"
+msgstr "Guru"
+
+msgid "Researcher"
+msgstr "Peneliti"
+
+msgid "General public"
+msgstr "Umum"
+
+msgid "email address"
+msgstr "alamat email"
+
+msgid "full name"
+msgstr "nama lengkap"
+
+msgid "institution"
+msgstr "institusi"
+
+msgid "role"
+msgstr "peran"
+
+msgid "preferred language"
+msgstr "bahasa pilihan"
+
+msgid "privacy policy accepted at"
+msgstr "waktu persetujuan kebijakan privasi"
+
+msgid "privacy policy version"
+msgstr "versi kebijakan privasi"
+
+msgid "Your profile has been saved."
+msgstr "Profil Anda sudah disimpan."
+
+msgid "Your account and all of its data have been deleted."
+msgstr "Akun Anda beserta seluruh datanya sudah dihapus."
+
+msgid "Indonesian"
+msgstr "Indonesia"
+
+msgid "English"
+msgstr "Inggris"
+
+msgid "Hello from PrasiBali.ai!"
+msgstr "Salam dari PrasiBali.ai!"
+
+msgid "Thank you for using PrasiBali.ai."
+msgstr "Terima kasih telah menggunakan PrasiBali.ai."
+
+msgid "Sign in"
+msgstr "Masuk"
+
+msgid "Sign in to your account"
+msgstr "Masuk ke akun Anda"
+
+msgid ""
+"Recognise characters, group their other names, and see whether they are "
+"protagonists or antagonists."
+msgstr "Kenali tokoh, satukan nama lain, dan lihat peran protagonis atau antagonis dari teks berbahasa Bali."
+
+msgid "Create a new account"
+msgstr "Buat akun baru"
+
+msgid "Create account"
+msgstr "Buat akun"
+
+msgid ""
+"We will send a link to your email. Open it to activate your account before "
+"signing in."
+msgstr "Kami akan mengirim tautan ke email Anda. Buka tautan itu untuk mengaktifkan akun sebelum masuk."
+
+#, python-format
+msgid ""
+"I have read and agree to the <a class=\"link\" href=\"%(privacy_url)s\" "
+"target=\"_blank\" rel=\"noopener\">privacy policy</a>."
+msgstr "Saya sudah membaca dan menyetujui <a class=\"link\" href=\"%(privacy_url)s\" target=\"_blank\" rel=\"noopener\">kebijakan privasi</a>."
+
+msgid "Already have an account?"
+msgstr "Sudah punya akun?"
+
+msgid "Sign out"
+msgstr "Keluar"
+
+msgid "Account"
+msgstr "Akun"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Delete account"
+msgstr "Hapus akun"
+
+msgid ""
+"Your account, profile, and analysis history will be deleted permanently. "
+"Enter your password to confirm."
+msgstr "Akun, profil, dan riwayat analisis Anda akan dihapus permanen. Masukkan kata sandi untuk mengonfirmasi."
+
+msgid "Delete my account permanently"
+msgstr "Hapus akun saya secara permanen"
+
+msgid "Cancel"
+msgstr "Batal"
+
+msgid "Save profile"
+msgstr "Simpan profil"
+
+msgid ""
+"Deleting your account also deletes your analysis history. This cannot be "
+"undone."
+msgstr "Menghapus akun juga menghapus riwayat analisis Anda. Tindakan ini tidak dapat dibatalkan."
+
+msgid "Prasi in Balinese script"
+msgstr "Prasi dalam aksara Bali"
+
+msgid "Privacy policy"
+msgstr "Kebijakan privasi"
+
+#, python-format
+msgid "Version %(version)s"
+msgstr "Versi %(version)s"
+
+msgid "Data we store"
+msgstr "Data yang kami simpan"
+
+msgid ""
+"Your account: email address, full name, institution (optional), role, "
+"preferred interface language, and the time you agreed to this policy."
+msgstr "Akun Anda: alamat email, nama lengkap, institusi (opsional), peran, bahasa antarmuka pilihan, dan waktu Anda menyetujui kebijakan ini."
+
+msgid ""
+"Your analyses: the satua texts you submit, the analysis results, and the "
+"model settings used, so that you can open them again in your history."
+msgstr "Analisis Anda: teks satua yang Anda kirim, hasil analisis, dan pengaturan model yang dipakai, agar dapat dibuka lagi di riwayat."
+
+msgid "How your texts are processed"
+msgstr "Cara teks Anda diproses"
+
+msgid ""
+"All AI models run on the PrasiBali.ai server. Your texts are not sent to "
+"third-party AI services."
+msgstr "Semua model AI berjalan di server PrasiBali.ai. Teks Anda tidak dikirim ke layanan AI pihak ketiga."
+
+msgid "What we use the data for"
+msgstr "Kegunaan data"
+
+msgid ""
+"To sign you in, verify your email address, reset your password, apply the "
+"daily analysis quota, and show your analysis history. We do not sell or "
+"share your data."
+msgstr "Untuk proses masuk, verifikasi email, reset kata sandi, kuota analisis harian, dan menampilkan riwayat analisis Anda. Kami tidak menjual atau membagikan data Anda."
+
+msgid ""
+"Verification and password reset emails are sent through an email delivery "
+"service (Gmail SMTP)."
+msgstr "Email verifikasi dan reset kata sandi dikirim melalui layanan pengiriman email (SMTP Gmail)."
+
+msgid "Cookies and browser storage"
+msgstr "Cookie dan penyimpanan browser"
+
+msgid ""
+"We use only the cookies needed to keep you signed in, protect forms, and "
+"remember your language. Your theme choice is stored in your browser. There "
+"are no tracking or advertising cookies."
+msgstr "Kami hanya memakai cookie yang diperlukan agar Anda tetap masuk, melindungi formulir, dan mengingat bahasa Anda. Pilihan tema disimpan di browser Anda. Tidak ada cookie pelacak atau iklan."
+
+msgid "Your control over your data"
+msgstr "Kendali Anda atas data"
+
+msgid ""
+"You can delete individual analyses or your whole history. You can delete "
+"your account from the profile page; this permanently deletes your account "
+"and all of your analyses."
+msgstr "Anda dapat menghapus analisis satu per satu atau seluruh riwayat. Akun dapat dihapus dari halaman profil; tindakan ini menghapus akun beserta semua analisis Anda secara permanen."
+
+msgid "Dark theme"
+msgstr "Tema gelap"
+
+msgid "Light theme"
+msgstr "Tema terang"

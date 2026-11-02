@@ -1,0 +1,2 @@
+{% load form_tags %}{% if attrs.form.non_field_errors %}<div class="alert alert--danger" role="alert">{{ attrs.form.non_field_errors|join:" " }}</div>{% endif %}
+{% for field in attrs.form %}{% form_field field %}{% endfor %}
