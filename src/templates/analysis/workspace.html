@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load i18n static ui form_tags %}
+{% block title %}{% translate "Satua analysis" %} · PrasiBali.ai{% endblock title %}
+{% block extra_head %}
+  <script src="{% static 'js/mode.js' %}" defer></script>
+  <script src="{% static 'js/analysis.js' %}" defer></script>
+{% endblock extra_head %}
+{% block body %}
+{% include "partials/site_header.html" with bordered=True %}
+<main class="mx-auto grid w-full max-w-[1440px] content-start gap-6 px-[clamp(16px,3vw,32px)] py-8">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h1 class="text-page-title">{% translate "Satua analysis" %}</h1>
+    {% include "partials/mode_toggle.html" %}
+  </div>
+
+  <form method="post" action="{% url 'analysis:workspace' %}" class="panel grid gap-6" data-analysis-form>
+    {% csrf_token %}
+    {{ form.mode }}
+    {% if form.non_field_errors %}<p class="alert alert--danger">{{ form.non_field_errors|join:" " }}</p>{% endif %}
+    {% form_field form.text %}
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="text-label text-muted">{% translate "Try a sample satua:" %}</span>
+      {% for slug, title in samples %}
+        <a class="btn gap-2" href="?contoh={{ slug }}">{% icon "book-open" %}<span lang="ban">{{ title }}</span></a>
+      {% endfor %}
+    </div>
+    <div class="max-w-[480px]">{% form_field form.task %}</div>
+
+    <fieldset class="adv-only grid gap-4 rounded-lg border border-line p-4">
+      <legend class="flex items-center gap-2 px-1 text-section-title">{% icon "flask" %}{% translate "Research mode: models and parameters" %}</legend>
+      <p class="help">{% translate "The defaults are the best configurations in the thesis. F1 values are the thesis results for each experiment: cross-validation (CV) and test data." %}</p>
+      <div class="grid gap-4 md:grid-cols-2">
+        {% form_field form.ner_model %}
+        {% form_field form.alias_method %}
+        {% form_field form.alias_threshold %}
+        {% form_field form.classifier_id %}
+      </div>
+    </fieldset>
+
+    <div class="flex flex-wrap items-center gap-3">
+      <button type="submit" class="btn btn-primary gap-2" data-label-busy="{% translate 'Analysing...' %}">{% icon "play" %}<span data-label>{% translate "Analyse text" %}</span></button>
+      <p class="help">{% blocktranslate %}Up to 20,000 characters. Analysis can take up to a minute.{% endblocktranslate %}</p>
+    </div>
+  </form>
+
+  {% if error %}
+    <div class="alert alert--danger grid gap-3" role="alert">
+      <p class="flex items-start gap-2">{% icon "alert" %}<span>{{ error }}</span></p>
+      <div><button type="button" class="btn gap-2" data-retry>{% icon "rotate" %}<span>{% translate "Try again" %}</span></button></div>
+    </div>
+  {% endif %}
+
+  {% if view %}
+    {% include "analysis/partials/result.html" %}
+  {% elif not error %}
+    <p class="text-muted">{% translate "No analysis yet. Paste a satua text to begin." %}</p>
+  {% endif %}
+</main>
+{% endblock body %}

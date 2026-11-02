@@ -1,0 +1,27 @@
+{% load i18n static ui %}
+{# Shared navbar (DESIGN.md "Navigasi situs"): logo on the left; language, theme and account actions on the right. #}
+<header class="{% if bordered %}border-b border-line bg-surface{% endif %}">
+  <div class="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-[clamp(16px,{{ gutter|default:'3vw,32px' }})] py-3">
+    <a href="{% url 'pages:landing' %}" class="inline-flex min-h-[44px] items-center" aria-label="{% translate 'PrasiBali.ai home' %}">
+      <img src="{% static 'img/prasibali-logo-latar-terang.svg' %}" alt="PrasiBali" width="87" height="32" class="h-8 w-auto dark:hidden">
+      <img src="{% static 'img/prasibali-logo-latar-gelap.svg' %}" alt="PrasiBali" width="87" height="32" class="hidden h-8 w-auto dark:block">
+    </a>
+    <nav aria-label="{% translate 'Site' %}" class="flex flex-wrap items-center gap-2">
+      {% include "partials/lang_switch.html" %}
+      {% include "partials/theme_toggle.html" %}
+      {% if user.is_authenticated %}
+        {% url 'analysis:workspace' as workspace_url %}
+        {% url 'accounts:profile' as profile_url %}
+        <a class="btn gap-2" href="{{ workspace_url }}"{% if request.path == workspace_url %} aria-current="page"{% endif %}>{% icon "file-text" %}<span>{% translate "Analysis" %}</span></a>
+        <a class="btn gap-2" href="{{ profile_url }}"{% if request.path == profile_url %} aria-current="page"{% endif %}>{% icon "user" %}<span>{% translate "Profile" %}</span></a>
+        <form action="{% url 'account_logout' %}" method="post">
+          {% csrf_token %}
+          <button type="submit" class="btn gap-2">{% icon "log-out" %}<span>{% translate "Sign out" %}</span></button>
+        </form>
+      {% elif not hide_auth_links %}
+        <a class="btn gap-2" href="{% url 'account_login' %}">{% icon "log-in" %}<span>{% translate "Sign in" %}</span></a>
+        <a class="btn gap-2" href="{% url 'account_signup' %}">{% icon "user-plus" %}<span>{% translate "Sign up" %}</span></a>
+      {% endif %}
+    </nav>
+  </div>
+</header>

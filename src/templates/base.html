@@ -20,12 +20,16 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Balinese&family=Schibsted+Grotesk:wght@400;500;600&display=swap">
+  <link rel="icon" href="{% static 'img/favicon.ico' %}" sizes="48x48">
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <script src="{% static 'js/theme.js' %}" defer></script>
   {% block extra_head %}{% endblock extra_head %}
 </head>
-<body class="min-h-screen antialiased">
-  {% block body %}{% endblock body %}
+<body class="flex min-h-screen flex-col antialiased">
+  <div class="flex flex-1 flex-col">{% block body %}{% endblock body %}</div>
+  {% include "partials/site_footer.html" %}
   {% block extra_body %}{% endblock extra_body %}
 </body>
 </html>

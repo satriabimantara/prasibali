@@ -2,22 +2,8 @@
 {% load i18n %}
 {# Account pages for signed-in users (profile, password, email). Neutral: no Prasi script or ikat (DESIGN.md). #}
 {% block body %}
-<div class="flex min-h-screen flex-col">
-  <header class="border-b border-line bg-surface">
-    <div class="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-[clamp(16px,3vw,32px)] py-3">
-      <a href="{% url 'accounts:profile' %}" class="text-section-title text-ink no-underline">PrasiBali.ai</a>
-      <div class="flex flex-wrap items-center gap-2">
-        {% include "partials/lang_switch.html" %}
-        {% include "partials/theme_toggle.html" %}
-        {% if user.is_authenticated %}
-          <form action="{% url 'account_logout' %}" method="post">
-            {% csrf_token %}
-            <button type="submit" class="btn">{% translate "Sign out" %}</button>
-          </form>
-        {% endif %}
-      </div>
-    </div>
-  </header>
+<div class="flex flex-1 flex-col">
+  {% include "partials/site_header.html" with bordered=True %}
   <main class="mx-auto grid w-full max-w-[720px] content-start gap-6 px-[clamp(16px,3vw,32px)] py-8">
     {% if user.is_authenticated %}
       <nav aria-label="{% translate 'Account' %}" class="flex flex-wrap gap-2">

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 01:13+0800\n"
+"POT-Creation-Date: 2026-11-03 01:44+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -98,6 +98,157 @@ msgstr "Profil Anda sudah disimpan."
 msgid "Your account and all of its data have been deleted."
 msgstr "Akun Anda beserta seluruh datanya sudah dihapus."
 
+msgid "Simple"
+msgstr "Sederhana"
+
+msgid "Advanced"
+msgstr "Lanjutan"
+
+#, python-format
+msgid "CV F1 %(f1)s (%(ref)s)"
+msgstr "F1 CV %(f1)s (%(ref)s)"
+
+#, python-format
+msgid "test F1 %(f1)s (%(ref)s)"
+msgstr "F1 uji %(f1)s (%(ref)s)"
+
+msgid "test F1 –"
+msgstr "F1 uji –"
+
+msgid "best in the thesis"
+msgstr "terbaik menurut tesis"
+
+msgid "coming soon"
+msgstr "segera hadir"
+
+msgid "M2 · Word vector"
+msgstr "M2 · Word vector"
+
+msgid "M1 · Word vector"
+msgstr "M1 · Word vector"
+
+msgid "M2 · Lexicon (coming soon)"
+msgstr "M2 · Leksikon (segera hadir)"
+
+msgid "M1 · Lexicon (coming soon)"
+msgstr "M1 · Leksikon (segera hadir)"
+
+msgid "Satua text"
+msgstr "Teks satua"
+
+msgid "Balinese text in Latin script. End every sentence with a full stop."
+msgstr "Teks berbahasa Bali dalam huruf Latin. Akhiri setiap kalimat dengan titik."
+
+msgid "What to analyse"
+msgstr "Yang ingin dianalisis"
+
+msgid "(i) Character identification model"
+msgstr "(i) Model identifikasi tokoh"
+
+msgid "(ii) Alias clustering method"
+msgstr "(ii) Metode pengelompokan nama lain (alias)"
+
+msgid "(ii) Similarity threshold"
+msgstr "(ii) Ambang kemiripan"
+
+msgid "Between 0.50 and 1.00. The thesis uses 0.85."
+msgstr "Antara 0,50 dan 1,00. Tesis memakai 0,85."
+
+msgid "(iii) Role classification model"
+msgstr "(iii) Model klasifikasi peran"
+
+#, python-format
+msgid "CV F1 %(f1)s"
+msgstr "F1 CV %(f1)s"
+
+#, python-format
+msgid "test F1 %(f1)s"
+msgstr "F1 uji %(f1)s"
+
+msgid "This model is not available yet. Choose another model."
+msgstr "Model ini belum tersedia. Pilih model lain."
+
+msgid "The analysis could not be completed. Your text has not been lost."
+msgstr "Analisis tidak dapat diselesaikan. Teks Anda tidak hilang."
+
+msgid ""
+"The text could not be prepared for analysis. Check that it is a Balinese "
+"story."
+msgstr "Teks tidak dapat disiapkan untuk dianalisis. Periksa apakah teks berupa satua berbahasa Bali."
+
+msgid ""
+"Character identification failed because the model did not respond. Your text "
+"has not been lost."
+msgstr "Identifikasi tokoh gagal karena model tidak merespons. Teks Anda tidak hilang."
+
+msgid ""
+"Grouping the characters' other names failed. Your text has not been lost."
+msgstr "Pengelompokan nama lain tokoh gagal. Teks Anda tidak hilang."
+
+msgid ""
+"Role classification failed because the model did not respond. Your text has "
+"not been lost."
+msgstr "Klasifikasi peran gagal karena model tidak merespons. Teks Anda tidak hilang."
+
+msgid ""
+"The role classification model is not available right now. Character "
+"identification and grouping still work."
+msgstr "Model klasifikasi peran sedang tidak tersedia. Identifikasi dan pengelompokan tokoh tetap berjalan."
+
+msgid ""
+"The word embedding needed by this model is not available right now. Try "
+"another model or try again later."
+msgstr "Word embedding yang dibutuhkan model ini sedang tidak tersedia. Pilih model lain atau coba lagi nanti."
+
+msgid "Word vector"
+msgstr "Word vector"
+
+msgid "Lexicon"
+msgstr "Leksikon"
+
+msgid "M2: optimal configuration trained on all training data"
+msgstr "M2: konfigurasi optimal yang dilatih dengan seluruh data latih"
+
+msgid "M1: optimal configuration trained on the best cross-validation fold"
+msgstr "M1: konfigurasi optimal yang dilatih pada fold cross-validation terbaik"
+
+msgid "Full pipeline: identification, grouping and roles"
+msgstr "Pipeline lengkap: identifikasi, pengelompokan, dan peran"
+
+msgid "Character identification only"
+msgstr "Identifikasi tokoh saja"
+
+msgid "Identification and name grouping"
+msgstr "Identifikasi dan pengelompokan nama"
+
+msgid "Role classification"
+msgstr "Klasifikasi peran"
+
+msgid ""
+"No characters were recognised. Check that the text is written in Balinese."
+msgstr "Tidak ada tokoh yang dikenali. Periksa apakah teks berbahasa Bali."
+
+msgid "Enter the text of a satua to analyse."
+msgstr "Masukkan teks satua yang ingin dianalisis."
+
+#, python-format
+msgid "The text is too long. Enter at most %(limit)s characters."
+msgstr "Teks terlalu panjang. Masukkan paling banyak %(limit)s karakter."
+
+msgid ""
+"The text appears to use Balinese script. Enter the satua in Latin script; "
+"Balinese script support is coming soon."
+msgstr "Teks tampaknya memakai aksara Bali. Masukkan satua dalam huruf Latin; dukungan aksara Bali segera hadir."
+
+msgid "The text has no sentences. End every sentence with a full stop (.)."
+msgstr "Teks tidak memiliki kalimat. Akhiri setiap kalimat dengan titik (.)."
+
+#, python-format
+msgid ""
+"The text has fewer than %(n)s sentences, the minimum used in the thesis. "
+"Results may be less reliable."
+msgstr "Teks memiliki kurang dari %(n)s kalimat, batas minimum pada tesis. Hasil bisa kurang andal."
+
 msgid "Indonesian"
 msgstr "Indonesia"
 
@@ -114,18 +265,20 @@ msgstr "Halo,"
 msgid "Warm regards,"
 msgstr "Salam hangat,"
 
-#| msgid "Hello from PrasiBali.ai!"
 msgid "The PrasiBali.ai team"
 msgstr "Tim PrasiBali.ai"
 
 msgid ""
 "This email was sent automatically by PrasiBali.ai. Please do not reply to it."
-msgstr "Email ini dikirim otomatis oleh PrasiBali.ai. Mohon tidak membalas email ini."
+msgstr ""
+"Email ini dikirim otomatis oleh PrasiBali.ai. Mohon tidak membalas email ini."
 
 msgid ""
 "We received a request to confirm this email address for your PrasiBali.ai "
 "account."
-msgstr "Kami menerima permintaan untuk mengonfirmasi alamat email ini bagi akun PrasiBali.ai Anda."
+msgstr ""
+"Kami menerima permintaan untuk mengonfirmasi alamat email ini bagi akun "
+"PrasiBali.ai Anda."
 
 msgid "Your verification code:"
 msgstr "Kode verifikasi Anda:"
@@ -147,34 +300,35 @@ msgstr "Tidak merasa meminta konfirmasi ini? Abaikan saja email ini."
 msgid ""
 "Thank you for signing up for PrasiBali.ai, a workspace for analysing the "
 "characters in Balinese satua."
-msgstr "Terima kasih telah mendaftar di PrasiBali.ai, ruang kerja untuk menganalisis tokoh dalam satua Bali."
+msgstr ""
+"Terima kasih telah mendaftar di PrasiBali.ai, ruang kerja untuk menganalisis "
+"tokoh dalam satua Bali."
 
-#| msgid ""
-#| "We will send a link to your email. Open it to activate your account "
-#| "before signing in."
 msgid "One more step: confirm your email address to activate your account."
-msgstr "Tinggal satu langkah lagi: konfirmasi alamat email Anda untuk mengaktifkan akun."
+msgstr ""
+"Tinggal satu langkah lagi: konfirmasi alamat email Anda untuk mengaktifkan "
+"akun."
 
 msgid "Enter this code in the browser window you used to sign up."
 msgstr "Masukkan kode ini di jendela browser yang Anda pakai untuk mendaftar."
 
-#| msgid ""
-#| "Recognise characters, group their other names, and see whether they are "
-#| "protagonists or antagonists."
 msgid ""
 "Once your account is active, sign in to recognise characters, group their "
 "other names, and see whether they are protagonists or antagonists."
-msgstr "Setelah akun aktif, masuk untuk mengenali tokoh, menyatukan nama lain, dan melihat peran protagonis atau antagonis dalam satua."
+msgstr ""
+"Setelah akun aktif, masuk untuk mengenali tokoh, menyatukan nama lain, dan "
+"melihat peran protagonis atau antagonis dalam satua."
 
 msgid ""
 "Did not sign up for PrasiBali.ai? You can safely ignore this email. The "
 "account will not be activated without confirmation."
-msgstr "Tidak merasa mendaftar di PrasiBali.ai? Abaikan saja email ini. Akun tidak akan aktif tanpa konfirmasi."
+msgstr ""
+"Tidak merasa mendaftar di PrasiBali.ai? Abaikan saja email ini. Akun tidak "
+"akan aktif tanpa konfirmasi."
 
 msgid "Activate your PrasiBali.ai account"
 msgstr "Aktifkan akun PrasiBali.ai Anda"
 
-#| msgid "email address"
 msgid "Confirm your email address"
 msgstr "Konfirmasi alamat email Anda"
 
@@ -187,7 +341,9 @@ msgstr "Masuk ke akun Anda"
 msgid ""
 "Recognise characters, group their other names, and see whether they are "
 "protagonists or antagonists."
-msgstr "Kenali tokoh, satukan nama lain, dan lihat peran protagonis atau antagonis dari teks berbahasa Bali."
+msgstr ""
+"Kenali tokoh, satukan nama lain, dan lihat peran protagonis atau antagonis "
+"dari teks berbahasa Bali."
 
 msgid "Create a new account"
 msgstr "Buat akun baru"
@@ -198,19 +354,20 @@ msgstr "Buat akun"
 msgid ""
 "We will send a link to your email. Open it to activate your account before "
 "signing in."
-msgstr "Kami akan mengirim tautan ke email Anda. Buka tautan itu untuk mengaktifkan akun sebelum masuk."
+msgstr ""
+"Kami akan mengirim tautan ke email Anda. Buka tautan itu untuk mengaktifkan "
+"akun sebelum masuk."
 
 #, python-format
 msgid ""
 "I have read and agree to the <a class=\"link\" href=\"%(privacy_url)s\" "
 "target=\"_blank\" rel=\"noopener\">privacy policy</a>."
-msgstr "Saya sudah membaca dan menyetujui <a class=\"link\" href=\"%(privacy_url)s\" target=\"_blank\" rel=\"noopener\">kebijakan privasi</a>."
+msgstr ""
+"Saya sudah membaca dan menyetujui <a class=\"link\" href=\"%(privacy_url)s\" "
+"target=\"_blank\" rel=\"noopener\">kebijakan privasi</a>."
 
 msgid "Already have an account?"
 msgstr "Sudah punya akun?"
-
-msgid "Sign out"
-msgstr "Keluar"
 
 msgid "Account"
 msgstr "Akun"
@@ -224,7 +381,9 @@ msgstr "Hapus akun"
 msgid ""
 "Your account, profile, and analysis history will be deleted permanently. "
 "Enter your password to confirm."
-msgstr "Akun, profil, dan riwayat analisis Anda akan dihapus permanen. Masukkan kata sandi untuk mengonfirmasi."
+msgstr ""
+"Akun, profil, dan riwayat analisis Anda akan dihapus permanen. Masukkan kata "
+"sandi untuk mengonfirmasi."
 
 msgid "Delete my account permanently"
 msgstr "Hapus akun saya secara permanen"
@@ -238,10 +397,213 @@ msgstr "Simpan profil"
 msgid ""
 "Deleting your account also deletes your analysis history. This cannot be "
 "undone."
-msgstr "Menghapus akun juga menghapus riwayat analisis Anda. Tindakan ini tidak dapat dibatalkan."
+msgstr ""
+"Menghapus akun juga menghapus riwayat analisis Anda. Tindakan ini tidak "
+"dapat dibatalkan."
 
 msgid "Prasi in Balinese script"
 msgstr "Prasi dalam aksara Bali"
+
+msgid "Analysis result"
+msgstr "Hasil analisis"
+
+msgid "Character groups"
+msgstr "Kelompok tokoh"
+
+msgid "Characters"
+msgstr "Tokoh"
+
+msgid "Protagonist"
+msgstr "Protagonis"
+
+msgid "Antagonist"
+msgstr "Antagonis"
+
+msgid "Story text"
+msgstr "Teks cerita"
+
+msgid "Entity label"
+msgstr "Label entitas"
+
+msgid "What do the labels mean?"
+msgstr "Apa arti labelnya?"
+
+msgid "a proper name, such as Made Bhaskara"
+msgstr "nama diri, seperti Made Bhaskara"
+
+msgid "an animal or object acting as a character, such as I Kancil"
+msgstr "hewan atau benda yang dipersonifikasi, seperti I Kancil"
+
+msgid "a god or holy figure, such as Bhatara Indra"
+msgstr "dewa atau tokoh suci, seperti Bhatara Indra"
+
+msgid "a name derived from a trait, such as I Belog"
+msgstr "nama yang berasal dari sifat, seperti I Belog"
+
+msgid "a reference without a proper name, such as memene"
+msgstr "sebutan tanpa nama diri, seperti memene"
+
+msgid "Solid underline: protagonist. Dashed underline: antagonist."
+msgstr "Garis bawah utuh: protagonis. Garis bawah putus-putus: antagonis."
+
+msgid "Also called"
+msgstr "Disebut sebagai"
+
+msgid "Mentions"
+msgstr "Kemunculan"
+
+msgid "Group"
+msgstr "Kelompok"
+
+msgid "Model score"
+msgstr "Skor model"
+
+msgid "Context words"
+msgstr "Kata konteks"
+
+#, python-format
+msgid "%(n)s TF-IDF terms known"
+msgstr "%(n)s term TF-IDF dikenal"
+
+msgid ""
+"Little context: this character appears in few sentences, so the label is "
+"less reliable."
+msgstr "Konteks sedikit: tokoh ini muncul di sedikit kalimat, sehingga labelnya kurang andal."
+
+msgid "Characters found"
+msgstr "Tokoh yang ditemukan"
+
+msgid ""
+"Role labels are an aid to analysis, not a final judgement. The models have "
+"limited accuracy: the average F1 of every model in the thesis is below 0.70."
+msgstr "Label peran adalah alat bantu analisis, bukan kesimpulan akhir. Akurasi model terbatas: F1 rata-rata semua model di tesis di bawah 0,70."
+
+msgid ""
+"The model score is the SVM decision_function: the signed distance to the "
+"separating hyperplane, not a probability or confidence."
+msgstr "Skor model adalah decision_function SVM: jarak bertanda ke hyperplane pemisah, bukan probabilitas atau tingkat keyakinan."
+
+msgid "Models used"
+msgstr "Model yang dipakai"
+
+msgid "(i) Character identification"
+msgstr "(i) Identifikasi tokoh"
+
+msgid "CV F1"
+msgstr "F1 CV"
+
+msgid "test F1"
+msgstr "F1 uji"
+
+msgid "(ii) Alias clustering"
+msgstr "(ii) Pengelompokan alias"
+
+msgid "threshold"
+msgstr "ambang"
+
+msgid "(iii) Role classification"
+msgstr "(iii) Klasifikasi peran"
+
+msgid "Model file"
+msgstr "Berkas model"
+
+msgid "Word embedding (TF5)"
+msgstr "Word embedding (TF5)"
+
+msgid "dimensions"
+msgstr "dimensi"
+
+msgid "local file"
+msgstr "berkas lokal"
+
+msgid "Versions"
+msgstr "Versi"
+
+msgid "Duration"
+msgstr "Durasi"
+
+msgid "Satua analysis"
+msgstr "Analisis satua"
+
+msgid "Try a sample satua:"
+msgstr "Coba contoh satua:"
+
+msgid "Research mode: models and parameters"
+msgstr "Mode Peneliti: model dan parameter"
+
+msgid ""
+"The defaults are the best configurations in the thesis. F1 values are the "
+"thesis results for each experiment: cross-validation (CV) and test data."
+msgstr "Pilihan bawaan adalah konfigurasi terbaik menurut tesis. Nilai F1 adalah hasil tesis untuk setiap eksperimen: cross-validation (CV) dan data uji."
+
+msgid "Analysing..."
+msgstr "Menganalisis..."
+
+msgid "Analyse text"
+msgstr "Analisis teks"
+
+msgid "Up to 20,000 characters. Analysis can take up to a minute."
+msgstr "Paling banyak 20.000 karakter. Analisis bisa memakan waktu hingga satu menit."
+
+msgid "Try again"
+msgstr "Coba lagi"
+
+msgid "No analysis yet. Paste a satua text to begin."
+msgstr "Belum ada analisis. Tempel teks satua untuk memulai."
+
+msgid "Character analysis of Balinese satua"
+msgstr "Analisis tokoh satua Bali"
+
+msgid "Character analysis of Balinese satua in one workspace."
+msgstr "Analisis tokoh satua Bali dalam satu ruang kerja."
+
+msgid ""
+"Recognise characters, group their other names, and see whether they are "
+"protagonists or antagonists in a text written in Balinese."
+msgstr "Kenali tokoh, satukan nama lain, dan lihat peran protagonis atau antagonis dari teks berbahasa Bali."
+
+msgid "Example of how results are shown"
+msgstr "Contoh tampilan hasil"
+
+msgid "Welcome back"
+msgstr "Selamat datang kembali"
+
+#, python-format
+msgid "You are signed in as %(name)s."
+msgstr "Anda masuk sebagai %(name)s."
+
+msgid "Continue to the workspace"
+msgstr "Lanjutkan ke ruang kerja"
+
+msgid "Forgot your password?"
+msgstr "Lupa kata sandi?"
+
+msgid "What PrasiBali.ai does"
+msgstr "Yang dilakukan PrasiBali.ai"
+
+msgid "Recognise characters"
+msgstr "Kenali tokoh"
+
+msgid ""
+"SatuaNER finds the names of characters in the story: people, animals, gods "
+"and objects that act like characters."
+msgstr "SatuaNER menemukan nama tokoh dalam cerita: manusia, hewan, dewa, dan benda yang berperan sebagai tokoh."
+
+msgid "Group other names"
+msgstr "Satukan nama lain"
+
+msgid ""
+"Different names for the same character, such as I Kancil and Kancil, are "
+"combined into one character group."
+msgstr "Sebutan berbeda untuk tokoh yang sama, seperti I Kancil dan Kancil, digabung menjadi satu kelompok tokoh."
+
+msgid "See their roles"
+msgstr "Lihat perannya"
+
+msgid ""
+"A model trained in the thesis research labels each character group as "
+"protagonist or antagonist, as an aid to analysis."
+msgstr "Model hasil penelitian tesis memberi label protagonis atau antagonis pada setiap kelompok tokoh, sebagai alat bantu analisis."
 
 msgid "Privacy policy"
 msgstr "Kebijakan privasi"
@@ -256,12 +618,16 @@ msgstr "Data yang kami simpan"
 msgid ""
 "Your account: email address, full name, institution (optional), role, "
 "preferred interface language, and the time you agreed to this policy."
-msgstr "Akun Anda: alamat email, nama lengkap, institusi (opsional), peran, bahasa antarmuka pilihan, dan waktu Anda menyetujui kebijakan ini."
+msgstr ""
+"Akun Anda: alamat email, nama lengkap, institusi (opsional), peran, bahasa "
+"antarmuka pilihan, dan waktu Anda menyetujui kebijakan ini."
 
 msgid ""
 "Your analyses: the satua texts you submit, the analysis results, and the "
 "model settings used, so that you can open them again in your history."
-msgstr "Analisis Anda: teks satua yang Anda kirim, hasil analisis, dan pengaturan model yang dipakai, agar dapat dibuka lagi di riwayat."
+msgstr ""
+"Analisis Anda: teks satua yang Anda kirim, hasil analisis, dan pengaturan "
+"model yang dipakai, agar dapat dibuka lagi di riwayat."
 
 msgid "How your texts are processed"
 msgstr "Cara teks Anda diproses"
@@ -269,7 +635,9 @@ msgstr "Cara teks Anda diproses"
 msgid ""
 "All AI models run on the PrasiBali.ai server. Your texts are not sent to "
 "third-party AI services."
-msgstr "Semua model AI berjalan di server PrasiBali.ai. Teks Anda tidak dikirim ke layanan AI pihak ketiga."
+msgstr ""
+"Semua model AI berjalan di server PrasiBali.ai. Teks Anda tidak dikirim ke "
+"layanan AI pihak ketiga."
 
 msgid "What we use the data for"
 msgstr "Kegunaan data"
@@ -278,12 +646,17 @@ msgid ""
 "To sign you in, verify your email address, reset your password, apply the "
 "daily analysis quota, and show your analysis history. We do not sell or "
 "share your data."
-msgstr "Untuk proses masuk, verifikasi email, reset kata sandi, kuota analisis harian, dan menampilkan riwayat analisis Anda. Kami tidak menjual atau membagikan data Anda."
+msgstr ""
+"Untuk proses masuk, verifikasi email, reset kata sandi, kuota analisis "
+"harian, dan menampilkan riwayat analisis Anda. Kami tidak menjual atau "
+"membagikan data Anda."
 
 msgid ""
 "Verification and password reset emails are sent through an email delivery "
 "service (Gmail SMTP)."
-msgstr "Email verifikasi dan reset kata sandi dikirim melalui layanan pengiriman email (SMTP Gmail)."
+msgstr ""
+"Email verifikasi dan reset kata sandi dikirim melalui layanan pengiriman "
+"email (SMTP Gmail)."
 
 msgid "Cookies and browser storage"
 msgstr "Cookie dan penyimpanan browser"
@@ -292,7 +665,10 @@ msgid ""
 "We use only the cookies needed to keep you signed in, protect forms, and "
 "remember your language. Your theme choice is stored in your browser. There "
 "are no tracking or advertising cookies."
-msgstr "Kami hanya memakai cookie yang diperlukan agar Anda tetap masuk, melindungi formulir, dan mengingat bahasa Anda. Pilihan tema disimpan di browser Anda. Tidak ada cookie pelacak atau iklan."
+msgstr ""
+"Kami hanya memakai cookie yang diperlukan agar Anda tetap masuk, melindungi "
+"formulir, dan mengingat bahasa Anda. Pilihan tema disimpan di browser Anda. "
+"Tidak ada cookie pelacak atau iklan."
 
 msgid "Your control over your data"
 msgstr "Kendali Anda atas data"
@@ -301,11 +677,34 @@ msgid ""
 "You can delete individual analyses or your whole history. You can delete "
 "your account from the profile page; this permanently deletes your account "
 "and all of your analyses."
-msgstr "Anda dapat menghapus analisis satu per satu atau seluruh riwayat. Akun dapat dihapus dari halaman profil; tindakan ini menghapus akun beserta semua analisis Anda secara permanen."
+msgstr ""
+"Anda dapat menghapus analisis satu per satu atau seluruh riwayat. Akun dapat "
+"dihapus dari halaman profil; tindakan ini menghapus akun beserta semua "
+"analisis Anda secara permanen."
+
+msgid "Display mode"
+msgstr "Mode tampilan"
+
+msgid "Advanced (research mode)"
+msgstr "Lanjutan (Mode Peneliti)"
+
+msgid "PrasiBali.ai home"
+msgstr "Beranda PrasiBali.ai"
+
+msgid "Site"
+msgstr "Situs"
+
+msgid "Analysis"
+msgstr "Analisis"
+
+msgid "Sign out"
+msgstr "Keluar"
+
+msgid "Sign up"
+msgstr "Daftar"
 
 msgid "Dark theme"
 msgstr "Tema gelap"
 
 msgid "Light theme"
 msgstr "Tema terang"
-

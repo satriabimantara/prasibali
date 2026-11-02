@@ -1,2 +1,2 @@
-{% load i18n %}<button type="button" class="btn" data-theme-toggle aria-pressed="false"
-        data-label-dark="{% translate 'Dark theme' %}" data-label-light="{% translate 'Light theme' %}">{% translate "Dark theme" %}</button>
+{% load i18n ui %}<button type="button" class="btn gap-2" data-theme-toggle aria-pressed="false"
+        data-label-dark="{% translate 'Dark theme' %}" data-label-light="{% translate 'Light theme' %}"><span class="inline-flex dark:hidden">{% icon "moon" %}</span><span class="hidden dark:inline-flex">{% icon "sun" %}</span><span data-label>{% translate "Dark theme" %}</span></button>

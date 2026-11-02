@@ -6,7 +6,9 @@
 
   function sync(button) {
     var dark = isDark();
-    button.textContent = dark ? button.dataset.labelLight : button.dataset.labelDark;
+    // Only the label changes; the sun/moon icons switch through the .dark class in CSS.
+    var label = button.querySelector("[data-label]") || button;
+    label.textContent = dark ? button.dataset.labelLight : button.dataset.labelDark;
     button.setAttribute("aria-pressed", dark ? "true" : "false");
   }
 

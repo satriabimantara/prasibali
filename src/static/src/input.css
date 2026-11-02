@@ -17,6 +17,8 @@
   --danger: #B3261E; --danger-bg: #FDECEA;
   --success: #1B6B45; --success-bg: #E6F4EC;
   --warning: #7A5200; --warning-bg: #FDF3DC;
+  /* Character-group edge colours (DESIGN.md "Kartu kelompok tokoh"); never role or status colours. */
+  --group-1: #7B3FA0; --group-2: #2F7D32; --group-3: #A3366B; --group-4: #8A6A00; --group-5: #2B6CB0; --group-6: #4A5568;
   color-scheme: light;
 }
 
@@ -30,6 +32,7 @@
   --danger: #FFB4AB; --danger-bg: #40191A;
   --success: #8FDDB2; --success-bg: #123525;
   --warning: #F2C66D; --warning-bg: #3A2C0E;
+  --group-1: #C9A3F0; --group-2: #8FD694; --group-3: #F09AC4; --group-4: #E6C35C; --group-5: #8EC1F5; --group-6: #B4BED2;
   color-scheme: dark;
 }
 
@@ -91,6 +94,16 @@
   --text-caption: 13px;
   --text-caption--line-height: 1.3;
   --text-caption--font-weight: 500;
+  --text-display: clamp(40px, 5.4vw, 68px);
+  --text-display--line-height: 1.04;
+  --text-display--letter-spacing: -0.03em;
+  --text-display--font-weight: 500;
+  --text-story: 17px;
+  --text-story--line-height: 1.8;
+  --text-stat: 30px;
+  --text-stat--line-height: 1.1;
+  --text-stat--letter-spacing: -0.02em;
+  --text-stat--font-weight: 500;
 }
 
 @layer base {
@@ -140,6 +153,18 @@
   .role { display: inline-block; padding: 3px 8px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; }
   .role--protagonis { color: var(--protagonis); background: var(--protagonis-bg); }
   .role--antagonis { color: var(--antagonis); background: var(--antagonis-bg); }
+
+  /* Analysis results (session 3). */
+  .entity--none { color: var(--ink); background: var(--surface-selected); border-bottom: 2px dotted var(--line-strong); }
+  .entity--static { cursor: default; }
+  .entity-tag { display: inline-block; margin-left: 2px; padding: 0 4px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); color: var(--muted); font-size: 13px; font-weight: 500; line-height: 1.3; vertical-align: 0.1em; }
+  .story { max-width: 72ch; font-size: 17px; line-height: 1.8; }
+  .group-card { border-left: 4px solid var(--group, var(--line-strong)); }
+  .group-1 { --group: var(--group-1); } .group-2 { --group: var(--group-2); } .group-3 { --group: var(--group-3); }
+  .group-4 { --group: var(--group-4); } .group-5 { --group: var(--group-5); } .group-6 { --group: var(--group-6); }
+  .group-dot { display: inline-block; width: 10px; height: 10px; border-radius: 999px; background: var(--group, var(--line-strong)); }
+  .stat-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 14px 16px; }
+  textarea.input { min-height: calc(12 * 1.8em); padding: 12px; line-height: 1.8; font-size: 17px; resize: vertical; }
 }
 
 html[data-mode="simple"] .adv-only { display: none; }

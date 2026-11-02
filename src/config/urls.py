@@ -9,6 +9,7 @@ urlpatterns = [
     # share a name, reverse() returns the last one, so "account_login" -> /masuk/, "account_signup" -> /daftar/.
     path("masuk/", allauth_views.login, name="account_login"),
     path("daftar/", allauth_views.signup, name="account_signup"),
+    path("", include("apps.analysis.urls")),
     path("", include("apps.pages.urls")),
     path("admin/", admin.site.urls),
 ]

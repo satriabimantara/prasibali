@@ -27,6 +27,12 @@ colors:
   success-bg: "#E6F4EC"
   warning: "#7A5200"
   warning-bg: "#FDF3DC"
+  group-1: "#7B3FA0"
+  group-2: "#2F7D32"
+  group-3: "#A3366B"
+  group-4: "#8A6A00"
+  group-5: "#2B6CB0"
+  group-6: "#4A5568"
 
 colors-dark:
   bg: "#0C1224"
@@ -50,6 +56,12 @@ colors-dark:
   success-bg: "#123525"
   warning: "#F2C66D"
   warning-bg: "#3A2C0E"
+  group-1: "#C9A3F0"
+  group-2: "#8FD694"
+  group-3: "#F09AC4"
+  group-4: "#E6C35C"
+  group-5: "#8EC1F5"
+  group-6: "#B4BED2"
 
 typography:
   family-ui: "'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif"
@@ -253,6 +265,7 @@ Nilai heksadesimal ada di frontmatter. Komponen hanya memakai nama token.
 | `protagonis`, `protagonis-bg` | Hanya untuk peran protagonis |
 | `antagonis`, `antagonis-bg` | Hanya untuk peran antagonis |
 | `danger`, `success`, `warning` beserta `-bg` | Hanya untuk umpan balik sistem |
+| `group-1` sampai `group-6` | Hanya untuk tepi kiri kartu kelompok tokoh dan titik penanda kelompok |
 
 Aturan:
 
@@ -340,6 +353,12 @@ svg = (
 open("templates/partials/ikat.html", "w", encoding="utf-8").write(svg)
 ```
 
+### Logo
+
+- Berkas di `src/static/img/` (salinan dari `assets/PrasiBali-Logo/`): `prasibali-logo-latar-terang.svg` untuk tema terang dan `prasibali-logo-latar-gelap.svg` untuk tema gelap, ditukar dengan `dark:hidden` / `hidden dark:block`. Tinggi 32px di navbar.
+- Pakai varian tanpa aksara. Varian `logo-aksara` baru dipakai setelah ejaan aksaranya divalidasi ahli.
+- Favicon: `favicon.ico`, `favicon.svg`, `apple-touch-icon.png`, dipasang di `base.html`.
+
 ## Komponen
 
 Setiap kontrol interaktif memiliki keadaan default, hover, fokus, aktif, nonaktif, dan memuat. Fokus selalu memakai cincin `2px solid accent` dengan `outline-offset: 2px`. Target sentuh minimal 44px, kecuali nama tokoh di dalam baris teks.
@@ -378,6 +397,26 @@ Setiap kontrol interaktif memiliki keadaan default, hover, fokus, aktif, nonakti
 
 Ukuran huruf tersedia sebagai utilitas Tailwind dari token: `text-page-title`, `text-panel-title`, `text-section-title`, `text-lead`, `text-body`, `text-label`, `text-caption`. Ukuran bawaan Tailwind dimatikan.
 
+### Ikon
+
+- Ikon garis SVG lewat `{% icon "nama" %}` (`apps/pages/templatetags/ui.py`, jalur ikon Lucide, lisensi ISC). Ukuran bawaan 18px, `stroke="currentColor"`, `aria-hidden="true"`.
+- Ikon selalu berdampingan dengan label teks di dalam tombol (`btn gap-2`). Tombol tanpa teks wajib punya `aria-label`.
+- Nama yang tersedia: `log-in`, `log-out`, `user-plus`, `user`, `sun`, `moon`, `languages`, `file-text`, `play`, `flask`, `arrow-right`, `book-open`, `search`, `link`, `scale`, `alert`, `info`, `rotate`.
+
+### Navigasi situs
+
+Partial `partials/site_header.html`, dipakai oleh landing, halaman autentikasi, akun, privasi, dan ruang kerja.
+
+- Kiri: logo, tautan ke `/`.
+- Kanan: pengalih bahasa, tombol tema (ikon bulan atau matahari dan label), lalu tombol akun.
+  - Belum masuk: "Masuk" (`log-in`) dan "Daftar" (`user-plus`). Halaman masuk dan daftar menyembunyikan keduanya.
+  - Sudah masuk: "Analisis" (`file-text`), "Profil" (`user`), dan "Keluar" (`log-out`, POST).
+- Parameter: `bordered=True` untuk header bertepi `line` di atas `surface` (akun, privasi, ruang kerja); `gutter="5vw,64px"` untuk padding landing.
+
+### Footer
+
+Partial `partials/site_footer.html`, dipasang sekali di `base.html` di bawah semua halaman: "Copyright 2026 | I Made Satria Bimantara, S.Kom., M.Kom." di kiri dan tautan "Kebijakan privasi" di kanan. Ukuran `caption`, warna `muted`, garis atas `line`.
+
 ### Header ruang kerja
 
 Berisi judul cerita di kiri, lalu pengalih mode, tombol tema, dan tombol utama "Analisis teks baru" di kanan. Membungkus ke baris baru di layar sempit.
@@ -395,7 +434,8 @@ Berisi judul cerita di kiri, lalu pengalih mode, tombol tema, dan tombol utama "
 |---|---|---|
 | Teks cerita bertanda dan peran tokoh | Ya | Ya |
 | Nama lain dan jumlah kemunculan | Ya | Ya |
-| Label entitas dan nomor kelompok | Tidak | Ya |
+| Label entitas | Ya | Ya |
+| Nomor kelompok dan skor model | Tidak | Ya |
 | Nama model dan pilihan model | Tidak | Ya |
 | Unduh hasil (CSV) | Tidak | Ya |
 
@@ -433,6 +473,17 @@ Tiga kartu: "Kelompok tokoh", "Protagonis", dan "Antagonis". Isinya dihitung dar
 - Baris terpilih memakai `surface-selected` dan bobot 600.
 - Memilih tokoh di daftar memperbarui sorotan dan panel detail, begitu juga sebaliknya.
 
+### Kartu kelompok tokoh
+
+- Panel dengan kelas `group-card group-N`: tepi kiri 4px berwarna `group-N` (N = urutan kelompok, berulang setiap 6).
+- Isi: nama pertama kelompok, lencana peran, "Disebut sebagai", dan "Kemunculan". Mode Lanjutan menambahkan nomor kelompok, skor model, dan jumlah kata konteks.
+- Peringatan "Konteks sedikit" (`alert--warning`) muncul bila kata konteks di bawah `ANALYSIS_LOW_CONTEXT_WORDS`.
+- Di bawah daftar kartu selalu ada disclaimer bahwa label peran adalah alat bantu analisis dan F1 rata-rata model di tesis di bawah 0,70.
+
+### Label entitas pada teks
+
+Setelah setiap sorotan tokoh ada lencana kecil `.entity-tag` berisi label entitas (PNAME, ANM, GODS, ADJ, OBJ), di kedua mode (keputusan pengembang, Sesi 0). Mode Lanjutan menambahkan nomor kelompok di dalam lencana. Bila tugas peran tidak dijalankan, sorotan memakai `.entity--none` (netral, garis bawah titik-titik `line-strong`). Penjelasan label tersedia dalam `<details>` di bawah teks.
+
 ### Panel detail tokoh
 
 Judul nama tokoh, lalu "Disebut sebagai" dan "Kemunculan". Mode Lanjutan menambahkan label entitas, nomor kelompok, dan model yang dipakai.
@@ -465,6 +516,9 @@ Urutan konten di kolom kiri:
 
 Kolom kanan berisi kartu masuk: pita ikat, judul "Masuk ke akun Anda", Email, Kata sandi, tombol "Masuk", dan "Buat akun baru". Di bawahnya tiga panel: "Kenali tokoh", "Satukan nama lain", dan "Lihat perannya".
 
+- Kutipan contoh diberi keterangan "Contoh tampilan hasil", karena labelnya bukan hasil analisis.
+- Pengguna yang sudah masuk melihat kartu "Selamat datang kembali" dengan tombol utama "Lanjutkan ke ruang kerja" (`arrow-right`) sebagai pengganti formulir.
+
 Jangan menambahkan statistik, testimoni, logo mitra, atau klaim akurasi yang belum didukung data.
 
 ### Masuk dan daftar `/masuk`, `/daftar`
@@ -487,6 +541,7 @@ Satu panel dengan lebar baca maksimal `72ch`, header yang sama dengan halaman ak
 Sidebar: "Analisis baru", "Riwayat analisis", "Korpus satua", "Panduan". Tampilkan hanya menu yang halamannya sudah berfungsi.
 
 - **Sebelum analisis:** area teks, tombol "Muat contoh satua", dan tombol utama "Analisis teks". Mode Lanjutan menampilkan pilihan model.
+- **Versi dasar (Sesi 3):** satu kolom tanpa sidebar, formulir POST biasa. Mode Lanjutan (`.adv-only`) berisi pilihan model NER, metode dan ambang alias, serta classifier. Setiap pilihan menampilkan F1 CV dan F1 uji dari tesis beserta rujukan tabelnya; pilihan bawaan ditandai "terbaik menurut tesis", dan entri yang belum tersedia nonaktif. Panel "Model yang dipakai" (Lanjutan) menampilkan model, berkas, hash, embedding, versi paket, dan durasi per tahap. HTMX, sidebar, dan riwayat menyusul di Sesi 4.
 - **Sesudah analisis:** kartu ringkasan, panel teks cerita, daftar tokoh, dan panel detail.
 
 ### Halaman lain

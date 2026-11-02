@@ -89,10 +89,10 @@ def test_signup_verify_login(client, password):
     assert response.status_code == 302
     assert EmailAddress.objects.get(user=user).verified is True
 
-    # 6. Now the login works and lands on the profile page.
+    # 6. Now the login works and lands on the analysis workspace.
     response = login(client, EMAIL, password)
     assert response.status_code == 302
-    assert response["Location"] == reverse("accounts:profile")
+    assert response["Location"] == reverse("analysis:workspace")
     assert int(client.session["_auth_user_id"]) == user.pk
     assert client.get(reverse("accounts:profile")).status_code == 200
 

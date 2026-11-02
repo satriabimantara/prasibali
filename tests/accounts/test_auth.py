@@ -45,7 +45,7 @@ def test_logout_requires_post(client, verified_user, password):
 
     response = client.post(reverse("account_logout"))
     assert response.status_code == 302
-    assert response["Location"] == reverse("account_login")
+    assert response["Location"] == reverse("pages:landing")
     assert "_auth_user_id" not in client.session
 
 

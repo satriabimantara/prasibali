@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 01:13+0800\n"
+"POT-Creation-Date: 2026-11-03 01:44+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -97,6 +97,157 @@ msgid "Your profile has been saved."
 msgstr ""
 
 msgid "Your account and all of its data have been deleted."
+msgstr ""
+
+msgid "Simple"
+msgstr ""
+
+msgid "Advanced"
+msgstr ""
+
+#, python-format
+msgid "CV F1 %(f1)s (%(ref)s)"
+msgstr ""
+
+#, python-format
+msgid "test F1 %(f1)s (%(ref)s)"
+msgstr ""
+
+msgid "test F1 –"
+msgstr ""
+
+msgid "best in the thesis"
+msgstr ""
+
+msgid "coming soon"
+msgstr ""
+
+msgid "M2 · Word vector"
+msgstr ""
+
+msgid "M1 · Word vector"
+msgstr ""
+
+msgid "M2 · Lexicon (coming soon)"
+msgstr ""
+
+msgid "M1 · Lexicon (coming soon)"
+msgstr ""
+
+msgid "Satua text"
+msgstr ""
+
+msgid "Balinese text in Latin script. End every sentence with a full stop."
+msgstr ""
+
+msgid "What to analyse"
+msgstr ""
+
+msgid "(i) Character identification model"
+msgstr ""
+
+msgid "(ii) Alias clustering method"
+msgstr ""
+
+msgid "(ii) Similarity threshold"
+msgstr ""
+
+msgid "Between 0.50 and 1.00. The thesis uses 0.85."
+msgstr ""
+
+msgid "(iii) Role classification model"
+msgstr ""
+
+#, python-format
+msgid "CV F1 %(f1)s"
+msgstr ""
+
+#, python-format
+msgid "test F1 %(f1)s"
+msgstr ""
+
+msgid "This model is not available yet. Choose another model."
+msgstr ""
+
+msgid "The analysis could not be completed. Your text has not been lost."
+msgstr ""
+
+msgid ""
+"The text could not be prepared for analysis. Check that it is a Balinese "
+"story."
+msgstr ""
+
+msgid ""
+"Character identification failed because the model did not respond. Your text "
+"has not been lost."
+msgstr ""
+
+msgid ""
+"Grouping the characters' other names failed. Your text has not been lost."
+msgstr ""
+
+msgid ""
+"Role classification failed because the model did not respond. Your text has "
+"not been lost."
+msgstr ""
+
+msgid ""
+"The role classification model is not available right now. Character "
+"identification and grouping still work."
+msgstr ""
+
+msgid ""
+"The word embedding needed by this model is not available right now. Try "
+"another model or try again later."
+msgstr ""
+
+msgid "Word vector"
+msgstr ""
+
+msgid "Lexicon"
+msgstr ""
+
+msgid "M2: optimal configuration trained on all training data"
+msgstr ""
+
+msgid "M1: optimal configuration trained on the best cross-validation fold"
+msgstr ""
+
+msgid "Full pipeline: identification, grouping and roles"
+msgstr ""
+
+msgid "Character identification only"
+msgstr ""
+
+msgid "Identification and name grouping"
+msgstr ""
+
+msgid "Role classification"
+msgstr ""
+
+msgid ""
+"No characters were recognised. Check that the text is written in Balinese."
+msgstr ""
+
+msgid "Enter the text of a satua to analyse."
+msgstr ""
+
+#, python-format
+msgid "The text is too long. Enter at most %(limit)s characters."
+msgstr ""
+
+msgid ""
+"The text appears to use Balinese script. Enter the satua in Latin script; "
+"Balinese script support is coming soon."
+msgstr ""
+
+msgid "The text has no sentences. End every sentence with a full stop (.)."
+msgstr ""
+
+#, python-format
+msgid ""
+"The text has fewer than %(n)s sentences, the minimum used in the thesis. "
+"Results may be less reliable."
 msgstr ""
 
 msgid "Indonesian"
@@ -203,9 +354,6 @@ msgstr ""
 msgid "Already have an account?"
 msgstr ""
 
-msgid "Sign out"
-msgstr ""
-
 msgid "Account"
 msgstr ""
 
@@ -235,6 +383,207 @@ msgid ""
 msgstr ""
 
 msgid "Prasi in Balinese script"
+msgstr ""
+
+msgid "Analysis result"
+msgstr ""
+
+msgid "Character groups"
+msgstr ""
+
+msgid "Characters"
+msgstr ""
+
+msgid "Protagonist"
+msgstr ""
+
+msgid "Antagonist"
+msgstr ""
+
+msgid "Story text"
+msgstr ""
+
+msgid "Entity label"
+msgstr ""
+
+msgid "What do the labels mean?"
+msgstr ""
+
+msgid "a proper name, such as Made Bhaskara"
+msgstr ""
+
+msgid "an animal or object acting as a character, such as I Kancil"
+msgstr ""
+
+msgid "a god or holy figure, such as Bhatara Indra"
+msgstr ""
+
+msgid "a name derived from a trait, such as I Belog"
+msgstr ""
+
+msgid "a reference without a proper name, such as memene"
+msgstr ""
+
+msgid "Solid underline: protagonist. Dashed underline: antagonist."
+msgstr ""
+
+msgid "Also called"
+msgstr ""
+
+msgid "Mentions"
+msgstr ""
+
+msgid "Group"
+msgstr ""
+
+msgid "Model score"
+msgstr ""
+
+msgid "Context words"
+msgstr ""
+
+#, python-format
+msgid "%(n)s TF-IDF terms known"
+msgstr ""
+
+msgid ""
+"Little context: this character appears in few sentences, so the label is "
+"less reliable."
+msgstr ""
+
+msgid "Characters found"
+msgstr ""
+
+msgid ""
+"Role labels are an aid to analysis, not a final judgement. The models have "
+"limited accuracy: the average F1 of every model in the thesis is below 0.70."
+msgstr ""
+
+msgid ""
+"The model score is the SVM decision_function: the signed distance to the "
+"separating hyperplane, not a probability or confidence."
+msgstr ""
+
+msgid "Models used"
+msgstr ""
+
+msgid "(i) Character identification"
+msgstr ""
+
+msgid "CV F1"
+msgstr ""
+
+msgid "test F1"
+msgstr ""
+
+msgid "(ii) Alias clustering"
+msgstr ""
+
+msgid "threshold"
+msgstr ""
+
+msgid "(iii) Role classification"
+msgstr ""
+
+msgid "Model file"
+msgstr ""
+
+msgid "Word embedding (TF5)"
+msgstr ""
+
+msgid "dimensions"
+msgstr ""
+
+msgid "local file"
+msgstr ""
+
+msgid "Versions"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Satua analysis"
+msgstr ""
+
+msgid "Try a sample satua:"
+msgstr ""
+
+msgid "Research mode: models and parameters"
+msgstr ""
+
+msgid ""
+"The defaults are the best configurations in the thesis. F1 values are the "
+"thesis results for each experiment: cross-validation (CV) and test data."
+msgstr ""
+
+msgid "Analysing..."
+msgstr ""
+
+msgid "Analyse text"
+msgstr ""
+
+msgid "Up to 20,000 characters. Analysis can take up to a minute."
+msgstr ""
+
+msgid "Try again"
+msgstr ""
+
+msgid "No analysis yet. Paste a satua text to begin."
+msgstr ""
+
+msgid "Character analysis of Balinese satua"
+msgstr ""
+
+msgid "Character analysis of Balinese satua in one workspace."
+msgstr ""
+
+msgid ""
+"Recognise characters, group their other names, and see whether they are "
+"protagonists or antagonists in a text written in Balinese."
+msgstr ""
+
+msgid "Example of how results are shown"
+msgstr ""
+
+msgid "Welcome back"
+msgstr ""
+
+#, python-format
+msgid "You are signed in as %(name)s."
+msgstr ""
+
+msgid "Continue to the workspace"
+msgstr ""
+
+msgid "Forgot your password?"
+msgstr ""
+
+msgid "What PrasiBali.ai does"
+msgstr ""
+
+msgid "Recognise characters"
+msgstr ""
+
+msgid ""
+"SatuaNER finds the names of characters in the story: people, animals, gods "
+"and objects that act like characters."
+msgstr ""
+
+msgid "Group other names"
+msgstr ""
+
+msgid ""
+"Different names for the same character, such as I Kancil and Kancil, are "
+"combined into one character group."
+msgstr ""
+
+msgid "See their roles"
+msgstr ""
+
+msgid ""
+"A model trained in the thesis research labels each character group as "
+"protagonist or antagonist, as an aid to analysis."
 msgstr ""
 
 msgid "Privacy policy"
@@ -295,6 +644,27 @@ msgid ""
 "You can delete individual analyses or your whole history. You can delete "
 "your account from the profile page; this permanently deletes your account "
 "and all of your analyses."
+msgstr ""
+
+msgid "Display mode"
+msgstr ""
+
+msgid "Advanced (research mode)"
+msgstr ""
+
+msgid "PrasiBali.ai home"
+msgstr ""
+
+msgid "Site"
+msgstr ""
+
+msgid "Analysis"
+msgstr ""
+
+msgid "Sign out"
+msgstr ""
+
+msgid "Sign up"
 msgstr ""
 
 msgid "Dark theme"

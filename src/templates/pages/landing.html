@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load i18n ui form_tags %}
+{% block title %}PrasiBali.ai · {% translate "Character analysis of Balinese satua" %}{% endblock title %}
+{% block body %}
+{% include "partials/site_header.html" with gutter="5vw,64px" %}
+<main class="mx-auto grid w-full max-w-[1440px] gap-10 px-[clamp(16px,5vw,64px)] pb-16 pt-6">
+  <div class="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_440px]">
+    <section class="grid content-start gap-6" aria-labelledby="landing-title">
+      <div lang="ban" role="img" aria-label="{% translate 'Prasi in Balinese script' %}" class="font-aksara text-accent leading-tight text-[clamp(56px,7vw,96px)]">&#x1B27;&#x1B44;&#x1B2D;&#x1B32;&#x1B36;</div>
+      <h1 id="landing-title" class="text-display max-w-[18ch]">{% translate "Character analysis of Balinese satua in one workspace." %}</h1>
+      <p class="text-lead max-w-[54ch] text-muted">{% translate "Recognise characters, group their other names, and see whether they are protagonists or antagonists in a text written in Balinese." %}</p>
+      <figure class="panel grid max-w-[72ch] gap-3">
+        <figcaption class="text-caption text-muted">{% translate "Example of how results are shown" %}</figcaption>
+        <blockquote lang="ban" class="story">
+          <span class="entity entity--protagonis entity--static">I Kancil</span> parilaksananné jemet, wicaksana, tur demen mapitulung. Di tengah alasé masih ada <span class="entity entity--antagonis entity--static">I Macan Gading</span>. <span class="entity entity--antagonis entity--static">I Macan Gading</span> bikasné jelé, demen nguluk-nguluk, tur loba pesan.
+        </blockquote>
+        <p class="flex flex-wrap gap-2 text-caption">
+          <span class="role role--protagonis">{% translate "Protagonist" %}</span>
+          <span class="role role--antagonis">{% translate "Antagonist" %}</span>
+          <span class="text-muted">{% translate "Solid underline: protagonist. Dashed underline: antagonist." %}</span>
+        </p>
+      </figure>
+    </section>
+
+    <section class="overflow-hidden rounded-lg border border-line bg-surface" aria-labelledby="signin-title">
+      {% include "partials/ikat.html" %}
+      <div class="grid gap-6 p-6">
+        {% if user.is_authenticated %}
+          <div class="grid gap-2">
+            <h2 id="signin-title" class="text-page-title">{% translate "Welcome back" %}</h2>
+            <p class="text-muted">{% blocktranslate with name=user.full_name|default:user.email %}You are signed in as {{ name }}.{% endblocktranslate %}</p>
+          </div>
+          <a class="btn btn-primary gap-2" href="{% url 'analysis:workspace' %}">{% translate "Continue to the workspace" %}{% icon "arrow-right" %}</a>
+        {% else %}
+          <h2 id="signin-title" class="text-page-title">{% translate "Sign in to your account" %}</h2>
+          {% include "partials/messages.html" %}
+          <form method="post" action="{% url 'account_login' %}" class="grid gap-4">
+            {% csrf_token %}
+            {% form_field form.login %}
+            {% form_field form.password %}
+            {% if form.remember %}{% form_field form.remember %}{% endif %}
+            <div class="flex flex-wrap gap-2">
+              <button type="submit" class="btn btn-primary gap-2">{% icon "log-in" %}<span>{% translate "Sign in" %}</span></button>
+              <a class="btn gap-2" href="{% url 'account_signup' %}">{% icon "user-plus" %}<span>{% translate "Create a new account" %}</span></a>
+            </div>
+            <p class="text-caption"><a class="link" href="{% url 'account_reset_password' %}">{% translate "Forgot your password?" %}</a></p>
+          </form>
+        {% endif %}
+      </div>
+    </section>
+  </div>
+
+  <section class="grid gap-4 md:grid-cols-3" aria-label="{% translate 'What PrasiBali.ai does' %}">
+    <article class="panel grid content-start gap-2">
+      <span class="text-accent">{% icon "search" 22 %}</span>
+      <h2 class="text-panel-title">{% translate "Recognise characters" %}</h2>
+      <p class="text-muted">{% translate "SatuaNER finds the names of characters in the story: people, animals, gods and objects that act like characters." %}</p>
+    </article>
+    <article class="panel grid content-start gap-2">
+      <span class="text-accent">{% icon "link" 22 %}</span>
+      <h2 class="text-panel-title">{% translate "Group other names" %}</h2>
+      <p class="text-muted">{% translate "Different names for the same character, such as I Kancil and Kancil, are combined into one character group." %}</p>
+    </article>
+    <article class="panel grid content-start gap-2">
+      <span class="text-accent">{% icon "scale" 22 %}</span>
+      <h2 class="text-panel-title">{% translate "See their roles" %}</h2>
+      <p class="text-muted">{% translate "A model trained in the thesis research labels each character group as protagonist or antagonist, as an aid to analysis." %}</p>
+    </article>
+  </section>
+</main>
+{% endblock body %}

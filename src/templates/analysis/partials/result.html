@@ -1,0 +1,101 @@
+{% load i18n l10n ui %}
+<section id="analysis-result" class="grid gap-6" aria-labelledby="result-title">
+  <h2 id="result-title" tabindex="-1" class="text-panel-title">{% translate "Analysis result" %}</h2>
+
+  {% for warning in view.result.warnings %}
+    <p class="alert alert--warning flex items-start gap-2">{% icon "alert" %}<span>{{ warning }}</span></p>
+  {% endfor %}
+
+  <div class="grid gap-4 sm:grid-cols-3">
+    <div class="stat-card grid gap-1">
+      <span class="text-label text-muted">{% if view.result.groups %}{% translate "Character groups" %}{% else %}{% translate "Characters" %}{% endif %}</span>
+      <span class="text-stat tabular-nums">{{ view.count_groups }}</span>
+    </div>
+    <div class="stat-card grid gap-1">
+      <span class="text-label text-muted">{% translate "Protagonist" %}</span>
+      <span class="text-stat tabular-nums">{% if view.has_roles %}{{ view.count_protagonis }}{% else %}–{% endif %}</span>
+    </div>
+    <div class="stat-card grid gap-1">
+      <span class="text-label text-muted">{% translate "Antagonist" %}</span>
+      <span class="text-stat tabular-nums">{% if view.has_roles %}{{ view.count_antagonis }}{% else %}–{% endif %}</span>
+    </div>
+  </div>
+
+  <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+    <article class="panel grid gap-4">
+      <h3 class="text-section-title">{% translate "Story text" %}</h3>
+      {# Built from segments and rendered with autoescaping: the user's text is never marked safe. #}
+      <p lang="ban" class="story">{% for seg in view.segments %}{% if seg.mention %}<span class="entity entity--{{ seg.role_key }} entity--static" data-group-id="{{ seg.mention.group_id|default:'' }}">{{ seg.text }}</span><span class="entity-tag" title="{% translate 'Entity label' %}">{{ seg.mention.label }}{% if seg.group_number %}<span class="adv-only"> · {{ seg.group_number }}</span>{% endif %}</span>{% else %}{{ seg.text }}{% endif %}{% endfor %}</p>
+      <details class="text-caption text-muted">
+        <summary class="cursor-pointer">{% translate "What do the labels mean?" %}</summary>
+        <dl class="mt-2 grid gap-1">
+          <div><dt class="inline font-semibold">PNAME</dt> <dd class="inline">{% translate "a proper name, such as Made Bhaskara" %}</dd></div>
+          <div><dt class="inline font-semibold">ANM</dt> <dd class="inline">{% translate "an animal or object acting as a character, such as I Kancil" %}</dd></div>
+          <div><dt class="inline font-semibold">GODS</dt> <dd class="inline">{% translate "a god or holy figure, such as Bhatara Indra" %}</dd></div>
+          <div><dt class="inline font-semibold">ADJ</dt> <dd class="inline">{% translate "a name derived from a trait, such as I Belog" %}</dd></div>
+          <div><dt class="inline font-semibold">OBJ</dt> <dd class="inline">{% translate "a reference without a proper name, such as memene" %}</dd></div>
+        </dl>
+        {% if view.has_roles %}<p class="mt-2">{% translate "Solid underline: protagonist. Dashed underline: antagonist." %}</p>{% endif %}
+      </details>
+    </article>
+
+    <aside class="grid content-start gap-4" aria-label="{% translate 'Character groups' %}">
+      {% if not view.result.characters %}
+        <p class="alert alert--warning">{% translate "No characters were recognised. Check that the text is written in Balinese." %}</p>
+      {% endif %}
+      {% for item in view.groups %}
+        <article class="panel group-card group-{{ item.group.color_index }} grid gap-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h4 lang="ban" class="text-section-title">{{ item.group.aliases.0 }}</h4>
+            {% if item.role %}<span class="role role--{{ item.role.role_key }}">{% if item.role.role_key == "protagonis" %}{% translate "Protagonist" %}{% elif item.role.role_key == "antagonis" %}{% translate "Antagonist" %}{% else %}{{ item.role.role }}{% endif %}</span>{% endif %}
+          </div>
+          <dl class="grid gap-2 text-body">
+            <div><dt class="text-label text-muted">{% translate "Also called" %}</dt><dd lang="ban">{{ item.group.aliases|join:", " }}</dd></div>
+            <div><dt class="text-label text-muted">{% translate "Mentions" %}</dt><dd class="tabular-nums">{{ item.group.mention_count }}</dd></div>
+            <div class="adv-only"><dt class="text-label text-muted">{% translate "Group" %}</dt><dd>{{ item.group.group_id }}</dd></div>
+            {% if item.role %}
+              <div class="adv-only"><dt class="text-label text-muted">{% translate "Model score" %}</dt><dd class="tabular-nums">{% if item.role.decision_score is not None %}{{ item.role.decision_score|unlocalize }}{% else %}–{% endif %}</dd></div>
+              <div class="adv-only"><dt class="text-label text-muted">{% translate "Context words" %}</dt><dd class="tabular-nums">{{ item.role.context_words }}{% if item.role.known_terms is not None %} · {% blocktranslate with n=item.role.known_terms %}{{ n }} TF-IDF terms known{% endblocktranslate %}{% endif %}</dd></div>
+            {% endif %}
+          </dl>
+          {% if item.role.low_context %}
+            <p class="alert alert--warning text-caption">{% translate "Little context: this character appears in few sentences, so the label is less reliable." %}</p>
+          {% endif %}
+        </article>
+      {% endfor %}
+      {% if view.ungrouped_characters %}
+        <article class="panel grid gap-2">
+          <h4 class="text-section-title">{% translate "Characters found" %}</h4>
+          <p lang="ban">{{ view.ungrouped_characters|join:", " }}</p>
+        </article>
+      {% endif %}
+      {% if view.has_roles %}
+        <p class="alert alert--info text-caption">
+          {% blocktranslate %}Role labels are an aid to analysis, not a final judgement. The models have limited accuracy: the average F1 of every model in the thesis is below 0.70.{% endblocktranslate %}
+          {% if view.has_scores %}<span class="adv-only">{% translate "The model score is the SVM decision_function: the signed distance to the separating hyperplane, not a probability or confidence." %}</span>{% endif %}
+        </p>
+      {% endif %}
+    </aside>
+  </div>
+
+  <section class="adv-only panel grid gap-4" aria-labelledby="models-title">
+    <h3 id="models-title" class="text-section-title">{% translate "Models used" %}</h3>
+    <dl class="grid gap-3 text-body md:grid-cols-2">
+      <div><dt class="text-label text-muted">{% translate "(i) Character identification" %}</dt><dd>{{ view.ner_model.label }} · {% translate "CV F1" %} {{ view.ner_model.f1_cv|floatformat:4 }} · {% translate "test F1" %} {{ view.ner_model.f1_test|floatformat:4 }} (Tabel 4.18/4.19)</dd></div>
+      {% if view.result.model_version.alias %}
+        <div><dt class="text-label text-muted">{% translate "(ii) Alias clustering" %}</dt><dd>{{ view.result.model_version.alias.method }} · {% translate "threshold" %} {{ view.result.model_version.alias.threshold|floatformat:2 }}</dd></div>
+      {% endif %}
+      {% if view.classifier %}
+        <div><dt class="text-label text-muted">{% translate "(iii) Role classification" %}</dt><dd>{{ view.classifier.variant|upper }} · {{ view.classifier.algorithm }} · {{ view.classifier.feature_label }} · {% translate "CV F1" %} {{ view.classifier.f1_cv|floatformat:4 }} ({{ view.classifier.thesis_ref_cv }}) · {% translate "test F1" %} {% if view.classifier.f1_test is not None %}{{ view.classifier.f1_test|floatformat:4 }} ({{ view.classifier.thesis_ref_test }}){% else %}–{% endif %}</dd></div>
+        <div><dt class="text-label text-muted">{% translate "Model file" %}</dt><dd class="break-all">{{ view.result.model_version.classifier.file }} · sha256 {{ view.result.model_version.classifier.sha256 }}</dd></div>
+        {% if view.result.model_version.classifier.embedding %}
+          {% with emb=view.result.model_version.classifier.embedding %}
+            <div><dt class="text-label text-muted">{% translate "Word embedding (TF5)" %}</dt><dd class="break-all">FastText {{ emb.filename }} · {{ emb.vector_size }} {% translate "dimensions" %} · {% if emb.kind == "local" %}{% translate "local file" %}{% else %}Hugging Face {{ emb.repo_id }}{% endif %}</dd></div>
+          {% endwith %}
+        {% endif %}
+      {% endif %}
+      <div><dt class="text-label text-muted">{% translate "Versions" %}</dt><dd>balinese-nlp {{ view.result.model_version.balinese_nlp }} · scikit-learn {{ view.result.model_version.scikit_learn }}</dd></div>
+      <div><dt class="text-label text-muted">{% translate "Duration" %}</dt><dd class="tabular-nums">{% for stage, seconds in view.result.timings.items %}{{ stage }} {{ seconds|floatformat:1 }} s{% if not forloop.last %} · {% endif %}{% endfor %}</dd></div>
+    </dl>
+  </section>
+</section>
