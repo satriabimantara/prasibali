@@ -438,7 +438,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--input", help="file .txt satua")
     parser.add_argument("--models-dir", help=f"folder pretrained-models; bawaan dari {pm.MODELS_ENV_VAR} (environment atau .env)")
     parser.add_argument("--ner-model", default="satuaner", choices=["satuaner", "crf1_baseline", "crf2_baseline", "svm_baseline", "hmm"])
-    parser.add_argument("--similarity", default="sorensen-dice", choices=["ratcliff", "jaccard", "sorensen-dice", "jaro-distance", "jaro-winkler"])
+    parser.add_argument("--similarity", default="jaro-distance", choices=["ratcliff", "jaccard", "sorensen-dice", "jaro-distance", "jaro-winkler"])
     parser.add_argument("--threshold", type=float, default=0.85)
     parser.add_argument("--variant", default=pm.DEFAULT_VARIANT, choices=["m1", "m2"], help="varian pretrained (bawaan m2)")
     parser.add_argument("--feature", default=pm.DEFAULT_FEATURE, help="kode fitur TF1-TF5, gabungan pakai _ (mis. TF4_TF5); bawaan TF5")

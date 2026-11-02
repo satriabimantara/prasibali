@@ -160,7 +160,7 @@ def check_pipeline() -> None:
         fail("tidak ada tokoh terdeteksi pada teks contoh")
         return
 
-    clusterer = AliasClusteringRuleBased(pairwise_distance="sorensen-dice", avg_threshold_similarity=0.85)
+    clusterer = AliasClusteringRuleBased(pairwise_distance="jaro-distance", avg_threshold_similarity=0.85)
     groups = clusterer.fit(chars).cluster()
     ok(f"alias clustering: {groups}")
 

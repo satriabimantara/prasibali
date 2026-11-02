@@ -1,6 +1,7 @@
 # PrasiBali.ai: aturan kerja untuk Claude Code
 
 Baca file ini dan `_reference/konteks_proyek.md` di awal setiap sesi sebelum menulis kode.
+Sebelum mengubah template atau CSS, baca `DESIGN.md` dan ikuti aturannya.
 
 ## Produk
 
@@ -138,7 +139,7 @@ Mode biasa memakai konfigurasi default tanpa pilihan. Mode Peneliti adalah panel
 | Tugas | Pilihan | Default |
 |---|---|---|
 | (i) Identifikasi tokoh | Model NER: `satuaner`, `crf1_baseline`, `crf2_baseline`, `svm_baseline`, `hmm` | `satuaner` |
-| (ii) Alias clustering | Metode: `ratcliff`, `jaccard`, `sorensen-dice`, `jaro-distance`, `jaro-winkler`; ambang kemiripan | `sorensen-dice`, 0,85 |
+| (ii) Alias clustering | Metode: `ratcliff`, `jaccard`, `sorensen-dice`, `jaro-distance`, `jaro-winkler`; ambang kemiripan | `jaro-distance`, 0,85 (terbaik menurut tesis untuk SatuaNER M2: F1 0,7172, Tabel 4.36/4.37) |
 | (iii) Klasifikasi peran | Varian pretrained (M1/M2) → jenis fitur → kode fitur → algoritma, hanya dari entri katalog yang `available` | `m2-wordvector-tf5-svm` |
 
 - Setiap pilihan classifier menampilkan keterangan singkat eksperimen beserta dua nilai F1 referensi dari tesis dan rujukan tabelnya, misalnya "F1 CV 0,6811 (Tabel 4.59) · F1 uji 0,6460 (Tabel 4.60)". Default ditandai "terbaik menurut tesis".
