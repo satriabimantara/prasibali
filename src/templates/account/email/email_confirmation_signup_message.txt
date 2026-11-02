@@ -1,0 +1,17 @@
+{% extends "account/email/base_message.txt" %}
+{% load i18n %}
+{% block content %}{% autoescape off %}{% translate "Thank you for signing up for PrasiBali.ai, a workspace for analysing the characters in Balinese satua." %}
+
+{% translate "One more step: confirm your email address to activate your account." %}
+
+{% if code %}{% translate "Your verification code:" %}
+
+    {{ code }}
+
+{% translate "Enter this code in the browser window you used to sign up." %}{% else %}{% translate "Open the link below, then press the Confirm button:" %}
+
+{{ activate_url }}{% endif %}
+
+{% blocktranslate count days=confirmation_expire_days %}This link is valid for {{ days }} day.{% plural %}This link is valid for {{ days }} days.{% endblocktranslate %} {% translate "Once your account is active, sign in to recognise characters, group their other names, and see whether they are protagonists or antagonists." %}
+
+{% translate "Did not sign up for PrasiBali.ai? You can safely ignore this email. The account will not be activated without confirmation." %}{% endautoescape %}{% endblock content %}

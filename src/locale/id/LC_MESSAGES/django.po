@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 01:02+0800\n"
+"POT-Creation-Date: 2026-11-03 01:13+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,11 +104,79 @@ msgstr "Indonesia"
 msgid "English"
 msgstr "Inggris"
 
-msgid "Hello from PrasiBali.ai!"
-msgstr "Salam dari PrasiBali.ai!"
+#, python-format
+msgid "Hello %(name)s,"
+msgstr "Halo %(name)s,"
 
-msgid "Thank you for using PrasiBali.ai."
-msgstr "Terima kasih telah menggunakan PrasiBali.ai."
+msgid "Hello,"
+msgstr "Halo,"
+
+msgid "Warm regards,"
+msgstr "Salam hangat,"
+
+#| msgid "Hello from PrasiBali.ai!"
+msgid "The PrasiBali.ai team"
+msgstr "Tim PrasiBali.ai"
+
+msgid ""
+"This email was sent automatically by PrasiBali.ai. Please do not reply to it."
+msgstr "Email ini dikirim otomatis oleh PrasiBali.ai. Mohon tidak membalas email ini."
+
+msgid ""
+"We received a request to confirm this email address for your PrasiBali.ai "
+"account."
+msgstr "Kami menerima permintaan untuk mengonfirmasi alamat email ini bagi akun PrasiBali.ai Anda."
+
+msgid "Your verification code:"
+msgstr "Kode verifikasi Anda:"
+
+msgid "Enter this code in the open browser window."
+msgstr "Masukkan kode ini di jendela browser yang sedang terbuka."
+
+msgid "Open the link below, then press the Confirm button:"
+msgstr "Buka tautan berikut, lalu tekan tombol Konfirmasi:"
+
+#, python-format
+msgid "This link is valid for %(days)s day."
+msgid_plural "This link is valid for %(days)s days."
+msgstr[0] "Tautan ini berlaku selama %(days)s hari."
+
+msgid "Did not make this request? You can safely ignore this email."
+msgstr "Tidak merasa meminta konfirmasi ini? Abaikan saja email ini."
+
+msgid ""
+"Thank you for signing up for PrasiBali.ai, a workspace for analysing the "
+"characters in Balinese satua."
+msgstr "Terima kasih telah mendaftar di PrasiBali.ai, ruang kerja untuk menganalisis tokoh dalam satua Bali."
+
+#| msgid ""
+#| "We will send a link to your email. Open it to activate your account "
+#| "before signing in."
+msgid "One more step: confirm your email address to activate your account."
+msgstr "Tinggal satu langkah lagi: konfirmasi alamat email Anda untuk mengaktifkan akun."
+
+msgid "Enter this code in the browser window you used to sign up."
+msgstr "Masukkan kode ini di jendela browser yang Anda pakai untuk mendaftar."
+
+#| msgid ""
+#| "Recognise characters, group their other names, and see whether they are "
+#| "protagonists or antagonists."
+msgid ""
+"Once your account is active, sign in to recognise characters, group their "
+"other names, and see whether they are protagonists or antagonists."
+msgstr "Setelah akun aktif, masuk untuk mengenali tokoh, menyatukan nama lain, dan melihat peran protagonis atau antagonis dalam satua."
+
+msgid ""
+"Did not sign up for PrasiBali.ai? You can safely ignore this email. The "
+"account will not be activated without confirmation."
+msgstr "Tidak merasa mendaftar di PrasiBali.ai? Abaikan saja email ini. Akun tidak akan aktif tanpa konfirmasi."
+
+msgid "Activate your PrasiBali.ai account"
+msgstr "Aktifkan akun PrasiBali.ai Anda"
+
+#| msgid "email address"
+msgid "Confirm your email address"
+msgstr "Konfirmasi alamat email Anda"
 
 msgid "Sign in"
 msgstr "Masuk"
@@ -240,3 +308,4 @@ msgstr "Tema gelap"
 
 msgid "Light theme"
 msgstr "Tema terang"
+

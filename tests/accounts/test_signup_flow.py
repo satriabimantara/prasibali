@@ -66,8 +66,14 @@ def test_signup_verify_login(client, password):
     # 3. One verification email with a confirmation link.
     assert len(mail.outbox) == 1
     assert mail.outbox[0].to == [EMAIL.lower()]
-    assert mail.outbox[0].subject.startswith("[PrasiBali.ai]")
-    url = confirmation_url(mail.outbox[0].body)
+    message = mail.outbox[0]
+    assert message.subject == "Aktifkan akun PrasiBali.ai Anda"
+    assert message.from_email.startswith("PrasiBali.ai")
+    assert message.body.startswith("Halo Made Bhaskara,")
+    assert "Tautan ini berlaku selama 3 hari." in message.body
+    assert "Tim PrasiBali.ai" in message.body
+    assert "/masuk/" in message.body
+    url = confirmation_url(message.body)
 
     # 4. Signing in before verification is refused.
     client.cookies.clear()

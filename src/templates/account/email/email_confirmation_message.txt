@@ -1,0 +1,15 @@
+{% extends "account/email/base_message.txt" %}
+{% load i18n %}
+{% block content %}{% autoescape off %}{% translate "We received a request to confirm this email address for your PrasiBali.ai account." %}
+
+{% if code %}{% translate "Your verification code:" %}
+
+    {{ code }}
+
+{% translate "Enter this code in the open browser window." %}{% else %}{% translate "Open the link below, then press the Confirm button:" %}
+
+{{ activate_url }}{% endif %}
+
+{% blocktranslate count days=confirmation_expire_days %}This link is valid for {{ days }} day.{% plural %}This link is valid for {{ days }} days.{% endblocktranslate %}
+
+{% translate "Did not make this request? You can safely ignore this email." %}{% endautoescape %}{% endblock content %}

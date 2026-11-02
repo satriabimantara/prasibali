@@ -1,6 +1,11 @@
-{% load i18n %}{% autoescape off %}{% translate "Hello from PrasiBali.ai!" %}
+{% load i18n %}{% autoescape off %}{% block greeting %}{% if user.full_name %}{% blocktranslate with name=user.full_name %}Hello {{ name }},{% endblocktranslate %}{% else %}{% translate "Hello," %}{% endif %}{% endblock greeting %}
 
 {% block content %}{% endblock content %}
 
-{% translate "Thank you for using PrasiBali.ai." %}
-{{ current_site.domain }}{% endautoescape %}
+{% translate "Warm regards," %}
+{% translate "The PrasiBali.ai team" %}
+{{ login_url }}
+
+--
+{% translate "This email was sent automatically by PrasiBali.ai. Please do not reply to it." %}
+{% endautoescape %}

@@ -90,7 +90,8 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_LOGOUT_ON_GET = False
 ACCOUNT_FORMS = {"signup": "apps.accounts.forms.SignupForm"}
-ACCOUNT_EMAIL_SUBJECT_PREFIX = "[PrasiBali.ai] "
+ACCOUNT_EMAIL_SUBJECT_PREFIX = ""  # the sender name "PrasiBali.ai" already identifies us
+ACCOUNT_ADAPTER = "apps.accounts.adapters.AccountAdapter"
 # ACCOUNT_RATE_LIMITS keeps allauth's defaults (failed logins, password reset, confirmation emails).
 # They use the default cache; with several Gunicorn workers a shared cache is needed (session 7).
 LOGIN_URL = "account_login"
