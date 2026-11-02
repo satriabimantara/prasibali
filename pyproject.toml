@@ -7,9 +7,11 @@ extend-exclude = ["_reference", "models", "saved_file", "staticfiles", "src/**/m
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "DJ", "S", "BLE", "RUF"]
+# Django declares class-level lists/dicts by design (Meta.fields, REQUIRED_FIELDS, ...).
+ignore = ["RUF012"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101"]
+"tests/**" = ["S101", "S105", "S106"]  # asserts and throwaway test passwords
 "scripts/**" = ["E501"]
 
 [tool.ruff.lint.isort]
