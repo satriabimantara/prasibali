@@ -1,7 +1,6 @@
 _reference/
 .venv/
 saved_file/
-scripts/
 models/
 
 # Byte-compiled / optimized / DLL files
