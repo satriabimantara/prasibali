@@ -1,0 +1,35 @@
+# =============================================================================
+# PrasiBali.ai — dependensi runtime (dipakai lokal DAN Docker/produksi)
+# Python 3.11 wajib. Pasang dengan: python -m pip install -r requirements.txt
+# =============================================================================
+
+# --- AI / NLP (PIN PERSIS — jangan diubah tanpa menguji ulang model) ---------
+# Pickle classifier peran (SVM + TF-IDF + label encoder) dibuat dengan
+# scikit-learn 1.2.1; versi lain bisa gagal memuat atau memberi hasil berbeda.
+balinese-nlp==2.4.2
+scikit-learn==1.2.1
+sklearn-crfsuite==0.3.6
+python-crfsuite==0.9.10
+pandas==1.5.3
+numpy==1.24.4            # minor sama dengan lingkungan tesis (1.24.x); numpy 2 tidak kompatibel
+scipy==1.10.1            # minor sama dengan lingkungan tesis (1.10.x)
+gensim==4.3.3
+hmmlearn==0.3.0
+openpyxl==3.1.5
+
+# Dipin sesuai versi yang terpasang di env lokal yang lulus check_env.py.
+# Di Docker, torch dipasang dari index CPU (lihat Dockerfile) agar image
+# tidak membawa paket CUDA berukuran besar.
+torch==2.3.0
+transformers==4.33.3
+tokenizers==0.13.3
+
+# --- Web ---------------------------------------------------------------------
+Django>=5.2,<5.3                 # LTS, didukung s.d. April 2028
+django-environ>=0.11,<1          # baca konfigurasi dari .env
+django-allauth>=65.21,<66        # registrasi, verifikasi email, login, reset password
+djangorestframework>=3.16,<4     # REST API
+drf-spectacular>=0.28,<1         # dokumentasi OpenAPI /api/docs/
+psycopg[binary]>=3.2,<4          # driver PostgreSQL
+whitenoise>=6.7,<7               # sajikan file statis dari container Django
+gunicorn>=23,<24                 # WSGI server produksi
