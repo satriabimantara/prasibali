@@ -2,6 +2,7 @@ _reference/
 .venv/
 saved_file/
 models/
+.account_private
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
