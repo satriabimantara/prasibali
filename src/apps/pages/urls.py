@@ -6,4 +6,5 @@ app_name = "pages"
 
 urlpatterns = [
     path("healthz", views.healthz, name="healthz"),
+    path("privasi/", views.privacy, name="privacy"),
 ]
