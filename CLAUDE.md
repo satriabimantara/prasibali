@@ -92,7 +92,7 @@ scripts/             check_env.py, test_pretrained_pipeline.py, prasibali_models
   from balinese_nlp.embeddings.gensims import BaliFastText
   model = BaliFastText(
       huggingface_repo_ID="satriabimantara/balinese_pretrained_wordembedding",
-      pretrained_model_bin_filename="50_fasttext_model.bin",
+      pretrained_model_bin_filename="300_fasttext_model.bin",
   ).load_pretrained_model()          # model gensim: model.wv[kata], model.vector_size
 
   from balinese_nlp.feature_extractor.narratives.characterclassification.WordEmbeddingFeatureExtraction import (
@@ -102,7 +102,8 @@ scripts/             check_env.py, test_pretrained_pipeline.py, prasibali_models
   # rata-rata model.wv[kata] untuk kata (dipisah spasi) yang ada di model.wv; vektor nol bila tidak ada
   ```
 - **Pola ekstraktor balinese-nlp berbeda dari scikit-learn:** `WordEmbeddingFeatureExtraction`, `LexiconFeatureExtraction`, dan `POSTagFeatureExtraction` dipakai dengan `fit(X).transform()`, di mana `transform()` tidak menerima argumen dan menyimpan state di instance. TF-IDF (TF4) memakai `transform(X)`. Adaptor `prasibali_models.run_extractor()` menangani keduanya, ditambah model gensim yang tersimpan langsung dan TF5 yang tidak tersimpan di pickle. Jangan memakai satu instance ekstraktor dari beberapa thread sekaligus (pakai worker Gunicorn sync).
-- Repo dan nama file FastText dibaca dari env `TF5_HF_REPO_ID` dan `TF5_FASTTEXT_FILENAME` (kosong = nilai bawaan di atas). File itu **harus sama** dengan yang dipakai saat melatih pickle TF5. Buktinya: `model.vector_size` sama dengan `n_features_in_` estimator TF5. `check_env.py` mengecek ini dan gagal dengan pesan jelas bila berbeda. Nama file bawaan berawalan `50_` sedangkan tesis menyebut 300 dimensi, jadi kecocokannya wajib dipastikan.
+- Repo dan nama file FastText dibaca dari env `TF5_HF_REPO_ID` dan `TF5_FASTTEXT_FILENAME` (kosong = nilai bawaan di atas). File itu **harus sama** dengan yang dipakai saat melatih pickle TF5. Buktinya: `model.vector_size` sama dengan `n_features_in_` estimator TF5. `check_env.py` mengecek ini dan gagal dengan pesan jelas bila berbeda. Semua estimator TF5 punya `n_features_in_` 300 (`--inspect`, 2 November 2026), jadi nama file bawaan adalah `300_fasttext_model.bin`.
+- Urutan pemuatan FastText di aplikasi (`services/embeddings.py`): file lokal `PRETRAINED_MODELS_DIR/balinese-word-embedding/<TF5_FASTTEXT_FILENAME>` bila ada, jika tidak dari Hugging Face lewat `BaliFastText`. Dimensinya dicek terhadap bagian TF5 dari `n_features_in_` sebelum dipakai.
 - Jika `BasePretrained` mendukung parameter revisi Hugging Face, pin revisinya di env. Jika tidak, andalkan cache yang sudah terisi dengan `HF_HUB_OFFLINE=1` (baca source `BasePretrained` lewat `--dump-api`).
 - Unduhan embedding terjadi sekali saja, tidak pernah per request:
   - Folder cache Hugging Face (`HF_HOME`) berada di volume Docker yang persisten.

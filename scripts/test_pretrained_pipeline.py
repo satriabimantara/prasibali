@@ -23,7 +23,7 @@ lalu _reference/old_web/website/balinarrativenlp/pretrained-models.
 
 FastText untuk TF5 dimuat lewat balinese_nlp.embeddings.gensims.BaliFastText dari Hugging Face:
 --tf5-repo/--tf5-file, lalu TF5_HF_REPO_ID/TF5_FASTTEXT_FILENAME, lalu nilai bawaan
-(satriabimantara/balinese_pretrained_wordembedding, 50_fasttext_model.bin). Unduhan pertama butuh internet.
+(satriabimantara/balinese_pretrained_wordembedding, 300_fasttext_model.bin). Unduhan pertama butuh internet.
 
 Keamanan: pickle bisa menjalankan kode saat dimuat. Muat hanya file model milik sendiri.
 """
@@ -201,7 +201,11 @@ def show_bio_example(model, sentences: list[str], characters: list[str]) -> None
 
 def cluster_aliases(characters: list[str], similarity: str, threshold: float) -> dict:
     cls = load_class("balinese_nlp.narratives.aliasclustering.rule_based", "AliasClusteringRuleBased")
-    groups = cls(pairwise_distance=similarity, avg_threshold_similarity=threshold).fit(characters).cluster()
+    model = cls(pairwise_distance=similarity, avg_threshold_similarity=threshold).fit(characters)
+    # fit() menyaring duplikat lewat set, yang urutannya berubah setiap proses (hash seed), padahal clustering
+    # bergantung pada urutan. Diurutkan agar hasilnya stabil dan sama dengan aplikasi (services/pipeline.py).
+    model.pred_characters = sorted(model.pred_characters)
+    groups = model.cluster()
     print(f"  Metode {similarity}, ambang {threshold}: {len(groups)} kelompok tokoh")
     for group, aliases in groups.items():
         print(f"    {group}: {aliases}")
@@ -233,16 +237,16 @@ def stop_word_remover(tp):
     return lambda text: " ".join(word for word in text.split() if word not in stop_words)
 
 
-LEGACY_PREPROCESS = False  # --legacy-preprocess: tiru web lama (lihat docstring preprocess_context)
+LEGACY_PREPROCESS = True  # bawaan: praproses web lama (keputusan pengembang); --case-fold untuk case folding
 
 
 def preprocess_context(value, tp) -> str:
     """Case folding -> buang stop word -> buang titik -> '-' jadi spasi -> strip.
 
     Web lama (views/features.py) mengisi kolom konteks dengan case_folding(GroupedSentences), lalu menimpanya
-    dengan remove_stop_words(GroupedSentences): case folding praktis tidak berlaku. Dengan --legacy-preprocess
-    langkah itu dilewati agar hasilnya bisa dibandingkan dengan web lama. Mana yang sesuai dengan data pelatihan
-    belum dipastikan; keduanya dicoba lalu bandingkan labelnya.
+    dengan remove_stop_words(GroupedSentences): case folding praktis tidak berlaku. Perilaku web lama ini menjadi
+    bawaan (keputusan pengembang, 3 Nov 2026) dan sama dengan aplikasi (apps/analysis/services/preprocessing.py).
+    --case-fold menjalankan case folding sungguhan untuk perbandingan.
     """
     text = " ".join(map(str, value)) if isinstance(value, (list, tuple)) else str(value)
     text = text.replace(SENTENCE_SEP, " ")
@@ -447,8 +451,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--label-encoder", help="path pickle label encoder, bila berbeda dari bawaan")
     parser.add_argument("--tf5-repo", help=f"repo Hugging Face FastText; bawaan dari {pm.TF5_REPO_ENV_VAR}")
     parser.add_argument("--tf5-file", help=f"nama file .bin FastText; bawaan dari {pm.TF5_FILENAME_ENV_VAR}")
+    parser.add_argument("--case-fold", action="store_true",
+                        help="praproses konteks dengan case folding sungguhan (bawaan: seperti web lama, tanpa case folding)")
     parser.add_argument("--legacy-preprocess", action="store_true",
-                        help="praproses konteks seperti web lama (tanpa case folding efektif) untuk perbandingan")
+                        help="tidak berpengaruh lagi: perilaku web lama sudah menjadi bawaan")
     parser.add_argument("--drop-title", action="store_true", help="buang baris pertama bila berupa judul")
     parser.add_argument("--inspect", action="store_true", help="tampilkan isi folder model lalu berhenti")
     parser.add_argument("--inspect-max-mb", type=int, default=300, help="batas ukuran pickle yang dibuka saat --inspect")
@@ -462,7 +468,7 @@ def main() -> int:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     args = parse_args()
     global LEGACY_PREPROCESS
-    LEGACY_PREPROCESS = args.legacy_preprocess
+    LEGACY_PREPROCESS = not args.case_fold
     root = find_root(args.root)
     input_path = Path(args.input) if args.input else root / SAMPLE_REL
     models_dir, models_source = pm.resolve_models_dir(root, args.models_dir)

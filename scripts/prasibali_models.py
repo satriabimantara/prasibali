@@ -61,13 +61,12 @@ DEFAULT_FEATURE = "TF5"
 DEFAULT_CLASSIFIER = "Support Vector Machine"
 
 # FastText bahasa Bali untuk TF5, diambil lewat balinese_nlp.embeddings.gensims.BaliFastText.
-# Nilai bawaan dari contoh paket; WAJIB sama dengan file yang dipakai saat melatih pickle TF5.
-# Tesis menyebut 300 dimensi, sedangkan nama file contoh berawalan "50_": pastikan lewat check_env.py
-# (vector_size harus cocok dengan n_features_in_ model TF5).
+# WAJIB sama dengan file yang dipakai saat melatih pickle TF5: semua estimator TF5 punya n_features_in_ 300
+# (--inspect, 2 Nov 2026), sesuai Tabel 3.10. check_env.py tetap mencocokkan vector_size dengan n_features_in_.
 TF5_REPO_ENV_VAR = "TF5_HF_REPO_ID"
 TF5_FILENAME_ENV_VAR = "TF5_FASTTEXT_FILENAME"
 DEFAULT_TF5_REPO_ID = "satriabimantara/balinese_pretrained_wordembedding"
-DEFAULT_TF5_FILENAME = "50_fasttext_model.bin"
+DEFAULT_TF5_FILENAME = "300_fasttext_model.bin"
 LOCAL_EMBEDDING_DIR = "balinese-word-embedding"  # di dalam PRETRAINED_MODELS_DIR
 LOCAL_MARKER = "lokal"
 

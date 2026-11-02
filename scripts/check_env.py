@@ -8,7 +8,7 @@ Jalankan dari akar repo, di dalam environment yang sudah aktif:
 
 Folder model dibaca dari --models-dir, lalu PRETRAINED_MODELS_DIR (environment atau .env di akar
 repo), sama seperti aplikasi web. FastText untuk TF5 dibaca dari TF5_HF_REPO_ID dan
-TF5_FASTTEXT_FILENAME (bawaan: satriabimantara/balinese_pretrained_wordembedding, 50_fasttext_model.bin).
+TF5_FASTTEXT_FILENAME (bawaan: satriabimantara/balinese_pretrained_wordembedding, 300_fasttext_model.bin).
 
 Skrip ini memastikan:
   1. Versi Python dan versi library penting sesuai requirements.txt
