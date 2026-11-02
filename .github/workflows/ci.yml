@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+      - run: pip install "ruff>=0.8,<1"
+      - run: ruff check .
+
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          # Throwaway database that only lives for this job; not a secret.
+          POSTGRES_DB: prasibali_ci
+          POSTGRES_USER: prasibali_ci
+          POSTGRES_PASSWORD: prasibali_ci
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U prasibali_ci"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://prasibali_ci:prasibali_ci@localhost:5432/prasibali_ci
+      # PRETRAINED_MODELS_DIR stays unset: tests marked `model` are skipped.
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version
+          cache: pip
+          cache-dependency-path: requirements*.txt
+      - name: Install dependencies (torch from the CPU index)
+        run: |
+          pip install --index-url https://download.pytorch.org/whl/cpu torch==2.3.0
+          pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements-dev.txt
+      - run: python src/manage.py check
+        env:
+          DJANGO_SETTINGS_MODULE: config.settings.test
+      - run: pytest
