@@ -1,0 +1,16 @@
+.git
+.github
+.venv
+.env
+.env.*
+!.env.example
+_reference
+models
+saved_file
+assets
+staticfiles
+**/__pycache__
+**/*.pyc
+.pytest_cache
+.ruff_cache
+.claude
