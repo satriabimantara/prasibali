@@ -176,6 +176,10 @@ python scripts/test_pretrained_pipeline.py --inspect   # lihat struktur semua pi
 python scripts/test_pretrained_pipeline.py --dump-api  # tulis API/source modul embedding ke _reference/
 python scripts/test_pretrained_pipeline.py --input "<file satua .txt>"   # uji tugas (i)-(iii), default SVM+TF5 M2
 python scripts/test_pretrained_pipeline.py --variant m1 --feature TF4    # uji model lain
+python scripts/tailwind.py build                       # build src/static/css/app.css (Tailwind standalone, di-commit)
+python scripts/generate_ikat.py                        # tulis ulang partial pita ikat
+cd src && python manage.py makemessages -l id -l en --no-location && python manage.py compilemessages   # terjemahan (.mo di-commit)
+python src/manage.py create_demo_user                  # akun demo dari DEMO_USER_EMAIL/DEMO_USER_PASSWORD
 docker compose up --build                              # jalankan lokal
 docker compose exec web pytest                         # test
 ruff check .                                           # lint

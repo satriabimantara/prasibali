@@ -222,7 +222,7 @@ Dokumen ini adalah sumber kebenaran tampilan PrasiBali.ai. Saat membangun atau m
 | Produk | PrasiBali.ai: analisis tokoh dalam teks satua Bali |
 | Fungsi AI | Mengenali tokoh, mengelompokkan nama lain (alias), mengklasifikasi peran protagonis atau antagonis |
 | Pengguna | Juri lomba, peneliti, guru, siswa, Balai Bahasa, dan Dinas Kebudayaan |
-| Bahasa antarmuka | Indonesia saja |
+| Bahasa antarmuka | Indonesia (bawaan) dan Inggris, lewat gettext |
 | Tema | Terang sebagai bawaan, tombol ke tema gelap |
 | Mode | Sederhana sebagai bawaan, Lanjutan untuk peneliti |
 | Alur | Landing, lalu wajib login, lalu ruang kerja |
@@ -362,6 +362,21 @@ Setiap kontrol interaktif memiliki keadaan default, hover, fokus, aktif, nonakti
 - Kesalahan muncul di bawah input dengan teks `danger`, dihubungkan lewat `aria-describedby`, dan `aria-invalid="true"` pada input.
 - Pasang `autocomplete` yang sesuai pada formulir masuk dan daftar.
 - Area teks satua minimal 12 baris, `lang="ban"`, dengan contoh satua yang bisa dimuat satu klik.
+- Render field Django lewat `{% form_field field %}` (`apps/accounts/templatetags/form_tags.py`, partial `partials/form_field.html`). Tag ini memasang kelas, `aria-invalid`, dan `aria-describedby` sesuai aturan di atas. Halaman allauth memakai pola yang sama lewat override `templates/allauth/elements/`.
+
+| Kelas | Dipakai untuk |
+|---|---|
+| `.field` | Pembungkus label, kontrol, bantuan, dan kesalahan (`gap` 8px) |
+| `.field-label` | Label di atas kontrol, ukuran `label` |
+| `.input`, `.select` | Kontrol teks dan pilihan, tinggi 46px, tepi `line-strong` |
+| `.check` + `.checkbox` | Kotak centang 20px di dalam label setinggi minimal 44px |
+| `.help` | Teks bantuan, ukuran `caption`, warna `muted` |
+| `.field-error` | Kesalahan di bawah input, warna `danger` |
+| `.alert--info/success/warning/danger` | Pesan sistem dan kesalahan formulir umum |
+| `.link` | Tautan di dalam teks, warna `accent`, bergaris bawah |
+| `.btn-danger` | Tombol bahaya: teks `danger`, tepi `danger` saat hover |
+
+Ukuran huruf tersedia sebagai utilitas Tailwind dari token: `text-page-title`, `text-panel-title`, `text-section-title`, `text-lead`, `text-body`, `text-label`, `text-caption`. Ukuran bawaan Tailwind dimatikan.
 
 ### Header ruang kerja
 
@@ -456,6 +471,17 @@ Jangan menambahkan statistik, testimoni, logo mitra, atau klaim akurasi yang bel
 
 Satu kartu di tengah dengan aksara Prasi dan pita ikat. Penjelasan singkat, tanpa sidebar.
 
+- Layout: `templates/allauth/layouts/entrance.html`, dipakai juga oleh halaman aktivasi (verifikasi email terkirim, konfirmasi email, reset kata sandi). Header tipis berisi nama produk di kiri serta pengalih bahasa (Indonesia/English, `aria-pressed`) dan tombol tema di kanan. Aksara Prasi di atas kartu, pita ikat di bagian atas kartu, tautan "Kebijakan privasi" di bawah kartu.
+- Daftar: email, nama lengkap, institusi (opsional), peran, kata sandi dua kali, bahasa antarmuka, lalu kotak centang persetujuan dengan tautan ke `/privasi/`.
+
+### Akun `/akun/profil`, `/akun/hapus`
+
+Layout `templates/accounts/base_account.html` (juga untuk ganti kata sandi dan email dari allauth): header permukaan `surface` dengan pengalih bahasa, tombol tema, dan tombol "Keluar" (POST). Konten satu panel dengan lebar maksimal 720px dan navigasi Profil, Kata sandi, Email. Tanpa aksara Prasi dan pita ikat. Hapus akun memakai tombol bahaya dan konfirmasi kata sandi.
+
+### Kebijakan privasi `/privasi`
+
+Satu panel dengan lebar baca maksimal `72ch`, header yang sama dengan halaman akun.
+
 ### Ruang kerja analisis `/analisis`
 
 Sidebar: "Analisis baru", "Riwayat analisis", "Korpus satua", "Panduan". Tampilkan hanya menu yang halamannya sudah berfungsi.
@@ -485,6 +511,8 @@ Riwayat dan korpus memakai tabel di dalam panel: kepala tabel `label` warna `mut
 ## Implementasi
 
 ### Tailwind CSS v4
+
+Build dengan standalone CLI (tanpa Node): `python scripts/tailwind.py build` (atau `watch`). Hasilnya `src/static/css/app.css` di-commit. File lengkap ada di `src/static/src/input.css`; blok di bawah adalah intinya, ditambah token ukuran huruf dan kelas formulir dari bagian "Formulir".
 
 `static/src/input.css`:
 
