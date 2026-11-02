@@ -1,0 +1,29 @@
+# Tool configuration only (dependencies live in requirements*.txt).
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+extend-exclude = ["_reference", "models", "saved_file", "staticfiles", "src/**/migrations"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "DJ", "S", "BLE", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101"]
+"scripts/**" = ["E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["config", "apps"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+pythonpath = ["src", "scripts"]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+filterwarnings = [
+    # STATIC_ROOT only exists after collectstatic (Docker image / production).
+    "ignore:No directory at:UserWarning:django.core.handlers.base",
+]
+markers = [
+    "model: needs pretrained pickles in PRETRAINED_MODELS_DIR (skipped when the folder is missing)",
+]
