@@ -41,6 +41,17 @@ ALGORITHM_FILE_PREFIX = {
     "Multilayer Perceptron": "mlp",
 }
 
+# Kombinasi fitur yang benar-benar tersimpan untuk M2 wordvector (leksikon M2 belum diperiksa) (hasil --inspect 2 Nov):
+# KNN dan DT memakai TF4 (TF-IDF); GNB, MLP, RF, dan SVM memakai TF5 (300 dimensi).
+M2_FEATURE_BY_ALGORITHM = {
+    "knn": "TF4",
+    "dt": "TF4",
+    "gnb": "TF5",
+    "mlp": "TF5",
+    "rf": "TF5",
+    "svm": "TF5",
+}
+
 # Model terbaik menurut buku tesis: SVM + TF5 (F1 rata-rata 10-fold CV 0,6811, Tabel 4.57/4.59);
 # varian M2 karena F1 data uji 0,6460 > M1 0,6366 (Tabel 4.60).
 DEFAULT_VARIANT = "m2"
@@ -97,10 +108,57 @@ def fingerprint(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()[:12]
 
 
+# Modul lama yang direferensikan pickle leksikon tesis (repo riset lama, bukan paket pip). Kelasnya diganti
+# placeholder yang hanya menampung state, supaya pickle bisa dibuka dan isinya diperiksa tanpa menjalankan
+# kode lama. Hanya nama modul di daftar ini yang diganti; modul lain yang hilang tetap galat.
+PLACEHOLDER_MODULES = frozenset({"FeatureExtraction"})
+
+
+class PlaceholderObject:
+    """Pengganti kelas dari modul lama; atribut aslinya tersimpan di __dict__ (atau _state)."""
+
+    is_placeholder = True
+
+    def __init__(self, *args, **kwargs):
+        self._init_args = args
+
+    def __setstate__(self, state):
+        if isinstance(state, dict):
+            self.__dict__.update(state)
+        else:
+            self._state = state
+
+
+class _PlaceholderUnpickler(pickle.Unpickler):
+    _classes: dict = {}
+
+    def find_class(self, module, name):
+        if module in PLACEHOLDER_MODULES:
+            key = (module, name)
+            if key not in self._classes:
+                self._classes[key] = type(name, (PlaceholderObject,), {"__module__": module})
+            return self._classes[key]
+        return super().find_class(module, name)
+
+
+def is_placeholder(obj) -> bool:
+    return bool(getattr(type(obj), "is_placeholder", False))
+
+
+def brief(value) -> str:
+    """Ringkasan nilai untuk --inspect: tipe beserta ukuran/bentuk bila ada."""
+    shape = getattr(value, "shape", None)
+    if shape is not None:
+        return f"{describe(value)} shape={tuple(shape)}"
+    if isinstance(value, dict | list | tuple | set | str):
+        return f"{describe(value)} len={len(value)}"
+    return describe(value)
+
+
 def unpickle(path: Path):
     try:
         with path.open("rb") as handle:
-            return pickle.load(handle)
+            return _PlaceholderUnpickler(handle).load()
     except ModuleNotFoundError as exc:
         raise ModelError(f"{path.name} merujuk modul '{exc.name}' yang tidak ada di environment ini") from exc
 
@@ -137,6 +195,13 @@ def bundle_path(models_dir: Path, variant: str, codes: list[str], classifier_nam
         prefix = ALGORITHM_FILE_PREFIX.get(classifier_name)
         if prefix is None:
             raise ModelError(f"Algoritma tidak dikenal: {classifier_name!r}. Pilihan: {list(ALGORITHM_FILE_PREFIX)}")
+        # M2 hanya satu kombinasi fitur per algoritma (hasil --inspect 2 Nov). Kombinasi lain tidak ada.
+        # Tanpa pengecekan ini, M2 + TF4 + SVM akan diam-diam memuat file SVM TF5.
+        wanted = M2_FEATURE_BY_ALGORITHM.get(prefix)
+        if feature_folder(codes) == "wordvector" and codes != [wanted]:
+            raise ModelError(
+                f"M2 untuk {classifier_name} hanya tersedia dengan fitur {wanted}, bukan {'_'.join(codes)}"
+            )
         exact = folder / f"{prefix}_pretrained_model.pkl"
     else:
         raise ModelError(f"Varian tidak dikenal: {variant!r} (pilihan: m1, m2)")
@@ -193,6 +258,9 @@ def extract_model_entry(bundle, classifier_name: str) -> dict:
 
 def select_extractors(entry: dict, codes: list[str]) -> list[tuple[str, object]]:
     """Ambil ekstraktor untuk tiap kode fitur, dengan urutan sama seperti nama file (mis. TF4 lalu TF5)."""
+    if all(code in LEXICON_CODES for code in codes):
+        # objek di pickle leksikon berasal dari kelas lama; fitur dibangun ulang dari teks (lexicon_features)
+        return [(code, None) for code in codes]
     extractors = entry["feature_extractor"]
     joined = "_".join(codes)
     if not isinstance(extractors, dict):
@@ -236,6 +304,88 @@ def load_encoder(models_dir: Path, explicit: str | None = None):
     if encoder is None:
         raise ModelError(f"Objek label encoder tidak ditemukan di dalam {path.name}")
     return path, encoder
+
+
+# --------------------------------------------------------------------------- leksikon (TF1-TF3)
+# Sumber: web lama (views/features.py). TF1 = LF1-LF2 (skor polaritas BaliSentiLex), TF2 = LF3-LF16
+# (jumlah kata dan skor per kelas kata), TF3 = PTF1-PTF4 (persentase kelas kata dari POS tagger HMM).
+# Fitur dibangun ulang dari teks konteks (bukan dari objek di pickle); pickle hanya memuat estimator dan
+# 'feature_scaler'. Kolom digabung sesuai urutan kode di nama file (mis. TF1_TF3 = LF1, LF2, lalu PTF1-4).
+BALISENTILEX_ENV_VAR = "BALISENTILEX_PATH"
+BALISENTILEX_FILE = "cleaned_baliSentiLex_english_merge.xlsx"
+BALISENTILEX_SEARCH = (  # relatif terhadap PRETRAINED_MODELS_DIR, lalu terhadap akar repo
+    ("models", "balisentilex"),
+    ("root", "_reference/old_web/website/balinarrativenlp/balisentilex"),
+)
+LEXICON_COLUMNS = {
+    "TF1": ["LF1", "LF2"],
+    "TF2": [f"LF{i}" for i in range(3, 17)],
+}
+LEXICON_FEATURE_COUNTS = {"TF1": 2, "TF2": 14, "TF3": 4}
+FC_MODULE = "balinese_nlp.feature_extractor.narratives.characterclassification"
+
+
+def infer_lexicon_codes(n_features: int) -> str | None:
+    """Kombinasi TF1-TF3 yang menghasilkan n fitur (2, 14, 4, 16, 6, 18, 20 semuanya unik), atau None."""
+    from itertools import combinations
+
+    for size in (1, 2, 3):
+        for combo in combinations(LEXICON_CODES, size):
+            if sum(LEXICON_FEATURE_COUNTS[c] for c in combo) == n_features:
+                return "_".join(combo)
+    return None
+
+
+def balisentilex_path(root: Path) -> Path:
+    """Berkas BaliSentiLex: env BALISENTILEX_PATH, lalu models/balisentilex/, lalu _reference/old_web/..."""
+    explicit = env_value(root, BALISENTILEX_ENV_VAR)
+    if explicit:
+        return Path(explicit)
+    models_dir, _ = resolve_models_dir(root)
+    for base, rel in BALISENTILEX_SEARCH:
+        candidate = (models_dir if base == "models" else root) / rel / BALISENTILEX_FILE
+        if candidate.is_file():
+            return candidate
+    return models_dir / BALISENTILEX_SEARCH[0][1] / BALISENTILEX_FILE
+
+
+@functools.lru_cache(maxsize=1)
+def load_balisentilex(path: str) -> dict:
+    """Baca BaliSentiLex menjadi argumen `lexicons` untuk LexiconFeatureExtraction (sekali per proses)."""
+    file = Path(path)
+    if not file.is_file():
+        raise ModelError(
+            f"BaliSentiLex tidak ditemukan: {file}. Letakkan {BALISENTILEX_FILE} di models/balisentilex/ "
+            f"atau isi {BALISENTILEX_ENV_VAR} di .env"
+        )
+    import pandas as pd
+
+    frame = pd.read_excel(file)
+    needed = ["balinese_term", "tags", "AveragePositiveScore", "AverageNegativeScore"]
+    missing = [column for column in needed if column not in frame.columns]
+    if missing:
+        raise ModelError(f"Kolom BaliSentiLex tidak ada: {missing}. Kolom yang ada: {list(frame.columns)}")
+    return {
+        "lexicon_terms": list(frame["balinese_term"]),
+        "lexicon_tags": list(frame["tags"]),
+        "lexicon_positive_scores": list(frame["AveragePositiveScore"]),
+        "lecixon_negative_scores": list(frame["AverageNegativeScore"]),  # ejaan 'lecixon' mengikuti paket
+    }
+
+
+def lexicon_features(code: str, contexts: list[str], lexicons: dict):
+    """Fitur TF1/TF2 (LexiconFeatureExtraction, semua LF1-16 lalu pilih kolom) atau TF3 (POSTagFeatureExtraction)."""
+    import importlib
+
+    try:
+        if code in LEXICON_COLUMNS:
+            module = importlib.import_module(f"{FC_MODULE}.LexiconFeatureExtraction")
+            frame = module.LexiconFeatureExtraction(lexicons=lexicons).fit(list(contexts)).transform()
+            return frame[LEXICON_COLUMNS[code]].to_numpy(dtype=float)
+        module = importlib.import_module(f"{FC_MODULE}.POSTagFeatureExtraction")
+        return module.POSTagFeatureExtraction().fit(list(contexts)).transform().to_numpy(dtype=float)
+    except ImportError as exc:
+        raise ModelError(f"Ekstraktor fitur leksikon {code} tidak bisa diimpor dari balinese-nlp: {exc!r}") from exc
 
 
 # --------------------------------------------------------------------------- word embedding (TF5)
@@ -322,6 +472,8 @@ def _transform_takes_input(extractor) -> bool:
 
 def extractor_style(obj) -> str:
     """Keterangan singkat cara pakai ekstraktor, untuk --inspect dan check_env."""
+    if is_placeholder(obj):
+        return f"placeholder kelas lama {type(obj).__module__}.{type(obj).__name__}; atribut: {sorted(vars(obj))}"
     if callable(getattr(obj, "transform", None)):
         return "transform(X)" if _transform_takes_input(obj) else "fit(X).transform()"
     if is_word_embedding_model(obj):
@@ -329,7 +481,8 @@ def extractor_style(obj) -> str:
     return "tanpa transform"
 
 
-def run_extractor(code: str, extractor, contexts: list[str], embedding_loader: Callable[[], object] | None):
+def run_extractor(code: str, extractor, contexts: list[str], embedding_loader: Callable[[], object] | None,
+                  lexicon_loader: Callable[[], dict] | None = None):
     """Jalankan satu ekstraktor dan kembalikan (matriks, keterangan cara ekstraksi).
 
     Bentuk yang didukung:
@@ -339,6 +492,18 @@ def run_extractor(code: str, extractor, contexts: list[str], embedding_loader: C
       3. model gensim (punya .wv dan .vector_size): dirata-rata seperti WordEmbeddingFeatureExtraction
       4. TF5 tanpa ekstraktor tersimpan (None/string): FastText dimuat dari Hugging Face lalu dirata-rata
     """
+    if code in LEXICON_CODES:
+        if code in LEXICON_COLUMNS and lexicon_loader is None:
+            raise ModelError(f"Fitur {code} butuh BaliSentiLex, tetapi pemuat leksikon tidak diberikan")
+        lexicons = lexicon_loader() if code in LEXICON_COLUMNS else {}
+        how = "LexiconFeatureExtraction" if code in LEXICON_COLUMNS else "POSTagFeatureExtraction (HMM)"
+        return lexicon_features(code, contexts, lexicons), f"{how}, dibangun dari teks"
+    if is_placeholder(extractor):
+        raise ModelError(
+            f"Ekstraktor {code} adalah objek kelas lama {type(extractor).__module__}.{type(extractor).__name__} "
+            f"(atribut: {sorted(vars(extractor))}). Ekstraksi fitur leksikon belum direproduksi: "
+            "jalankan `python scripts/test_pretrained_pipeline.py --inspect` dan kirim hasilnya."
+        )
     transform = getattr(extractor, "transform", None)
     if callable(transform) and _transform_takes_input(extractor):
         return extractor.transform(contexts), "transform(X)"
@@ -365,8 +530,12 @@ def featurize(
     contexts: list[str],
     log: Callable[[str], None] = print,
     embedding_loader: Callable[[], object] | None = None,
+    lexicon_loader: Callable[[], dict] | None = None,
+    scaler=None,
 ):
     """Ubah konteks kalimat menjadi matriks fitur; blok tiap kode fitur digabung berdampingan.
+
+    scaler = entry.get("feature_scaler"): dipakai pada model leksikon (web lama: scaler.transform(X)).
 
     Mengembalikan (X, known_terms): known_terms = jumlah term TF-IDF yang dikenal per konteks,
     atau None bila tidak ada ekstraktor TF-IDF.
@@ -379,7 +548,7 @@ def featurize(
     blocks, known_terms = [], None
     for code, extractor in selected:
         started = time.perf_counter()
-        matrix, how = run_extractor(code, extractor, contexts, embedding_loader)
+        matrix, how = run_extractor(code, extractor, contexts, embedding_loader, lexicon_loader)
         matrix = matrix.toarray() if hasattr(matrix, "toarray") else np.asarray(matrix, dtype=float)
         if matrix.ndim != 2 or matrix.shape[0] != len(contexts):
             raise ModelError(f"Keluaran ekstraktor {code} berbentuk {matrix.shape}, seharusnya ({len(contexts)}, n)")
@@ -388,6 +557,10 @@ def featurize(
             known_terms = [int(n) for n in (matrix != 0).sum(axis=1)]
         blocks.append(matrix)
     features = np.hstack(blocks) if len(blocks) > 1 else blocks[0]
+    if scaler is not None:
+        check_feature_count(scaler, features)
+        features = scaler.transform(features)
+        log(f"  Scaler {type(scaler).__name__} diterapkan")
     return features, known_terms
 
 

@@ -11,7 +11,7 @@ Bahasa antarmuka: Indonesia (default) dan Inggris.
 **Fitur inti v1.0 (wajib berfungsi end-to-end):**
 - Analisis satua dengan pipeline lengkap: identifikasi tokoh, alias clustering, klasifikasi peran.
 - Mode tugas terpisah: identifikasi, alias, peran, atau pipeline lengkap.
-- Hasil bertahap: teks dengan nama tokoh disorot, kartu kelompok alias, label peran dengan disclaimer.
+- Hasil bertahap: teks dengan nama tokoh disorot beserta label nama entitas tokohnya (PNAME, ANM, GODS, ADJ, OBJ), kartu kelompok alias dengan warna kartu yang berbeda antar kelompok tokoh, label peran dari setiap kelompok tokoh dengan disclaimer.
 - **Mode Peneliti** untuk memilih model dan parameter tiap tugas sesuai eksperimen di buku tesis (lihat bagian "Mode Peneliti").
 - Riwayat analisis (daftar, detail, hapus satu, hapus semua), kuota harian per pengguna, tombol "Coba contoh satua".
 - Akun: registrasi, verifikasi email, login, logout, reset password, profil, pilihan bahasa.
@@ -67,7 +67,7 @@ scripts/             check_env.py, test_pretrained_pipeline.py, prasibali_models
       pretrained_baseline_m1.pkl
     label-encoder/    without_coreference_splitted_characterization.pkl
   ```
-  - Lokal: `PRETRAINED_MODELS_DIR` menunjuk `_reference/old_web/website/balinarrativenlp/pretrained-models`.
+  - Lokal: `PRETRAINED_MODELS_DIR` menunjuk `J:\Dosen - Universitas Udayana\DriveSync\4. Software Penelitian\#15-prasibali.ai\models\`.
   - Docker/produksi: folder yang sama disalin ke `models/pretrained-models/` di server (di luar git), lalu di-mount read-only ke `/app/models/pretrained-models`.
   - Jangan meng-commit file `.pkl`/`.joblib` ke repo.
 - Struktur bundle M1 yang sudah terverifikasi (wordvector/m1/TF4): `dict` berkunci nama algoritma (`K-Nearest Neighbor`, `Support Vector Machine`, `Decision Tree`, `Gaussian Naive Bayes`, `Random Forest`, `Multilayer Perceptron`); tiap nilai berisi `["pretrained_model"]["estimator"]` dan `["pretrained_model"]["feature_extractor"]` (dict berkunci kode fitur, mis. `"TF4"`). Struktur bundle lain (lexicon, M2) **belum diverifikasi**: periksa dengan `python scripts/test_pretrained_pipeline.py --inspect` sebelum menulis kode pemuatnya. `pretrained_baseline_m1.pkl` di root diabaikan untuk v1.0.

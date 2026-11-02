@@ -62,6 +62,8 @@ CLASSIFIER_CHECKS = [
     ("default aplikasi", pm.DEFAULT_VARIANT, pm.DEFAULT_FEATURE, pm.DEFAULT_CLASSIFIER),
     ("pembanding M1", "m1", "TF5", "Support Vector Machine"),
     ("terverifikasi 2 Nov", "m1", "TF4", "Support Vector Machine"),
+    ("leksikon, web lama lx-1", "m1", "TF1_TF2", "Support Vector Machine"),
+    ("leksikon + POS, web lama lx-3", "m1", "TF1_TF2_TF3", "Support Vector Machine"),
 ]
 
 failures: list[str] = []
@@ -70,6 +72,11 @@ failures: list[str] = []
 def embedding_loader():
     """Pemuat FastText untuk TF5; hasilnya di-cache oleh pm.load_fasttext (sekali per proses)."""
     return pm.load_fasttext(*pm.embedding_config(REPO_ROOT))
+
+
+def lexicon_loader():
+    """BaliSentiLex untuk TF1/TF2 (env BALISENTILEX_PATH atau models/balisentilex/)."""
+    return pm.load_balisentilex(str(pm.balisentilex_path(REPO_ROOT)))
 
 
 def ok(msg: str) -> None:
@@ -177,7 +184,8 @@ def check_one_classifier(models_dir: Path, encoder, label: str, variant: str, fe
         if not smoke:
             return
         features, _ = pm.featurize(
-            selected, SAMPLE_CONTEXTS, log=lambda msg: print(f"  [info]{msg[1:]}"), embedding_loader=embedding_loader
+            selected, SAMPLE_CONTEXTS, log=lambda msg: print(f"  [info]{msg[1:]}"), embedding_loader=embedding_loader,
+            lexicon_loader=lexicon_loader, scaler=entry.get("feature_scaler"),
         )
         expected = getattr(entry["estimator"], "n_features_in_", None)
         if codes == ["TF5"] and expected is not None and features.shape[1] != expected:

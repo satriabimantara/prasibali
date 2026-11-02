@@ -233,10 +233,21 @@ def stop_word_remover(tp):
     return lambda text: " ".join(word for word in text.split() if word not in stop_words)
 
 
+LEGACY_PREPROCESS = False  # --legacy-preprocess: tiru web lama (lihat docstring preprocess_context)
+
+
 def preprocess_context(value, tp) -> str:
-    """Case folding -> buang stop word -> buang titik -> '-' jadi spasi -> strip."""
+    """Case folding -> buang stop word -> buang titik -> '-' jadi spasi -> strip.
+
+    Web lama (views/features.py) mengisi kolom konteks dengan case_folding(GroupedSentences), lalu menimpanya
+    dengan remove_stop_words(GroupedSentences): case folding praktis tidak berlaku. Dengan --legacy-preprocess
+    langkah itu dilewati agar hasilnya bisa dibandingkan dengan web lama. Mana yang sesuai dengan data pelatihan
+    belum dipastikan; keduanya dicoba lalu bandingkan labelnya.
+    """
     text = " ".join(map(str, value)) if isinstance(value, (list, tuple)) else str(value)
     text = text.replace(SENTENCE_SEP, " ")
+    if LEGACY_PREPROCESS:
+        return stop_word_remover(tp)(text).replace(".", " ").replace("-", " ").strip()
     case_fold = next((getattr(tp, n) for n in ("case_folding", "casefolding", "case_fold") if callable(getattr(tp, n, None))), str.lower)
     text = stop_word_remover(tp)(case_fold(text))
     return text.replace(".", " ").replace("-", " ").strip()
@@ -264,7 +275,7 @@ def load_classifier(models_dir: Path, variant: str, codes: list[str], classifier
         print(f"  Fitur   : {code} -> {pm.describe(extractor)}")
     if expected is not None:
         print(f"  Model mengharapkan {expected} fitur (n_features_in_)")
-    return entry["estimator"], selected, encoder
+    return entry["estimator"], selected, encoder, entry.get("feature_scaler")
 
 
 def find_group_labels(df, groups: dict) -> list[str]:
@@ -280,9 +291,12 @@ def find_group_labels(df, groups: dict) -> list[str]:
     return keys
 
 
-def classify_roles(df, groups: dict, tp, estimator, selected, encoder, embedding_loader=None) -> list[dict]:
+def classify_roles(df, groups: dict, tp, estimator, selected, encoder, embedding_loader=None,
+                   lexicon_loader=None, scaler=None) -> list[dict]:
     contexts = [preprocess_context(value, tp) for value in df["GroupedSentences"]]
-    features, known_terms = pm.featurize(selected, contexts, embedding_loader=embedding_loader)
+    features, known_terms = pm.featurize(
+        selected, contexts, embedding_loader=embedding_loader, lexicon_loader=lexicon_loader, scaler=scaler
+    )
     pm.check_feature_count(estimator, features)
     labels = encoder.inverse_transform(estimator.predict(features))
     scores, probabilities = pm.score_and_probability(estimator, features)
@@ -334,13 +348,34 @@ def inspect_models(models_dir: Path, max_mb: int) -> None:
                     extra = f"  [{pm.extractor_style(value)}]"
                     if hasattr(value, "n_features_in_"):
                         extra += f" [n_features_in_={value.n_features_in_}]"
-                print(f"{pad}{key!r}: {pm.describe(value)}{extra}")
+                        hint = pm.infer_lexicon_codes(value.n_features_in_) if in_lexicon[0] else None
+                        if hint:
+                            extra += f" [cocok fitur leksikon {hint}]"
+                print(f"{pad}{key!r}: {pm.brief(value)}{extra}")
                 summary(value, depth + 1)
+        elif pm.is_placeholder(obj) and depth < 5:
+            # objek dari modul lama (mis. FeatureExtraction): tampilkan state-nya
+            print(f"{pad}[placeholder {type(obj).__module__}.{type(obj).__name__}] atribut:")
+            summary(vars(obj), depth)
 
+    # pretrained_baseline_m1.pkl di akar character-classification/ diabaikan untuk v1.0 (keputusan pengembang).
+    ignored = models_dir / "character-classification" / "pretrained_baseline_m1.pkl"
+    in_lexicon = [False]
     for path in sorted(p for p in models_dir.rglob("*") if p.is_file()):
+        in_lexicon[0] = "lexicon" in path.parts
+        if path.suffix == ".npy":  # bagian internal .bin (gensim), dihitung di ukuran .bin induknya
+            continue
         size_mb = path.stat().st_size / 1_048_576
-        print(f"  {path.relative_to(models_dir)}  ({size_mb:.1f} MB)")
+        if path.suffix == ".bin":
+            npy = path.with_name(path.name + ".wv.vectors_ngrams.npy")
+            if npy.is_file():
+                size_mb += npy.stat().st_size / 1_048_576
+        print(f"  {path.relative_to(models_dir)}  ({size_mb:.1f} MB"
+              f"{', termasuk vectors_ngrams.npy; perkiraan RAM saat dimuat' if path.suffix == '.bin' else ''})")
         if path.suffix != ".pkl":
+            continue
+        if path == ignored:
+            print("        diabaikan untuk v1.0 (keputusan pengembang)")
             continue
         if size_mb > max_mb:
             print(f"        dilewati (> {max_mb} MB; naikkan dengan --inspect-max-mb)")
@@ -353,6 +388,7 @@ def inspect_models(models_dir: Path, max_mb: int) -> None:
                 print(f"        {pm.describe(obj)}")
         except Exception as exc:  # noqa: BLE001
             print(f"        gagal dibaca: {exc!r}")
+
 
 
 def dump_api(root: Path) -> Path:
@@ -411,6 +447,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--label-encoder", help="path pickle label encoder, bila berbeda dari bawaan")
     parser.add_argument("--tf5-repo", help=f"repo Hugging Face FastText; bawaan dari {pm.TF5_REPO_ENV_VAR}")
     parser.add_argument("--tf5-file", help=f"nama file .bin FastText; bawaan dari {pm.TF5_FILENAME_ENV_VAR}")
+    parser.add_argument("--legacy-preprocess", action="store_true",
+                        help="praproses konteks seperti web lama (tanpa case folding efektif) untuk perbandingan")
     parser.add_argument("--drop-title", action="store_true", help="buang baris pertama bila berupa judul")
     parser.add_argument("--inspect", action="store_true", help="tampilkan isi folder model lalu berhenti")
     parser.add_argument("--inspect-max-mb", type=int, default=300, help="batas ukuran pickle yang dibuka saat --inspect")
@@ -423,6 +461,8 @@ def main() -> int:
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     args = parse_args()
+    global LEGACY_PREPROCESS
+    LEGACY_PREPROCESS = args.legacy_preprocess
     root = find_root(args.root)
     input_path = Path(args.input) if args.input else root / SAMPLE_REL
     models_dir, models_source = pm.resolve_models_dir(root, args.models_dir)
@@ -492,7 +532,7 @@ def main() -> int:
             heading("4. TUGAS (iii): KLASIFIKASI PERAN TOKOH")
             print("  Sumber model: pickle eksperimen tesis di luar paket balinese-nlp")
             override = Path(args.classifier_path) if args.classifier_path else None
-            estimator, selected, encoder = load_classifier(
+            estimator, selected, encoder, scaler = load_classifier(
                 models_dir, args.variant, codes, args.classifier_name, args.label_encoder, override
             )
             repo_id, filename = pm.embedding_config(root)
@@ -510,7 +550,11 @@ def main() -> int:
                 return model
 
             df = group_sentences(sentences, groups)
-            roles = classify_roles(df, groups, tp, estimator, selected, encoder, embedding_loader)
+            def lexicon_loader():
+                return pm.load_balisentilex(str(pm.balisentilex_path(root)))
+
+            roles = classify_roles(df, groups, tp, estimator, selected, encoder, embedding_loader,
+                                   lexicon_loader=lexicon_loader, scaler=scaler)
             print_roles(roles)
             result["roles"] = roles
             status["(iii) Klasifikasi peran"] = "OK"
