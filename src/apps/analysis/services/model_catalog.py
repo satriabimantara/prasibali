@@ -197,6 +197,15 @@ THESIS_BEST_CLASSIFIER_ID = "m2-wordvector-tf5-svm"
 DEFAULT_CLASSIFIER_ID = "m2-wordvector-tf4-knn"
 
 
+def required_model_files() -> list[str]:
+    """Pickles under PRETRAINED_MODELS_DIR that v1.0 loads: every available classifier file and the label encoder.
+
+    Used by scripts/bundle_models.py (one-time upload to the server). FastText is not listed: it comes from
+    PRETRAINED_MODELS_DIR/balinese-word-embedding/ when present, otherwise from Hugging Face (embeddings.py).
+    """
+    return sorted({entry.relative_path for entry in CLASSIFIERS.values() if entry.available} | {LABEL_ENCODER_PATH})
+
+
 def get_classifier_entry(catalog_id: str, *, require_available: bool = True) -> ClassifierEntry:
     """Whitelist lookup. Raises UnknownModelError for anything that is not an exact catalog id."""
     entry = CLASSIFIERS.get(catalog_id) if isinstance(catalog_id, str) else None

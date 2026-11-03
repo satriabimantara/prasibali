@@ -235,3 +235,6 @@ var/
 
 # Production database dumps (docker/backup.sh)
 backups/
+
+# Model bundle for the one-time server upload (scripts/bundle_models.py)
+dist/
