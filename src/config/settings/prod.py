@@ -1,14 +1,20 @@
 """Production settings: Gunicorn behind Caddy, which terminates HTTPS (docker-compose.prod.yml)."""
 
+from django.core.exceptions import ImproperlyConfigured
+
 from config.jsonlog import logging_config
 
 from .base import *  # noqa: F403
-from .base import MIDDLEWARE, env
+from .base import EMAIL_USE_SSL, EMAIL_USE_TLS, MIDDLEWARE, env
 
 DEBUG = False
 # 127.0.0.1/localhost: the container healthcheck calls /healthz directly; Caddy forwards the public host.
 ALLOWED_HOSTS = [*env.list("DJANGO_ALLOWED_HOSTS"), "127.0.0.1", "localhost"]
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
+
+# Hostinger SMTP: port 587 + STARTTLS (EMAIL_USE_TLS) or port 465 + SSL (EMAIL_USE_SSL), never both.
+if EMAIL_USE_TLS and EMAIL_USE_SSL:
+    raise ImproperlyConfigured("Set only one of EMAIL_USE_TLS (port 587) and EMAIL_USE_SSL (port 465).")
 
 # Caddy forwards the original scheme.
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")

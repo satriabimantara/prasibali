@@ -102,15 +102,18 @@ ACCOUNT_LOGOUT_REDIRECT_URL = "pages:landing"
 # --- Email ---------------------------------------------------------------------
 EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
 # Hostinger Email SMTP for the prasibali.tech mailbox (developer decision, 3 Nov 2026): port 587 + STARTTLS,
-# login with the full mailbox address and its password. DEFAULT_FROM_EMAIL must be that mailbox (or its alias).
+# login with the full mailbox address and its password. The sender is the noreply@prasibali.tech mailbox (developer
+# decision): EMAIL_HOST_USER and DEFAULT_FROM_EMAIL must name the same mailbox, or Hostinger rejects the message.
 EMAIL_HOST = env("EMAIL_HOST", default="smtp.hostinger.com")
 EMAIL_PORT = env.int("EMAIL_PORT", default=587)
 EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
 EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=False)  # port 465; never together with EMAIL_USE_TLS
 EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
-DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="PrasiBali.ai <no-reply@prasibali.tech>")
-SERVER_EMAIL = DEFAULT_FROM_EMAIL
+# Seconds before an SMTP connection gives up, so a slow mail server never blocks a sync Gunicorn worker for long.
+EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT", default=20)
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="PrasiBali.ai <noreply@prasibali.tech>")
+SERVER_EMAIL = env("SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
 
 # Internationalization: Indonesian is the default interface language, English the alternative.
 LANGUAGE_CODE = "id"
