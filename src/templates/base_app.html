@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n static ui %}
+{# Workspace layout (DESIGN.md "Ruang kerja analisis"): sidebar 224px from 1024px, a menu row above that. #}
+{% block extra_head %}
+  <meta name="htmx-config" content='{"includeIndicatorStyles": false}'>
+  <script src="{% static 'js/vendor/htmx-2.0.4.min.js' %}" defer></script>
+  <script src="{% static 'js/mode.js' %}" defer></script>
+  <script src="{% static 'js/analysis.js' %}" defer></script>
+  {% block app_head %}{% endblock app_head %}
+{% endblock extra_head %}
+{% block body %}
+{% include "partials/site_header.html" with bordered=True %}
+<div class="mx-auto grid w-full max-w-[1440px] flex-1 content-start gap-6 px-[clamp(16px,3vw,32px)] py-6 lg:grid-cols-[224px_minmax(0,1fr)]">
+  <nav aria-label="{% translate 'Workspace' %}" class="flex flex-wrap content-start gap-1 lg:sticky lg:top-6 lg:flex-col lg:self-start">
+    <a class="nav-item" href="{% url 'analysis:workspace' %}"{% if nav == "workspace" %} aria-current="page"{% endif %}>{% icon "file-text" %}<span>{% translate "New analysis" %}</span></a>
+    <a class="nav-item" href="{% url 'analysis:history' %}"{% if nav == "history" %} aria-current="page"{% endif %}>{% icon "history" %}<span>{% translate "Analysis history" %}</span></a>
+  </nav>
+  <main class="grid min-w-0 content-start gap-6">
+    {% include "partials/messages.html" %}
+    {% block content %}{% endblock content %}
+  </main>
+</div>
+{% endblock body %}

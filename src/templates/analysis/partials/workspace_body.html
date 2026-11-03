@@ -1,0 +1,62 @@
+{% load i18n ui form_tags %}
+{# Swapped as a whole by HTMX (outerHTML) after every analysis, so the form keeps the posted text and choices. #}
+<div id="workspace" class="grid gap-6">
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h1 class="text-page-title">{% translate "Satua analysis" %}</h1>
+    {% include "partials/mode_toggle.html" %}
+  </div>
+
+  <form method="post" action="{% url 'analysis:workspace' %}" class="panel grid gap-6" data-analysis-form
+        hx-post="{% url 'analysis:workspace' %}" hx-target="#workspace" hx-swap="outerHTML"
+        hx-indicator="#analysis-loading" hx-disabled-elt="find button[type=submit]"
+        data-request-error-text="{% translate 'The analysis could not be completed because the server did not respond. Your text has not been lost. Try again.' %}"
+        x-data="{ task: '{{ form.task_value }}' }">
+    {% csrf_token %}
+    {{ form.mode }}
+    {% if form.non_field_errors %}<p class="alert alert--danger">{{ form.non_field_errors|join:" " }}</p>{% endif %}
+    {% form_field form.text %}
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="text-label text-muted">{% translate "Try a sample satua:" %}</span>
+      {% for slug, title in samples %}
+        <a class="btn gap-2" href="{% url 'analysis:workspace' %}?contoh={{ slug }}">{% icon "book-open" %}<span lang="ban">{{ title }}</span></a>
+      {% endfor %}
+    </div>
+    <div class="max-w-[480px]">{% form_field form.task %}</div>
+
+    {% include "analysis/partials/research_panel.html" %}
+
+    <div class="flex flex-wrap items-center gap-3">
+      <button type="submit" class="btn btn-primary gap-2" data-label-busy="{% translate 'Analysing...' %}"{% if quota.exhausted %} disabled{% endif %}>{% icon "play" %}<span data-label>{% translate "Analyse text" %}</span></button>
+      <a class="btn gap-2" href="{% url 'analysis:workspace' %}" data-reset>{% icon "rotate" %}<span>{% translate "Reset" %}</span></a>
+      <p class="help">{% blocktranslate %}Up to 20,000 characters. Analysis usually takes a few seconds.{% endblocktranslate %}
+        {% if not quota.unlimited %}<span data-quota>{% blocktranslate with remaining=quota.remaining limit=quota.limit %}Analyses left today: {{ remaining }} of {{ limit }}. Failed analyses are not counted.{% endblocktranslate %}</span>{% endif %}
+      </p>
+    </div>
+    {% if quota.exhausted %}
+      <p class="alert alert--warning flex items-start gap-2">{% icon "alert" %}<span>{% blocktranslate with limit=quota.limit %}You have used today's quota of {{ limit }} analyses. The quota resets at midnight (WITA). Your history stays available.{% endblocktranslate %}</span></p>
+    {% endif %}
+
+    {# Processing status (shown by HTMX while the request runs). The stages are listed, not timed: no fake progress. #}
+    <div id="analysis-loading" class="htmx-indicator alert alert--info gap-2" role="status">
+      <p class="flex items-center gap-2 font-semibold"><span class="spinner" aria-hidden="true"></span>{% translate "Analysing text..." %}</p>
+      <ol class="grid gap-1 text-caption text-muted">
+        <li>{% translate "(i) Recognising the characters and their entity labels" %}</li>
+        <li x-show="task !== 'identify'">{% translate "(ii) Grouping the other names of each character" %}</li>
+        <li x-show="task === 'full' || task === 'role'">{% translate "(iii) Classifying each group as protagonist or antagonist" %}</li>
+      </ol>
+    </div>
+  </form>
+
+  {% if error %}
+    <div class="alert alert--danger grid gap-3" role="alert">
+      <p class="flex items-start gap-2">{% icon "alert" %}<span>{{ error }}</span></p>
+      {% if not quota.exhausted %}<div><button type="button" class="btn gap-2" data-retry>{% icon "rotate" %}<span>{% translate "Try again" %}</span></button></div>{% endif %}
+    </div>
+  {% endif %}
+
+  {% if view %}
+    {% include "analysis/partials/result.html" %}
+  {% elif not error %}
+    <p class="text-muted" data-empty>{% translate "No analysis yet. Paste a satua text to begin." %}</p>
+  {% endif %}
+</div>

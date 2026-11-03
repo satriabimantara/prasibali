@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 08:30+0800\n"
+"POT-Creation-Date: 2026-11-03 09:06+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,42 +99,101 @@ msgstr ""
 msgid "Your account and all of its data have been deleted."
 msgstr ""
 
+msgid "Error"
+msgstr ""
+
+msgid "Configuration and model version"
+msgstr ""
+
+msgid "Input"
+msgstr ""
+
+msgid "Output"
+msgstr ""
+
+msgid "mode"
+msgstr ""
+
+msgid "classifier"
+msgstr ""
+
+msgid "configuration"
+msgstr ""
+
+msgid "model version"
+msgstr ""
+
+msgid "output"
+msgstr ""
+
 msgid "General user"
 msgstr ""
 
 msgid "Advanced"
 msgstr ""
 
-#, python-format
-msgid "CV F1 %(f1)s (%(ref)s)"
+msgid ""
+"basic BaliSentiLex lexicon features (total positive and negative synset "
+"scores)"
 msgstr ""
 
-#, python-format
-msgid "test F1 %(f1)s (%(ref)s)"
+msgid ""
+"additional lexicon features (word counts and polarity scores per word class)"
 msgstr ""
 
-msgid "test F1 –"
+msgid "POS tag features (share of nouns, adjectives, adverbs and verbs)"
 msgstr ""
 
-msgid "best in the thesis"
+msgid "TF-IDF"
+msgstr ""
+
+msgid "average Balinese FastText word embedding (300 dimensions)"
 msgstr ""
 
 msgid "default"
 msgstr ""
 
+msgid "recommended"
+msgstr ""
+
+msgid "best in the thesis"
+msgstr ""
+
 msgid "coming soon"
 msgstr ""
 
-msgid "M2 · Word vector"
+#, python-format
+msgid "Macro F1 CV %(f1)s (%(ref)s)"
 msgstr ""
 
-msgid "M1 · Word vector"
+msgid "macro F1 test –"
 msgstr ""
 
-msgid "M2 · Lexicon (coming soon)"
+#, python-format
+msgid "macro F1 test %(f1)s (%(ref)s)"
 msgstr ""
 
-msgid "M1 · Lexicon (coming soon)"
+msgid "decision_function (distance to the hyperplane, not a probability)"
+msgstr ""
+
+msgid "estimated probability (predict_proba)"
+msgstr ""
+
+msgid "macro F1 CV"
+msgstr ""
+
+msgid "test"
+msgstr ""
+
+msgid ""
+"The thesis tests only the best feature combination of each algorithm on the "
+"test data."
+msgstr ""
+
+#, python-format
+msgid ""
+"Rule-based BaliSentiLex baseline for comparison: F1 CV %(cv)s, F1 test "
+"%(test)s."
 msgstr ""
 
 msgid "Satua text"
@@ -162,14 +221,106 @@ msgid "(iii) Role classification model"
 msgstr ""
 
 #, python-format
-msgid "CV F1 %(f1)s"
+msgid "F1 CV %(f1)s"
 msgstr ""
 
 #, python-format
-msgid "test F1 %(f1)s"
+msgid "macro F1 test %(f1)s"
 msgstr ""
 
 msgid "This model is not available yet. Choose another model."
+msgstr ""
+
+msgid "Processing"
+msgstr ""
+
+msgid "Finished"
+msgstr ""
+
+msgid "Failed"
+msgstr ""
+
+msgid "user"
+msgstr ""
+
+msgid "task"
+msgstr ""
+
+msgid "satua text"
+msgstr ""
+
+msgid "status"
+msgstr ""
+
+msgid "failed stage"
+msgstr ""
+
+msgid "error message"
+msgstr ""
+
+msgid "technical detail"
+msgstr ""
+
+msgid "duration (ms)"
+msgstr ""
+
+msgid "created at"
+msgstr ""
+
+msgid "analysis run"
+msgstr ""
+
+msgid "analysis runs"
+msgstr ""
+
+msgid "day"
+msgstr ""
+
+msgid "analyses used"
+msgstr ""
+
+msgid "daily usage"
+msgstr ""
+
+msgid ""
+"For KNN it is the distance-weighted share of the 9 nearest training examples "
+"with this label."
+msgstr ""
+
+msgid "For Random Forest it is the average vote of the trees."
+msgstr ""
+
+msgid ""
+"For a Decision Tree it is the share of training examples with this label in "
+"the leaf."
+msgstr ""
+
+msgid "For Gaussian Naive Bayes it is the posterior probability of the model."
+msgstr ""
+
+msgid ""
+"For the Multilayer Perceptron it is the output of the network's final layer."
+msgstr ""
+
+msgid "SVM decision_function"
+msgstr ""
+
+msgid ""
+"Signed distance to the separating hyperplane, not a probability. The sign "
+"shows the side: positive for Protagonist, negative for Antagonist. Values "
+"near 0 lie close to the boundary."
+msgstr ""
+
+msgid "Estimated probability (predict_proba)"
+msgstr ""
+
+msgid "The model's estimate, between 0 and 1, for the chosen label."
+msgstr ""
+
+#, python-format
+msgid ""
+"You have used today's quota of %(limit)s analyses. The quota resets at "
+"midnight (WITA)."
 msgstr ""
 
 msgid "The analysis could not be completed. Your text has not been lost."
@@ -251,6 +402,13 @@ msgstr ""
 msgid ""
 "The text has fewer than %(n)s sentences, the minimum used in the thesis. "
 "Results may be less reliable."
+msgstr ""
+
+msgid "The analysis has been deleted from your history."
+msgstr ""
+
+#, python-format
+msgid "Your analysis history has been deleted (%(n)s items)."
 msgstr ""
 
 msgid "Indonesian"
@@ -388,7 +546,151 @@ msgstr ""
 msgid "Prasi in Balinese script"
 msgstr ""
 
+msgid "Delete history"
+msgstr ""
+
+msgid "Delete this analysis?"
+msgstr ""
+
+msgid "Delete all history?"
+msgstr ""
+
+#, python-format
+msgid ""
+"The analysis from %(date)s will be deleted permanently, together with its "
+"text and result:"
+msgstr ""
+
+#, python-format
+msgid ""
+"%(n)s analysis will be deleted permanently, together with its text and "
+"result."
+msgid_plural ""
+"All %(n)s analyses will be deleted permanently, together with their texts "
+"and results."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "This cannot be undone. Deleting history does not restore today's quota."
+msgstr ""
+
+msgid "Delete analysis"
+msgstr ""
+
+msgid "Delete all history"
+msgstr ""
+
+msgid "Analysis history"
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Model configuration"
+msgstr ""
+
+msgid "The analysis could not be completed."
+msgstr ""
+
+msgid "This analysis did not finish, so there is no result to show."
+msgstr ""
+
+msgid "Story text"
+msgstr ""
+
+#, python-format
+msgid ""
+"Today you have used %(used)s of %(limit)s analyses. Failed analyses are not "
+"counted, and deleting history does not restore the quota."
+msgstr ""
+
+msgid "Your analyses, newest first"
+msgstr ""
+
+msgid "Time"
+msgstr ""
+
+msgid "Task"
+msgstr ""
+
+msgid "Mode"
+msgstr ""
+
+msgid "Status"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Actions"
+msgstr ""
+
+#, python-format
+msgid "Delete analysis %(title)s"
+msgstr ""
+
+msgid "Pages"
+msgstr ""
+
+msgid "Newer"
+msgstr ""
+
+#, python-format
+msgid "Page %(n)s of %(total)s"
+msgstr ""
+
+msgid "Older"
+msgstr ""
+
+msgid "Your history is empty. Every analysis you run is saved here."
+msgstr ""
+
+msgid "Analyse text"
+msgstr ""
+
+msgid "Research mode: models and parameters"
+msgstr ""
+
+msgid ""
+"Each option shows the thesis result of its experiment: macro F1 from 10-fold "
+"cross-validation (CV) and on the test data, with the table it comes from. "
+"The default is used in General user mode."
+msgstr ""
+
+msgid "Alias clustering and role classification are not used for this task."
+msgstr ""
+
+msgid "Pretrained variant"
+msgstr ""
+
+msgid "Feature type"
+msgstr ""
+
+msgid "Feature code"
+msgstr ""
+
+msgid "Algorithm"
+msgstr ""
+
+msgid "Macro F1, 10-fold cross-validation"
+msgstr ""
+
+msgid "Macro F1 on the test data"
+msgstr ""
+
+msgid "Variant"
+msgstr ""
+
+msgid "Features"
+msgstr ""
+
+msgid "Score shown in the result"
+msgstr ""
+
 msgid "Analysis result"
+msgstr ""
+
+msgid "Open in history"
 msgstr ""
 
 msgid "Character groups"
@@ -403,10 +705,12 @@ msgstr ""
 msgid "Antagonist"
 msgstr ""
 
-msgid "Story text"
+msgid "Story text with the characters found"
 msgstr ""
 
-msgid "Entity label"
+msgid ""
+"Select a highlighted name to see the sentences that mention that character. "
+"Use the arrow keys to move between names."
 msgstr ""
 
 msgid "What do the labels mean?"
@@ -430,16 +734,43 @@ msgstr ""
 msgid "Solid underline: protagonist. Dashed underline: antagonist."
 msgstr ""
 
+msgid ""
+"Dotted underline: character found (roles were not classified for this task)."
+msgstr ""
+
+msgid "The number after the label is the character group."
+msgstr ""
+
+msgid "Sentence context"
+msgstr ""
+
+msgid ""
+"Select a highlighted name in the text or a character group to see the "
+"sentences that mention it."
+msgstr ""
+
+#, python-format
+msgid "Mentioned in %(n)s sentence"
+msgid_plural "Mentioned in %(n)s sentences"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Also called"
+msgstr ""
+
+msgid "Character groups and their roles"
+msgstr ""
+
+msgid "Characters found"
+msgstr ""
+
+msgid "Entity label"
 msgstr ""
 
 msgid "Mentions"
 msgstr ""
 
 msgid "Group"
-msgstr ""
-
-msgid "Model score"
 msgstr ""
 
 msgid "Context words"
@@ -449,12 +780,15 @@ msgstr ""
 msgid "%(n)s TF-IDF terms known"
 msgstr ""
 
+msgid "Model score"
+msgstr ""
+
 msgid ""
 "Little context: this character appears in few sentences, so the label is "
 "less reliable."
 msgstr ""
 
-msgid "Characters found"
+msgid "Show sentences"
 msgstr ""
 
 msgid ""
@@ -462,21 +796,28 @@ msgid ""
 "limited accuracy: the average F1 of every model in the thesis is below 0.70."
 msgstr ""
 
+#, python-format
 msgid ""
-"The model score is the SVM decision_function: the signed distance to the "
-"separating hyperplane, not a probability or confidence."
+"Model used: %(variant)s %(name)s with %(features)s; macro F1 CV %(cv)s, "
+"macro F1 test %(test)s."
 msgstr ""
 
 msgid "Models used"
 msgstr ""
 
+msgid "Display mode"
+msgstr ""
+
+msgid "Advanced (research mode)"
+msgstr ""
+
 msgid "(i) Character identification"
 msgstr ""
 
-msgid "CV F1"
+msgid "F1 CV"
 msgstr ""
 
-msgid "test F1"
+msgid "macro F1 test"
 msgstr ""
 
 msgid "(ii) Alias clustering"
@@ -486,6 +827,9 @@ msgid "threshold"
 msgstr ""
 
 msgid "(iii) Role classification"
+msgstr ""
+
+msgid "Macro F1 CV"
 msgstr ""
 
 msgid "Model file"
@@ -503,27 +847,21 @@ msgstr ""
 msgid "Versions"
 msgstr ""
 
-msgid "Duration"
+msgid "total"
 msgstr ""
 
 msgid "Satua analysis"
 msgstr ""
 
+msgid ""
+"The analysis could not be completed because the server did not respond. Your "
+"text has not been lost. Try again."
+msgstr ""
+
 msgid "Try a sample satua:"
 msgstr ""
 
-msgid "Research mode: models and parameters"
-msgstr ""
-
-msgid ""
-"The defaults are the best configurations in the thesis. F1 values are the "
-"thesis results for each experiment: cross-validation (CV) and test data."
-msgstr ""
-
 msgid "Analysing..."
-msgstr ""
-
-msgid "Analyse text"
 msgstr ""
 
 msgid "Reset"
@@ -532,10 +870,40 @@ msgstr ""
 msgid "Up to 20,000 characters. Analysis usually takes a few seconds."
 msgstr ""
 
+#, python-format
+msgid ""
+"Analyses left today: %(remaining)s of %(limit)s. Failed analyses are not "
+"counted."
+msgstr ""
+
+#, python-format
+msgid ""
+"You have used today's quota of %(limit)s analyses. The quota resets at "
+"midnight (WITA). Your history stays available."
+msgstr ""
+
+msgid "Analysing text..."
+msgstr ""
+
+msgid "(i) Recognising the characters and their entity labels"
+msgstr ""
+
+msgid "(ii) Grouping the other names of each character"
+msgstr ""
+
+msgid "(iii) Classifying each group as protagonist or antagonist"
+msgstr ""
+
 msgid "Try again"
 msgstr ""
 
 msgid "No analysis yet. Paste a satua text to begin."
+msgstr ""
+
+msgid "Workspace"
+msgstr ""
+
+msgid "New analysis"
 msgstr ""
 
 msgid "Character analysis of Balinese satua"
@@ -650,12 +1018,6 @@ msgid ""
 "You can delete individual analyses or your whole history. You can delete "
 "your account from the profile page; this permanently deletes your account "
 "and all of your analyses."
-msgstr ""
-
-msgid "Display mode"
-msgstr ""
-
-msgid "Advanced (research mode)"
 msgstr ""
 
 msgid "PrasiBali.ai home"

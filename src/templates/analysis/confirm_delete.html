@@ -1,0 +1,19 @@
+{% extends "base_app.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Delete history" %} · PrasiBali.ai{% endblock title %}
+{% block content %}
+  <section class="panel grid max-w-[720px] gap-4" aria-labelledby="delete-title">
+    <h1 id="delete-title" class="text-page-title">{% if run %}{% translate "Delete this analysis?" %}{% else %}{% translate "Delete all history?" %}{% endif %}</h1>
+    {% if run %}
+      <p>{% blocktranslate with date=run.created_at|date:"j F Y, H:i" %}The analysis from {{ date }} will be deleted permanently, together with its text and result:{% endblocktranslate %} <span lang="ban" class="font-semibold">{{ run.title }}</span></p>
+    {% else %}
+      <p>{% blocktranslate count n=count %}{{ n }} analysis will be deleted permanently, together with its text and result.{% plural %}All {{ n }} analyses will be deleted permanently, together with their texts and results.{% endblocktranslate %}</p>
+    {% endif %}
+    <p class="help">{% translate "This cannot be undone. Deleting history does not restore today's quota." %}</p>
+    <form method="post" class="flex flex-wrap gap-3">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger gap-2">{% icon "trash" %}<span>{% if run %}{% translate "Delete analysis" %}{% else %}{% translate "Delete all history" %}{% endif %}</span></button>
+      <a class="btn" href="{% if run %}{% url 'analysis:history_detail' run.pk %}{% else %}{% url 'analysis:history' %}{% endif %}">{% translate "Cancel" %}</a>
+    </form>
+  </section>
+{% endblock content %}

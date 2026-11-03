@@ -1,0 +1,39 @@
+{% extends "base_app.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Analysis history" %} · PrasiBali.ai{% endblock title %}
+{% block content %}
+  <div class="flex flex-wrap items-start justify-between gap-3">
+    <div class="grid gap-2">
+      <a class="link inline-flex items-center gap-1 text-label" href="{% url 'analysis:history' %}">{% icon "arrow-left" 16 %}<span>{% translate "Analysis history" %}</span></a>
+      <h1 class="text-page-title" lang="ban">{{ run.title }}</h1>
+      <p class="flex flex-wrap items-center gap-2 text-caption text-muted">
+        <span>{{ run.created_at|date:"j F Y, H:i" }}</span>
+        <span aria-hidden="true">·</span><span>{{ run.get_task_type_display }}</span>
+        <span class="status status--{{ run.status }}">{{ run.get_status_display }}</span>
+      </p>
+    </div>
+    <div class="flex flex-wrap items-center gap-2">
+      {% include "partials/mode_toggle.html" %}
+      <a class="btn btn-danger gap-2" href="{% url 'analysis:history_delete' run.pk %}">{% icon "trash" %}<span>{% translate "Delete" %}</span></a>
+    </div>
+  </div>
+
+  <section class="panel grid gap-4" aria-labelledby="config-title">
+    <h2 id="config-title" class="text-section-title">{% translate "Model configuration" %}</h2>
+    {% include "analysis/partials/run_config.html" with cv=config_view %}
+  </section>
+
+  {% if view %}
+    {% include "analysis/partials/result.html" with in_history=True %}
+  {% else %}
+    {% if run.status == "failed" %}
+      <p class="alert alert--danger flex items-start gap-2" role="alert">{% icon "alert" %}<span>{{ run.error_message|default:_("The analysis could not be completed.") }}</span></p>
+    {% else %}
+      <p class="alert alert--warning flex items-start gap-2">{% icon "alert" %}<span>{% translate "This analysis did not finish, so there is no result to show." %}</span></p>
+    {% endif %}
+    <section class="panel grid gap-3" aria-labelledby="input-title">
+      <h2 id="input-title" class="text-section-title">{% translate "Story text" %}</h2>
+      <p lang="ban" class="story whitespace-pre-line">{{ run.input_text }}</p>
+    </section>
+  {% endif %}
+{% endblock content %}

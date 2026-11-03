@@ -19,6 +19,9 @@
   --warning: #7A5200; --warning-bg: #FDF3DC;
   /* Character-group edge colours (DESIGN.md "Kartu kelompok tokoh"); never role or status colours. */
   --group-1: #7B3FA0; --group-2: #2F7D32; --group-3: #A3366B; --group-4: #8A6A00; --group-5: #2B6CB0; --group-6: #4A5568;
+  /* Entity-label badges (DESIGN.md "Label entitas pada teks"): filled, text `on-label`, contrast >= 6.3:1. */
+  --label-pname: #B42318; --label-anm: #1E3A8A; --label-gods: #8A4B00; --label-adj: #0F6B63; --label-obj: #4A5468;
+  --on-label: #FFFFFF;
   color-scheme: light;
 }
 
@@ -33,6 +36,8 @@
   --success: #8FDDB2; --success-bg: #123525;
   --warning: #F2C66D; --warning-bg: #3A2C0E;
   --group-1: #C9A3F0; --group-2: #8FD694; --group-3: #F09AC4; --group-4: #E6C35C; --group-5: #8EC1F5; --group-6: #B4BED2;
+  --label-pname: #FDA29B; --label-anm: #A4BCFD; --label-gods: #F5C451; --label-adj: #5FE9D0; --label-obj: #D0D5DD;
+  --on-label: #0C1224;
   color-scheme: dark;
 }
 
@@ -165,7 +170,45 @@
   .group-dot { display: inline-block; width: 10px; height: 10px; border-radius: 999px; background: var(--group, var(--line-strong)); }
   .stat-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 14px 16px; }
   textarea.input { min-height: calc(12 * 1.8em); padding: 12px; line-height: 1.8; font-size: 17px; resize: vertical; }
+
+  /* Session 4: workspace sidebar, selectable highlights, entity-label colours, context, history. */
+  .nav-item { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 12px; border-radius: var(--radius-md); color: var(--muted); font-size: 14px; font-weight: 500; text-decoration: none; transition: background-color 120ms cubic-bezier(0.2, 0, 0, 1); }
+  .nav-item:hover { background: var(--surface-selected); color: var(--ink); }
+  .nav-item[aria-current="page"] { background: var(--surface-selected); color: var(--ink); font-weight: 600; }
+
+  button.entity { margin: 0; border-radius: 2px; text-align: inherit; }
+  .entity--none[aria-pressed="true"] { outline-color: var(--accent); }
+  .entity-tag--pname, .entity-tag--anm, .entity-tag--gods, .entity-tag--adj, .entity-tag--obj { border-color: transparent; color: var(--on-label); font-weight: 600; }
+  .entity-tag--pname { background: var(--label-pname); }
+  .entity-tag--anm { background: var(--label-anm); }
+  .entity-tag--gods { background: var(--label-gods); }
+  .entity-tag--adj { background: var(--label-adj); }
+  .entity-tag--obj { background: var(--label-obj); }
+  .story .entity-tag { margin-right: 2px; }
+
+  .context-list { padding-left: 20px; list-style: decimal; font-size: 15px; line-height: 1.6; }
+  .context-list li { padding-left: 4px; }
+  .context-mark { background: var(--surface-selected); color: var(--ink); font-weight: 600; box-shadow: inset 0 -2px 0 var(--accent); padding: 0 2px; }
+
+  .tag { display: inline-block; padding: 2px 8px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); color: var(--ink); background: var(--surface); font-size: 13px; font-weight: 500; line-height: 1.4; }
+  .status { display: inline-block; padding: 2px 8px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500; line-height: 1.4; white-space: nowrap; }
+  .status--success { color: var(--success); background: var(--success-bg); }
+  .status--failed { color: var(--danger); background: var(--danger-bg); }
+  .status--processing { color: var(--warning); background: var(--warning-bg); }
+
+  .table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  .table th { padding: 12px 16px; text-align: left; font-size: 14px; font-weight: 500; color: var(--muted); white-space: nowrap; }
+  .table td { padding: 12px 16px; border-top: 1px solid var(--line); vertical-align: middle; }
+  .table tbody tr:hover { background: var(--surface-selected); }
+
+  .htmx-indicator { display: none; }
+  .htmx-request.htmx-indicator, .htmx-request .htmx-indicator { display: grid; }
+  .spinner { width: 16px; height: 16px; border: 2px solid var(--line-strong); border-top-color: var(--accent); border-radius: 999px; animation: spin 800ms linear infinite; }
 }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+[x-cloak] { display: none !important; }
 
 html[data-mode="simple"] .adv-only { display: none; }
 

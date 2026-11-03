@@ -1,0 +1,60 @@
+{% extends "base_app.html" %}
+{% load i18n ui analysis_tags %}
+{% block title %}{% translate "Analysis history" %} · PrasiBali.ai{% endblock title %}
+{% block content %}
+  <div class="flex flex-wrap items-center justify-between gap-3">
+    <h1 class="text-page-title">{% translate "Analysis history" %}</h1>
+    {% if page.paginator.count %}
+      <a class="btn btn-danger gap-2" href="{% url 'analysis:history_delete_all' %}">{% icon "trash" %}<span>{% translate "Delete all history" %}</span></a>
+    {% endif %}
+  </div>
+  {% if not quota.unlimited %}
+    <p class="help">{% blocktranslate with used=quota.used limit=quota.limit %}Today you have used {{ used }} of {{ limit }} analyses. Failed analyses are not counted, and deleting history does not restore the quota.{% endblocktranslate %}</p>
+  {% endif %}
+
+  {% if page.object_list %}
+    <div class="panel overflow-x-auto p-0">
+      <table class="table">
+        <caption class="sr-only">{% translate "Your analyses, newest first" %}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{% translate "Time" %}</th>
+            <th scope="col">{% translate "Satua text" %}</th>
+            <th scope="col">{% translate "Task" %}</th>
+            <th scope="col">{% translate "Mode" %}</th>
+            <th scope="col">{% translate "Status" %}</th>
+            <th scope="col">{% translate "Duration" %}</th>
+            <th scope="col"><span class="sr-only">{% translate "Actions" %}</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for run in page %}
+            <tr>
+              <td class="whitespace-nowrap">{{ run.created_at|date:"j M Y, H:i" }}</td>
+              <td><a class="link" lang="ban" href="{% url 'analysis:history_detail' run.pk %}">{{ run.title }}</a></td>
+              <td>{{ run.get_task_type_display }}</td>
+              <td class="whitespace-nowrap">{% if run.mode == "advanced" %}{% translate "Advanced" %}{% else %}{% translate "General user" %}{% endif %}</td>
+              <td><span class="status status--{{ run.status }}">{{ run.get_status_display }}</span></td>
+              <td class="whitespace-nowrap">{{ run.duration_ms|seconds }} s</td>
+              <td class="text-right">
+                <a class="btn btn-danger gap-2" href="{% url 'analysis:history_delete' run.pk %}" aria-label="{% blocktranslate with title=run.title %}Delete analysis {{ title }}{% endblocktranslate %}">{% icon "trash" %}<span>{% translate "Delete" %}</span></a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if page.has_other_pages %}
+      <nav class="flex flex-wrap items-center gap-3" aria-label="{% translate 'Pages' %}">
+        {% if page.has_previous %}<a class="btn gap-2" href="?halaman={{ page.previous_page_number }}">{% icon "arrow-left" %}<span>{% translate "Newer" %}</span></a>{% endif %}
+        <span class="text-label text-muted">{% blocktranslate with n=page.number total=page.paginator.num_pages %}Page {{ n }} of {{ total }}{% endblocktranslate %}</span>
+        {% if page.has_next %}<a class="btn gap-2" href="?halaman={{ page.next_page_number }}"><span>{% translate "Older" %}</span>{% icon "arrow-right" %}</a>{% endif %}
+      </nav>
+    {% endif %}
+  {% else %}
+    <div class="panel grid justify-items-start gap-3">
+      <p>{% translate "Your history is empty. Every analysis you run is saved here." %}</p>
+      <a class="btn btn-primary gap-2" href="{% url 'analysis:workspace' %}">{% icon "play" %}<span>{% translate "Analyse text" %}</span></a>
+    </div>
+  {% endif %}
+{% endblock content %}

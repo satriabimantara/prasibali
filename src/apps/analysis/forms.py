@@ -2,59 +2,92 @@
 
 from django import forms
 from django.conf import settings
-from django.utils.formats import number_format
 from django.utils.translation import gettext as _
 from django.utils.translation import gettext_lazy
 
+from .presenters import f1
 from .services import model_catalog as mc
 from .services.exceptions import TextValidationError, UnknownModelError
 from .services.preprocessing import validate_text
 
 MODES = (("simple", gettext_lazy("General user")), ("advanced", gettext_lazy("Advanced")))
 
+# Text features (thesis Tabel 3.10).
+FEATURE_DESCRIPTIONS = {
+    "TF1": gettext_lazy("basic BaliSentiLex lexicon features (total positive and negative synset scores)"),
+    "TF2": gettext_lazy("additional lexicon features (word counts and polarity scores per word class)"),
+    "TF3": gettext_lazy("POS tag features (share of nouns, adjectives, adverbs and verbs)"),
+    "TF4": gettext_lazy("TF-IDF"),
+    "TF5": gettext_lazy("average Balinese FastText word embedding (300 dimensions)"),
+}
 
-def f1(value) -> str:
-    return "–" if value is None else number_format(value, 4)
+
+def tags_for(entry: mc.ClassifierEntry) -> list[str]:
+    tags = []
+    if entry.is_default:
+        tags += [_("default"), _("recommended")]
+    if entry.is_thesis_best:
+        tags.append(_("best in the thesis"))
+    if not entry.available:
+        tags.append(_("coming soon"))
+    return tags
 
 
-class SelectWithDisabled(forms.Select):
-    """Select that renders some options disabled (catalog entries that are not available yet)."""
+def f1_cv_text(entry: mc.ClassifierEntry) -> str:
+    return _("Macro F1 CV %(f1)s (%(ref)s)") % {"f1": f1(entry.f1_cv), "ref": entry.thesis_ref_cv}
 
-    def __init__(self, *args, disabled_values=(), **kwargs):
-        super().__init__(*args, **kwargs)
-        self.disabled_values = set(disabled_values)
 
-    def create_option(self, name, value, *args, **kwargs):
-        option = super().create_option(name, value, *args, **kwargs)
-        if value in self.disabled_values:
-            option["attrs"]["disabled"] = True
-        return option
+def f1_test_text(entry: mc.ClassifierEntry) -> str:
+    if entry.f1_test is None:
+        return _("macro F1 test –")
+    return _("macro F1 test %(f1)s (%(ref)s)") % {"f1": f1(entry.f1_test), "ref": entry.thesis_ref_test}
 
 
 def classifier_label(entry: mc.ClassifierEntry) -> str:
-    parts = [f"{entry.algorithm_label} · {entry.feature_label}",
-             _("CV F1 %(f1)s (%(ref)s)") % {"f1": f1(entry.f1_cv), "ref": entry.thesis_ref_cv}]
-    if entry.f1_test is not None:
-        parts.append(_("test F1 %(f1)s (%(ref)s)") % {"f1": f1(entry.f1_test), "ref": entry.thesis_ref_test})
-    else:
-        parts.append(_("test F1 –"))
-    if entry.is_thesis_best:
-        parts.append(_("best in the thesis"))
-    if entry.is_default:
-        parts.append(_("default"))
-    if not entry.available:
-        parts.append(_("coming soon"))
-    return " · ".join(parts)
+    """One-line description of a catalog entry (history detail, plain-select fallback, tests)."""
+    return " · ".join([entry.algorithm_label, entry.feature_label, f1_cv_text(entry), f1_test_text(entry),
+                       *tags_for(entry)])
 
 
-def classifier_choices():
-    titles = {
-        "m2-wordvector": _("M2 · Word vector"),
-        "m1-wordvector": _("M1 · Word vector"),
-        "m2-lexicon": _("M2 · Lexicon (coming soon)"),
-        "m1-lexicon": _("M1 · Lexicon (coming soon)"),
+def research_catalog() -> dict:
+    """Data for the cascaded classifier picker (variant -> feature type -> feature codes -> algorithm)."""
+    entries = []
+    for entry in mc.CLASSIFIERS.values():
+        entries.append({
+            "id": entry.id,
+            "variant": entry.variant,
+            "featureType": entry.feature_type,
+            "codes": entry.feature_label,
+            "algorithm": entry.algorithm_code,
+            "algorithmLabel": entry.algorithm_label,
+            "algorithmName": entry.algorithm,
+            "available": entry.available,
+            "isDefault": entry.is_default,
+            "isThesisBest": entry.is_thesis_best,
+            "isBestForAlgorithm": entry.is_best_for_algorithm,
+            "f1Cv": f1(entry.f1_cv),
+            "refCv": entry.thesis_ref_cv,
+            "f1Test": f1(entry.f1_test),
+            "refTest": entry.thesis_ref_test or "",
+            "tags": tags_for(entry),
+            "score": _("decision_function (distance to the hyperplane, not a probability)")
+            if entry.algorithm_code == "svm" else _("estimated probability (predict_proba)"),
+        })
+    return {
+        "entries": entries,
+        "variants": [{"id": key, "label": key.upper(), "description": str(text)} for key, text in mc.VARIANTS.items()],
+        "featureTypes": [{"id": key, "label": str(text)} for key, text in mc.FEATURE_TYPES.items()],
+        "features": {code: str(text) for code, text in FEATURE_DESCRIPTIONS.items()},
+        "defaultId": mc.DEFAULT_CLASSIFIER_ID,
+        "text": {
+            "comingSoon": _("coming soon"),
+            "f1Cv": _("macro F1 CV"),
+            "f1Test": _("test"),
+            "noTest": _("The thesis tests only the best feature combination of each algorithm on the test data."),
+        },
+        "baseline": _("Rule-based BaliSentiLex baseline for comparison: F1 CV %(cv)s, F1 test %(test)s.") % {
+            "cv": f1(mc.BASELINE_RULE_BASED_F1["cv"]), "test": f1(mc.BASELINE_RULE_BASED_F1["test"])},
     }
-    return [(titles[key], [(e.id, classifier_label(e)) for e in entries]) for key, entries in mc.classifier_groups()]
 
 
 class AnalysisForm(forms.Form):
@@ -66,7 +99,7 @@ class AnalysisForm(forms.Form):
     )
     mode = forms.ChoiceField(choices=MODES, initial="simple", required=False, widget=forms.HiddenInput)
     task = forms.ChoiceField(label=gettext_lazy("What to analyse"), choices=list(mc.TASKS.items()),
-                             initial=mc.DEFAULT_TASK)
+                             initial=mc.DEFAULT_TASK, widget=forms.Select(attrs={"x-model": "task"}))
     ner_model = forms.ChoiceField(label=gettext_lazy("(i) Character identification model"),
                                   initial=mc.DEFAULT_NER_MODEL, required=False)
     alias_method = forms.ChoiceField(label=gettext_lazy("(ii) Alias clustering method"),
@@ -77,6 +110,7 @@ class AnalysisForm(forms.Form):
         widget=forms.NumberInput(attrs={"step": "0.01"}),
         help_text=gettext_lazy("Between 0.50 and 1.00. The thesis uses 0.85."),
     )
+    # Rendered as a hidden input that the cascaded picker (Alpine.js) fills; validated against the catalog.
     classifier_id = forms.ChoiceField(label=gettext_lazy("(iii) Role classification model"),
                                       initial=mc.DEFAULT_CLASSIFIER_ID, required=False)
 
@@ -85,28 +119,28 @@ class AnalysisForm(forms.Form):
     def __init__(self, data=None, *args, **kwargs):
         if data is not None:
             # Research fields missing from the POST (simple mode) keep their defaults, so the panel still shows
-            # the best models when the user switches to advanced mode after an analysis.
+            # the default models when the user switches to advanced mode after an analysis.
             data = data.copy()
             for name in self.RESEARCH_FIELDS:
                 if not data.get(name):
                     data[name] = self.base_fields[name].initial
         super().__init__(data, *args, **kwargs)
         self.fields["text"].max_length = settings.ANALYSIS_MAX_CHARS
+        best = _("best in the thesis")
+        default = _("default")
         self.fields["ner_model"].choices = [
-            (m.id, " · ".join([m.label, _("CV F1 %(f1)s") % {"f1": f1(m.f1_cv)},
-                               _("test F1 %(f1)s") % {"f1": f1(m.f1_test)}]
-                              + ([_("best in the thesis")] if m.id == mc.DEFAULT_NER_MODEL else [])))
+            (m.id, " · ".join([m.label, _("F1 CV %(f1)s") % {"f1": f1(m.f1_cv)},
+                               _("macro F1 test %(f1)s") % {"f1": f1(m.f1_test)}]
+                              + ([best, default] if m.id == mc.DEFAULT_NER_MODEL else [])))
             for m in mc.NER_MODELS.values()
         ]
         self.fields["alias_method"].choices = [
             (m.id, " · ".join([m.label, f"F1 {f1(m.f1)} (Tabel 4.37)"]
-                              + ([_("best in the thesis")] if m.id == mc.DEFAULT_ALIAS_METHOD else [])))
+                              + ([best, default] if m.id == mc.DEFAULT_ALIAS_METHOD else [])))
             for m in mc.ALIAS_METHODS.values()
         ]
-        field = self.fields["classifier_id"]
-        field.choices = classifier_choices()
-        field.widget = SelectWithDisabled(
-            choices=field.choices, disabled_values=[e.id for e in mc.CLASSIFIERS.values() if not e.available])
+        # Every catalog id is a valid choice here; clean_classifier_id() rejects entries that are not available.
+        self.fields["classifier_id"].choices = [(e.id, classifier_label(e)) for e in mc.CLASSIFIERS.values()]
 
     def clean_text(self):
         try:
@@ -121,6 +155,21 @@ class AnalysisForm(forms.Form):
         except UnknownModelError as exc:
             message = _("This model is not available yet. Choose another model.")
             raise forms.ValidationError(message, code="unavailable") from exc
+
+    @property
+    def mode_value(self) -> str:
+        value = self["mode"].value()
+        return "advanced" if value == "advanced" else "simple"
+
+    @property
+    def task_value(self) -> str:
+        value = self["task"].value()
+        return value if value in mc.TASKS else mc.DEFAULT_TASK
+
+    @property
+    def classifier_value(self) -> str:
+        value = self["classifier_id"].value()
+        return value if value in mc.CLASSIFIERS else mc.DEFAULT_CLASSIFIER_ID
 
     def config(self) -> mc.PipelineConfig:
         """General-user mode always uses the defaults; advanced mode (Mode Peneliti) uses the chosen models."""

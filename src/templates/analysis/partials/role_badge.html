@@ -1,0 +1,1 @@
+{% load i18n %}<span class="role role--{{ role.role_key }}">{% if role.role_key == "protagonis" %}{% translate "Protagonist" %}{% elif role.role_key == "antagonis" %}{% translate "Antagonist" %}{% else %}{{ role.role }}{% endif %}</span>

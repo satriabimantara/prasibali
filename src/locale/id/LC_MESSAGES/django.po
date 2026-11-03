@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 08:30+0800\n"
+"POT-Creation-Date: 2026-11-03 09:06+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -98,43 +98,106 @@ msgstr "Profil Anda sudah disimpan."
 msgid "Your account and all of its data have been deleted."
 msgstr "Akun Anda beserta seluruh datanya sudah dihapus."
 
+msgid "Error"
+msgstr "Kesalahan"
+
+msgid "Configuration and model version"
+msgstr "Konfigurasi dan versi model"
+
+msgid "Input"
+msgstr "Masukan"
+
+msgid "Output"
+msgstr "Keluaran"
+
+msgid "mode"
+msgstr "mode"
+
+msgid "classifier"
+msgstr "classifier"
+
+msgid "configuration"
+msgstr "konfigurasi"
+
+msgid "model version"
+msgstr "versi model"
+
+msgid "output"
+msgstr "keluaran"
+
 msgid "General user"
 msgstr "Pengguna Umum"
 
 msgid "Advanced"
 msgstr "Lanjutan"
 
-#, python-format
-msgid "CV F1 %(f1)s (%(ref)s)"
-msgstr "F1 CV %(f1)s (%(ref)s)"
+msgid ""
+"basic BaliSentiLex lexicon features (total positive and negative synset "
+"scores)"
+msgstr ""
+"fitur leksikon dasar BaliSentiLex (total skor synset positif dan negatif)"
 
-#, python-format
-msgid "test F1 %(f1)s (%(ref)s)"
-msgstr "F1 uji %(f1)s (%(ref)s)"
+msgid ""
+"additional lexicon features (word counts and polarity scores per word class)"
+msgstr ""
+"fitur leksikon tambahan (jumlah kata dan skor polaritas per kelas kata)"
 
-msgid "test F1 –"
-msgstr "F1 uji –"
+msgid "POS tag features (share of nouns, adjectives, adverbs and verbs)"
+msgstr "fitur POS tag (persentase nomina, adjektiva, adverbia, dan verba)"
 
-msgid "best in the thesis"
-msgstr "terbaik menurut tesis"
+msgid "TF-IDF"
+msgstr "TF-IDF"
+
+msgid "average Balinese FastText word embedding (300 dimensions)"
+msgstr "rata-rata word embedding FastText bahasa Bali (300 dimensi)"
 
 msgid "default"
 msgstr "bawaan"
 
+msgid "recommended"
+msgstr "rekomendasi"
+
+msgid "best in the thesis"
+msgstr "terbaik menurut tesis"
+
 msgid "coming soon"
 msgstr "segera hadir"
 
-msgid "M2 · Word vector"
-msgstr "M2 · Word vector"
+#, python-format
+msgid "Macro F1 CV %(f1)s (%(ref)s)"
+msgstr "F1 makro CV %(f1)s (%(ref)s)"
 
-msgid "M1 · Word vector"
-msgstr "M1 · Word vector"
+msgid "macro F1 test –"
+msgstr "F1 makro uji –"
 
-msgid "M2 · Lexicon (coming soon)"
-msgstr "M2 · Leksikon (segera hadir)"
+#, python-format
+msgid "macro F1 test %(f1)s (%(ref)s)"
+msgstr "F1 makro uji %(f1)s (%(ref)s)"
 
-msgid "M1 · Lexicon (coming soon)"
-msgstr "M1 · Leksikon (segera hadir)"
+msgid "decision_function (distance to the hyperplane, not a probability)"
+msgstr "decision_function (jarak ke hyperplane, bukan probabilitas)"
+
+msgid "estimated probability (predict_proba)"
+msgstr "estimasi probabilitas (predict_proba)"
+
+msgid "macro F1 CV"
+msgstr "F1 makro CV"
+
+msgid "test"
+msgstr "uji"
+
+msgid ""
+"The thesis tests only the best feature combination of each algorithm on the "
+"test data."
+msgstr ""
+"Tesis hanya menguji kombinasi fitur terbaik tiap algoritma pada data uji."
+
+#, python-format
+msgid ""
+"Rule-based BaliSentiLex baseline for comparison: F1 CV %(cv)s, F1 test "
+"%(test)s."
+msgstr ""
+"Pembanding baseline rule-based BaliSentiLex: F1 CV %(cv)s, F1 uji %(test)s."
 
 msgid "Satua text"
 msgstr "Teks satua"
@@ -162,15 +225,114 @@ msgid "(iii) Role classification model"
 msgstr "(iii) Model klasifikasi peran"
 
 #, python-format
-msgid "CV F1 %(f1)s"
+msgid "F1 CV %(f1)s"
 msgstr "F1 CV %(f1)s"
 
 #, python-format
-msgid "test F1 %(f1)s"
-msgstr "F1 uji %(f1)s"
+msgid "macro F1 test %(f1)s"
+msgstr "F1 makro uji %(f1)s"
 
 msgid "This model is not available yet. Choose another model."
 msgstr "Model ini belum tersedia. Pilih model lain."
+
+msgid "Processing"
+msgstr "Diproses"
+
+msgid "Finished"
+msgstr "Selesai"
+
+msgid "Failed"
+msgstr "Gagal"
+
+msgid "user"
+msgstr "pengguna"
+
+msgid "task"
+msgstr "tugas"
+
+msgid "satua text"
+msgstr "teks satua"
+
+msgid "status"
+msgstr "status"
+
+msgid "failed stage"
+msgstr "tahap yang gagal"
+
+msgid "error message"
+msgstr "pesan kesalahan"
+
+msgid "technical detail"
+msgstr "detail teknis"
+
+msgid "duration (ms)"
+msgstr "durasi (ms)"
+
+msgid "created at"
+msgstr "dibuat pada"
+
+msgid "analysis run"
+msgstr "analisis"
+
+msgid "analysis runs"
+msgstr "log analisis"
+
+msgid "day"
+msgstr "hari"
+
+msgid "analyses used"
+msgstr "analisis terpakai"
+
+msgid "daily usage"
+msgstr "pemakaian harian"
+
+msgid "For KNN it is the distance-weighted share of the 9 nearest training examples with this label."
+msgstr "Untuk KNN, nilainya adalah proporsi berbobot jarak dari 9 contoh latih terdekat yang berlabel sama."
+
+msgid "For Random Forest it is the average vote of the trees."
+msgstr "Untuk Random Forest, nilainya adalah rata-rata suara pohon."
+
+msgid ""
+"For a Decision Tree it is the share of training examples with this label in "
+"the leaf."
+msgstr ""
+"Untuk Decision Tree, nilainya adalah proporsi contoh latih berlabel sama di "
+"daun pohon."
+
+msgid "For Gaussian Naive Bayes it is the posterior probability of the model."
+msgstr ""
+"Untuk Gaussian Naive Bayes, nilainya adalah probabilitas posterior model."
+
+msgid ""
+"For the Multilayer Perceptron it is the output of the network's final layer."
+msgstr ""
+"Untuk Multilayer Perceptron, nilainya adalah keluaran lapisan akhir jaringan."
+
+msgid "SVM decision_function"
+msgstr "decision_function SVM"
+
+msgid ""
+"Signed distance to the separating hyperplane, not a probability. The sign "
+"shows the side: positive for Protagonist, negative for Antagonist. Values "
+"near 0 lie close to the boundary."
+msgstr ""
+"Jarak bertanda ke hyperplane pemisah, bukan probabilitas. Tandanya "
+"menunjukkan sisi: positif untuk Protagonis, negatif untuk Antagonis. Nilai "
+"yang dekat 0 berada dekat batas kelas."
+
+msgid "Estimated probability (predict_proba)"
+msgstr "Estimasi probabilitas (predict_proba)"
+
+msgid "The model's estimate, between 0 and 1, for the chosen label."
+msgstr "Estimasi model, antara 0 dan 1, untuk label yang dipilih."
+
+#, python-format
+msgid ""
+"You have used today's quota of %(limit)s analyses. The quota resets at "
+"midnight (WITA)."
+msgstr ""
+"Kuota hari ini (%(limit)s analisis) sudah habis. Kuota diatur ulang pukul "
+"00.00 WITA."
 
 msgid "The analysis could not be completed. Your text has not been lost."
 msgstr "Analisis tidak dapat diselesaikan. Teks Anda tidak hilang."
@@ -266,6 +428,13 @@ msgid ""
 msgstr ""
 "Teks memiliki kurang dari %(n)s kalimat, batas minimum pada tesis. Hasil "
 "bisa kurang andal."
+
+msgid "The analysis has been deleted from your history."
+msgstr "Analisis sudah dihapus dari riwayat Anda."
+
+#, python-format
+msgid "Your analysis history has been deleted (%(n)s items)."
+msgstr "Riwayat analisis Anda sudah dihapus (%(n)s analisis)."
 
 msgid "Indonesian"
 msgstr "Indonesia"
@@ -422,8 +591,162 @@ msgstr ""
 msgid "Prasi in Balinese script"
 msgstr "Prasi dalam aksara Bali"
 
+msgid "Delete history"
+msgstr "Hapus riwayat"
+
+msgid "Delete this analysis?"
+msgstr "Hapus analisis ini?"
+
+msgid "Delete all history?"
+msgstr "Hapus semua riwayat?"
+
+#, python-format
+msgid ""
+"The analysis from %(date)s will be deleted permanently, together with its "
+"text and result:"
+msgstr ""
+"Analisis tanggal %(date)s akan dihapus permanen beserta teks dan hasilnya:"
+
+#, python-format
+msgid ""
+"%(n)s analysis will be deleted permanently, together with its text and "
+"result."
+msgid_plural ""
+"All %(n)s analyses will be deleted permanently, together with their texts "
+"and results."
+msgstr[0] "%(n)s analisis akan dihapus permanen beserta teks dan hasilnya."
+
+msgid "This cannot be undone. Deleting history does not restore today's quota."
+msgstr ""
+"Tindakan ini tidak dapat dibatalkan. Menghapus riwayat tidak mengembalikan "
+"kuota hari ini."
+
+msgid "Delete analysis"
+msgstr "Hapus analisis"
+
+msgid "Delete all history"
+msgstr "Hapus semua riwayat"
+
+msgid "Analysis history"
+msgstr "Riwayat analisis"
+
+msgid "Delete"
+msgstr "Hapus"
+
+msgid "Model configuration"
+msgstr "Konfigurasi model"
+
+msgid "The analysis could not be completed."
+msgstr "Analisis tidak dapat diselesaikan."
+
+msgid "This analysis did not finish, so there is no result to show."
+msgstr ""
+"Analisis ini tidak selesai, sehingga tidak ada hasil yang bisa ditampilkan."
+
+msgid "Story text"
+msgstr "Teks cerita"
+
+#, python-format
+msgid ""
+"Today you have used %(used)s of %(limit)s analyses. Failed analyses are not "
+"counted, and deleting history does not restore the quota."
+msgstr ""
+"Hari ini Anda sudah memakai %(used)s dari %(limit)s analisis. Analisis yang "
+"gagal tidak dihitung, dan menghapus riwayat tidak mengembalikan kuota."
+
+msgid "Your analyses, newest first"
+msgstr "Analisis Anda, dari yang terbaru"
+
+msgid "Time"
+msgstr "Waktu"
+
+msgid "Task"
+msgstr "Tugas"
+
+msgid "Mode"
+msgstr "Mode"
+
+msgid "Status"
+msgstr "Status"
+
+msgid "Duration"
+msgstr "Durasi"
+
+msgid "Actions"
+msgstr "Aksi"
+
+#, python-format
+msgid "Delete analysis %(title)s"
+msgstr "Hapus analisis %(title)s"
+
+msgid "Pages"
+msgstr "Halaman"
+
+msgid "Newer"
+msgstr "Lebih baru"
+
+#, python-format
+msgid "Page %(n)s of %(total)s"
+msgstr "Halaman %(n)s dari %(total)s"
+
+msgid "Older"
+msgstr "Lebih lama"
+
+msgid "Your history is empty. Every analysis you run is saved here."
+msgstr ""
+"Riwayat Anda masih kosong. Setiap analisis yang Anda jalankan tersimpan di "
+"sini."
+
+msgid "Analyse text"
+msgstr "Analisis teks"
+
+msgid "Research mode: models and parameters"
+msgstr "Mode Peneliti: model dan parameter"
+
+msgid ""
+"Each option shows the thesis result of its experiment: macro F1 from 10-fold "
+"cross-validation (CV) and on the test data, with the table it comes from. "
+"The default is used in General user mode."
+msgstr ""
+"Setiap pilihan menampilkan hasil eksperimennya di tesis: F1 makro dari 10-"
+"fold cross-validation (CV) dan pada data uji, beserta tabel rujukannya. "
+"Pilihan bawaan dipakai di mode Pengguna Umum."
+
+msgid "Alias clustering and role classification are not used for this task."
+msgstr "Alias clustering dan klasifikasi peran tidak dipakai untuk tugas ini."
+
+msgid "Pretrained variant"
+msgstr "Varian pretrained"
+
+msgid "Feature type"
+msgstr "Jenis fitur"
+
+msgid "Feature code"
+msgstr "Kode fitur"
+
+msgid "Algorithm"
+msgstr "Algoritma"
+
+msgid "Macro F1, 10-fold cross-validation"
+msgstr "F1 makro, 10-fold cross-validation"
+
+msgid "Macro F1 on the test data"
+msgstr "F1 makro pada data uji"
+
+msgid "Variant"
+msgstr "Varian"
+
+msgid "Features"
+msgstr "Fitur"
+
+msgid "Score shown in the result"
+msgstr "Skor yang ditampilkan di hasil"
+
 msgid "Analysis result"
 msgstr "Hasil analisis"
+
+msgid "Open in history"
+msgstr "Buka di riwayat"
 
 msgid "Character groups"
 msgstr "Kelompok tokoh"
@@ -437,11 +760,15 @@ msgstr "Protagonis"
 msgid "Antagonist"
 msgstr "Antagonis"
 
-msgid "Story text"
-msgstr "Teks cerita"
+msgid "Story text with the characters found"
+msgstr "Teks cerita dan tokoh yang dikenali"
 
-msgid "Entity label"
-msgstr "Label entitas"
+msgid ""
+"Select a highlighted name to see the sentences that mention that character. "
+"Use the arrow keys to move between names."
+msgstr ""
+"Pilih nama yang disorot untuk melihat kalimat yang menyebut tokoh itu. "
+"Gunakan tombol panah untuk berpindah antarnama."
 
 msgid "What do the labels mean?"
 msgstr "Apa arti labelnya?"
@@ -464,17 +791,47 @@ msgstr "sebutan tanpa nama diri, seperti memene"
 msgid "Solid underline: protagonist. Dashed underline: antagonist."
 msgstr "Garis bawah utuh: protagonis. Garis bawah putus-putus: antagonis."
 
+msgid ""
+"Dotted underline: character found (roles were not classified for this task)."
+msgstr ""
+"Garis bawah titik-titik: tokoh yang dikenali (peran tidak diklasifikasi "
+"untuk tugas ini)."
+
+msgid "The number after the label is the character group."
+msgstr "Angka setelah label adalah nomor kelompok tokoh."
+
+msgid "Sentence context"
+msgstr "Konteks kalimat"
+
+msgid ""
+"Select a highlighted name in the text or a character group to see the "
+"sentences that mention it."
+msgstr ""
+"Pilih nama yang disorot di teks atau kelompok tokoh untuk melihat kalimat "
+"yang menyebutnya."
+
+#, python-format
+msgid "Mentioned in %(n)s sentence"
+msgid_plural "Mentioned in %(n)s sentences"
+msgstr[0] "Disebut dalam %(n)s kalimat"
+
 msgid "Also called"
 msgstr "Disebut sebagai"
+
+msgid "Character groups and their roles"
+msgstr "Kelompok tokoh dan perannya"
+
+msgid "Characters found"
+msgstr "Tokoh yang ditemukan"
+
+msgid "Entity label"
+msgstr "Label entitas"
 
 msgid "Mentions"
 msgstr "Kemunculan"
 
 msgid "Group"
 msgstr "Kelompok"
-
-msgid "Model score"
-msgstr "Skor model"
 
 msgid "Context words"
 msgstr "Kata konteks"
@@ -483,6 +840,9 @@ msgstr "Kata konteks"
 msgid "%(n)s TF-IDF terms known"
 msgstr "%(n)s term TF-IDF dikenal"
 
+msgid "Model score"
+msgstr "Skor model"
+
 msgid ""
 "Little context: this character appears in few sentences, so the label is "
 "less reliable."
@@ -490,8 +850,8 @@ msgstr ""
 "Konteks sedikit: tokoh ini muncul di sedikit kalimat, sehingga labelnya "
 "kurang andal."
 
-msgid "Characters found"
-msgstr "Tokoh yang ditemukan"
+msgid "Show sentences"
+msgstr "Lihat kalimat"
 
 msgid ""
 "Role labels are an aid to analysis, not a final judgement. The models have "
@@ -500,24 +860,31 @@ msgstr ""
 "Label peran adalah alat bantu analisis, bukan kesimpulan akhir. Akurasi "
 "model terbatas: F1 rata-rata semua model di tesis di bawah 0,70."
 
+#, python-format
 msgid ""
-"The model score is the SVM decision_function: the signed distance to the "
-"separating hyperplane, not a probability or confidence."
+"Model used: %(variant)s %(name)s with %(features)s; macro F1 CV %(cv)s, "
+"macro F1 test %(test)s."
 msgstr ""
-"Skor model adalah decision_function SVM: jarak bertanda ke hyperplane "
-"pemisah, bukan probabilitas atau tingkat keyakinan."
+"Model yang dipakai: %(variant)s %(name)s dengan %(features)s; F1 makro CV "
+"%(cv)s, F1 makro uji %(test)s."
 
 msgid "Models used"
 msgstr "Model yang dipakai"
 
+msgid "Display mode"
+msgstr "Mode tampilan"
+
+msgid "Advanced (research mode)"
+msgstr "Lanjutan (Mode Peneliti)"
+
 msgid "(i) Character identification"
 msgstr "(i) Identifikasi tokoh"
 
-msgid "CV F1"
+msgid "F1 CV"
 msgstr "F1 CV"
 
-msgid "test F1"
-msgstr "F1 uji"
+msgid "macro F1 test"
+msgstr "F1 makro uji"
 
 msgid "(ii) Alias clustering"
 msgstr "(ii) Pengelompokan alias"
@@ -527,6 +894,9 @@ msgstr "ambang"
 
 msgid "(iii) Role classification"
 msgstr "(iii) Klasifikasi peran"
+
+msgid "Macro F1 CV"
+msgstr "F1 makro CV"
 
 msgid "Model file"
 msgstr "Berkas model"
@@ -543,30 +913,24 @@ msgstr "berkas lokal"
 msgid "Versions"
 msgstr "Versi"
 
-msgid "Duration"
-msgstr "Durasi"
+msgid "total"
+msgstr "total"
 
 msgid "Satua analysis"
 msgstr "Analisis satua"
 
+msgid ""
+"The analysis could not be completed because the server did not respond. Your "
+"text has not been lost. Try again."
+msgstr ""
+"Analisis tidak dapat diselesaikan karena server tidak merespons. Teks Anda "
+"tidak hilang. Coba lagi."
+
 msgid "Try a sample satua:"
 msgstr "Coba contoh satua:"
 
-msgid "Research mode: models and parameters"
-msgstr "Mode Peneliti: model dan parameter"
-
-msgid ""
-"The defaults are the best configurations in the thesis. F1 values are the "
-"thesis results for each experiment: cross-validation (CV) and test data."
-msgstr ""
-"Pilihan bawaan adalah konfigurasi terbaik menurut tesis. Nilai F1 adalah "
-"hasil tesis untuk setiap eksperimen: cross-validation (CV) dan data uji."
-
 msgid "Analysing..."
 msgstr "Menganalisis..."
-
-msgid "Analyse text"
-msgstr "Analisis teks"
 
 msgid "Reset"
 msgstr "Reset"
@@ -576,11 +940,46 @@ msgstr ""
 "Paling banyak 20.000 karakter. Analisis biasanya selesai dalam beberapa "
 "detik."
 
+#, python-format
+msgid ""
+"Analyses left today: %(remaining)s of %(limit)s. Failed analyses are not "
+"counted."
+msgstr ""
+"Sisa kuota hari ini: %(remaining)s dari %(limit)s analisis. Analisis yang "
+"gagal tidak dihitung."
+
+#, python-format
+msgid ""
+"You have used today's quota of %(limit)s analyses. The quota resets at "
+"midnight (WITA). Your history stays available."
+msgstr ""
+"Kuota hari ini (%(limit)s analisis) sudah habis. Kuota diatur ulang pukul "
+"00.00 WITA. Riwayat Anda tetap bisa dibuka."
+
+msgid "Analysing text..."
+msgstr "Menganalisis teks..."
+
+msgid "(i) Recognising the characters and their entity labels"
+msgstr "(i) Mengenali tokoh dan label entitasnya"
+
+msgid "(ii) Grouping the other names of each character"
+msgstr "(ii) Mengelompokkan nama lain setiap tokoh"
+
+msgid "(iii) Classifying each group as protagonist or antagonist"
+msgstr ""
+"(iii) Mengklasifikasi setiap kelompok sebagai protagonis atau antagonis"
+
 msgid "Try again"
 msgstr "Coba lagi"
 
 msgid "No analysis yet. Paste a satua text to begin."
 msgstr "Belum ada analisis. Tempel teks satua untuk memulai."
+
+msgid "Workspace"
+msgstr "Ruang kerja"
+
+msgid "New analysis"
+msgstr "Analisis baru"
 
 msgid "Character analysis of Balinese satua"
 msgstr "Analisis tokoh satua Bali"
@@ -721,12 +1120,6 @@ msgstr ""
 "dihapus dari halaman profil; tindakan ini menghapus akun beserta semua "
 "analisis Anda secara permanen."
 
-msgid "Display mode"
-msgstr "Mode tampilan"
-
-msgid "Advanced (research mode)"
-msgstr "Lanjutan (Mode Peneliti)"
-
 msgid "PrasiBali.ai home"
 msgstr "Beranda PrasiBali.ai"
 
@@ -747,6 +1140,31 @@ msgstr "Tema gelap"
 
 msgid "Light theme"
 msgstr "Tema terang"
+
+#~ msgid "test F1 –"
+#~ msgstr "F1 uji –"
+
+#~ msgid "M2 · Word vector"
+#~ msgstr "M2 · Word vector"
+
+#~ msgid "M1 · Word vector"
+#~ msgstr "M1 · Word vector"
+
+#~ msgid "M2 · Lexicon (coming soon)"
+#~ msgstr "M2 · Leksikon (segera hadir)"
+
+#~ msgid "M1 · Lexicon (coming soon)"
+#~ msgstr "M1 · Leksikon (segera hadir)"
+
+#~ msgid "CV F1"
+#~ msgstr "F1 CV"
+
+#~ msgid ""
+#~ "The defaults are the best configurations in the thesis. F1 values are the "
+#~ "thesis results for each experiment: cross-validation (CV) and test data."
+#~ msgstr ""
+#~ "Pilihan bawaan adalah konfigurasi terbaik menurut tesis. Nilai F1 adalah "
+#~ "hasil tesis untuk setiap eksperimen: cross-validation (CV) dan data uji."
 
 #~ msgid "Simple"
 #~ msgstr "Sederhana"

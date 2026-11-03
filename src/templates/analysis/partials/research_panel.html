@@ -1,0 +1,75 @@
+{% load i18n ui form_tags %}
+{# Mode Peneliti (CLAUDE.md "Mode Peneliti"). Choices come from the model catalog; the server validates every id. #}
+<fieldset class="adv-only grid gap-5 rounded-lg border border-line p-4">
+  <legend class="flex items-center gap-2 px-1 text-section-title">{% icon "flask" %}{% translate "Research mode: models and parameters" %}</legend>
+  <p class="help">{% translate "Each option shows the thesis result of its experiment: macro F1 from 10-fold cross-validation (CV) and on the test data, with the table it comes from. The default is used in General user mode." %}</p>
+
+  <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    {% form_field form.ner_model %}
+    <div x-show="task !== 'identify'">{% form_field form.alias_method %}</div>
+    <div x-show="task !== 'identify'">{% form_field form.alias_threshold %}</div>
+  </div>
+  <p class="help" x-show="task === 'identify'" x-cloak>{% translate "Alias clustering and role classification are not used for this task." %}</p>
+
+  {{ catalog|json_script:"classifier-catalog" }}
+  <fieldset class="grid gap-4" x-data="classifierPicker('{{ form.classifier_value }}')"
+            x-show="task === 'full' || task === 'role'">
+    <legend class="field-label">{{ form.classifier_id.label }}</legend>
+    <input type="hidden" name="classifier_id" value="{{ form.classifier_value }}" x-bind:value="selectedId">
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div class="field">
+        <label class="field-label" for="clf-variant">{% translate "Pretrained variant" %}</label>
+        <select id="clf-variant" class="select" x-model="variant">
+          <template x-for="opt in variantOptions" :key="opt.id">
+            <option :value="opt.id" :disabled="!opt.available" :selected="opt.id === variant" x-text="opt.text"></option>
+          </template>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label" for="clf-type">{% translate "Feature type" %}</label>
+        <select id="clf-type" class="select" x-model="featureType">
+          <template x-for="opt in featureTypeOptions" :key="opt.id">
+            <option :value="opt.id" :disabled="!opt.available" :selected="opt.id === featureType" x-text="opt.text"></option>
+          </template>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label" for="clf-codes">{% translate "Feature code" %}</label>
+        <select id="clf-codes" class="select" x-model="codes">
+          <template x-for="opt in codesOptions" :key="opt.id">
+            <option :value="opt.id" :disabled="!opt.available" :selected="opt.id === codes" x-text="opt.text"></option>
+          </template>
+        </select>
+      </div>
+      <div class="field">
+        <label class="field-label" for="clf-algo">{% translate "Algorithm" %}</label>
+        <select id="clf-algo" class="select" x-model="algorithm">
+          <template x-for="opt in algorithmOptions" :key="opt.id">
+            <option :value="opt.id" :disabled="!opt.available" :selected="opt.id === algorithm" x-text="opt.text"></option>
+          </template>
+        </select>
+      </div>
+    </div>
+    {% if form.classifier_id.errors %}<p class="field-error">{{ form.classifier_id.errors|join:" " }}</p>{% endif %}
+
+    {# Description of the chosen experiment. #}
+    <div class="grid gap-3 rounded-md border border-line bg-bg p-4" x-show="entry" x-cloak aria-live="polite">
+      <div class="flex flex-wrap items-center gap-2">
+        <p class="text-section-title" x-text="title"></p>
+        <template x-for="tag in (entry ? entry.tags : [])" :key="tag"><span class="tag" x-text="tag"></span></template>
+      </div>
+      <dl class="grid gap-3 text-body sm:grid-cols-2">
+        <div><dt class="text-label text-muted">{% translate "Macro F1, 10-fold cross-validation" %}</dt>
+          <dd><span x-text="entry && entry.f1Cv"></span> <span class="text-muted" x-text="entry ? '(' + entry.refCv + ')' : ''"></span></dd></div>
+        <div><dt class="text-label text-muted">{% translate "Macro F1 on the test data" %} (<span x-text="variant.toUpperCase()"></span>)</dt>
+          <dd><span x-text="entry && entry.f1Test"></span> <span class="text-muted" x-show="entry && entry.refTest" x-text="entry ? '(' + entry.refTest + ')' : ''"></span>
+            <span class="help block" x-show="entry && !entry.refTest" x-text="catalog.text.noTest"></span></dd></div>
+        <div><dt class="text-label text-muted">{% translate "Variant" %}</dt><dd x-text="variantNote"></dd></div>
+        <div><dt class="text-label text-muted">{% translate "Features" %}</dt>
+          <dd><template x-for="note in featureNotes" :key="note"><span class="block" x-text="note"></span></template></dd></div>
+        <div><dt class="text-label text-muted">{% translate "Score shown in the result" %}</dt><dd x-text="entry && entry.score"></dd></div>
+      </dl>
+      <p class="help" x-text="catalog.baseline"></p>
+    </div>
+  </fieldset>
+</fieldset>

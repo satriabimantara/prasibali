@@ -1,0 +1,36 @@
+{% load i18n analysis_tags %}
+{# Configuration and model version of one run (`cv` = presenters.present_config()). #}
+<dl class="grid gap-4 text-body md:grid-cols-2">
+  <div><dt class="text-label text-muted">{% translate "Display mode" %}</dt>
+    <dd>{% if cv.mode == "advanced" %}{% translate "Advanced (research mode)" %}{% else %}{% translate "General user" %}{% endif %}</dd></div>
+  <div><dt class="text-label text-muted">{% translate "Task" %}</dt><dd>{{ cv.task_label }}</dd></div>
+  {% if cv.ner %}
+    <div><dt class="text-label text-muted">{% translate "(i) Character identification" %}</dt>
+      <dd>{{ cv.ner.label }} · {% translate "F1 CV" %} {{ cv.ner.f1_cv|f1 }} · {% translate "macro F1 test" %} {{ cv.ner.f1_test|f1 }} (Tabel 4.18/4.19)</dd></div>
+  {% endif %}
+  {% if cv.runs_alias and cv.alias %}
+    <div><dt class="text-label text-muted">{% translate "(ii) Alias clustering" %}</dt>
+      <dd>{{ cv.alias.label }} · {% translate "threshold" %} {{ cv.alias_threshold|floatformat:2 }} · F1 {{ cv.alias.f1|f1 }} (Tabel 4.37)</dd></div>
+  {% endif %}
+  {% if cv.runs_roles and cv.classifier %}
+    <div class="md:col-span-2"><dt class="text-label text-muted">{% translate "(iii) Role classification" %}</dt>
+      <dd class="grid gap-1">
+        <span>{{ cv.classifier.variant|upper }} · {{ cv.classifier_feature_type }} · {{ cv.classifier.feature_label }} · {{ cv.classifier.algorithm }}{% if cv.classifier.is_default %} · {% translate "default" %}{% endif %}{% if cv.classifier.is_thesis_best %} · {% translate "best in the thesis" %}{% endif %}</span>
+        <span>{% translate "Macro F1 CV" %} {{ cv.classifier.f1_cv|f1 }} ({{ cv.classifier.thesis_ref_cv }}) · {% translate "macro F1 test" %} {{ cv.classifier.f1_test|f1 }}{% if cv.classifier.thesis_ref_test %} ({{ cv.classifier.thesis_ref_test }}){% endif %}</span>
+        <span class="help">{{ cv.classifier_variant }}</span>
+      </dd></div>
+    {% if cv.classifier_file.file %}
+      <div><dt class="text-label text-muted">{% translate "Model file" %}</dt><dd class="break-all">{{ cv.classifier_file.file }} · sha256 {{ cv.classifier_file.sha256 }}</dd></div>
+    {% endif %}
+    {% if cv.embedding %}
+      <div><dt class="text-label text-muted">{% translate "Word embedding (TF5)" %}</dt><dd class="break-all">FastText {{ cv.embedding.filename }} · {{ cv.embedding.vector_size }} {% translate "dimensions" %} · {% if cv.embedding.kind == "local" %}{% translate "local file" %}{% else %}Hugging Face {{ cv.embedding.repo_id }}{% endif %}</dd></div>
+    {% endif %}
+  {% endif %}
+  {% if cv.versions.balinese_nlp %}
+    <div><dt class="text-label text-muted">{% translate "Versions" %}</dt><dd>balinese-nlp {{ cv.versions.balinese_nlp }} · scikit-learn {{ cv.versions.scikit_learn }}</dd></div>
+  {% endif %}
+  {% if cv.timings or cv.duration_ms is not None %}
+    <div><dt class="text-label text-muted">{% translate "Duration" %}</dt>
+      <dd>{% for stage, secs in cv.timings.items %}{{ stage }} {{ secs|floatformat:2 }} s{% if not forloop.last or cv.duration_ms is not None %} · {% endif %}{% endfor %}{% if cv.duration_ms is not None %}{% translate "total" %} {{ cv.duration_ms|seconds }} s{% endif %}</dd></div>
+  {% endif %}
+</dl>
