@@ -8,19 +8,31 @@ from apps.analysis.services import model_catalog as mc
 from apps.analysis.services.exceptions import UnknownModelError
 
 
-def test_default_classifier_is_best_model_in_thesis():
+def test_default_classifier_is_m2_knn_tf4():
+    """Developer decision (4 Nov 2026): M2 KNN + TF4 is the default for general users."""
     entry = mc.get_classifier_entry(mc.DEFAULT_CLASSIFIER_ID)
 
-    assert entry.id == "m2-wordvector-tf5-svm"
-    assert entry.available and entry.is_default and entry.is_best_for_algorithm
+    assert entry.id == "m2-wordvector-tf4-knn"
+    assert entry.available and entry.is_default and entry.is_best_for_algorithm and not entry.is_thesis_best
+    assert (entry.f1_cv, entry.f1_test) == (0.6666, 0.6451)
+    assert (entry.thesis_ref_cv, entry.thesis_ref_test) == ("Tabel 4.57", "Tabel 4.60")
+    assert entry.relative_path == "character-classification/wordvector/m2/knn_pretrained_model.pkl"
+    assert entry.bundle_keys == ("m2",)
+    assert not entry.uses_tf5  # no FastText needed for the default
+    assert mc.PipelineConfig().classifier_id == entry.id
+
+
+def test_thesis_best_classifier_is_m2_svm_tf5():
+    entry = mc.get_classifier_entry(mc.THESIS_BEST_CLASSIFIER_ID)
+
+    assert entry.id == "m2-wordvector-tf5-svm" and entry.is_thesis_best and not entry.is_default
     assert (entry.f1_cv, entry.f1_test) == (0.6811, 0.6460)
     assert (entry.thesis_ref_cv, entry.thesis_ref_test) == ("Tabel 4.59", "Tabel 4.60")
-    assert entry.relative_path == "character-classification/wordvector/m2/svm_pretrained_model.pkl"
-    assert entry.bundle_keys == ("m2",)
 
 
-def test_default_has_highest_cv_f1_of_all_entries():
+def test_thesis_best_has_highest_cv_f1_of_all_entries():
     best = max(mc.CLASSIFIERS.values(), key=lambda e: e.f1_cv)
+    assert best.variant == "m1" or best.id == mc.THESIS_BEST_CLASSIFIER_ID
     assert best.feature_codes == ("TF5",) and best.algorithm_code == "svm"
 
 

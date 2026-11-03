@@ -10,7 +10,7 @@ from .services import model_catalog as mc
 from .services.exceptions import TextValidationError, UnknownModelError
 from .services.preprocessing import validate_text
 
-MODES = (("simple", gettext_lazy("Simple")), ("advanced", gettext_lazy("Advanced")))
+MODES = (("simple", gettext_lazy("General user")), ("advanced", gettext_lazy("Advanced")))
 
 
 def f1(value) -> str:
@@ -38,8 +38,10 @@ def classifier_label(entry: mc.ClassifierEntry) -> str:
         parts.append(_("test F1 %(f1)s (%(ref)s)") % {"f1": f1(entry.f1_test), "ref": entry.thesis_ref_test})
     else:
         parts.append(_("test F1 –"))
-    if entry.is_default:
+    if entry.is_thesis_best:
         parts.append(_("best in the thesis"))
+    if entry.is_default:
+        parts.append(_("default"))
     if not entry.available:
         parts.append(_("coming soon"))
     return " · ".join(parts)
@@ -121,7 +123,7 @@ class AnalysisForm(forms.Form):
             raise forms.ValidationError(message, code="unavailable") from exc
 
     def config(self) -> mc.PipelineConfig:
-        """Simple mode always uses the defaults (best models in the thesis); advanced mode uses the chosen ones."""
+        """General-user mode always uses the defaults; advanced mode (Mode Peneliti) uses the chosen models."""
         data = self.cleaned_data
         if data.get("mode") != "advanced":
             return mc.validate_config(task=data.get("task"))

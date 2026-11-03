@@ -7,8 +7,9 @@ Tugas yang diuji:
   (iii) Klasifikasi peran tokoh   -> pickle eksperimen tesis di folder pretrained-models
                                      (PRETRAINED_MODELS_DIR), sebab paket 2.4.2 belum memuat model supervised
 
-Model bawaan (iii) mengikuti buku tesis: SVM + TF5 (rata-rata word embedding FastText), varian M2
-(Tabel 4.57, 4.59, 4.60). Model lain dipilih dengan --variant, --feature, dan --classifier-name.
+Model bawaan (iii) sama dengan default aplikasi: KNN + TF4 (TF-IDF), varian M2 (keputusan pengembang,
+4 Nov 2026). Model terbaik menurut tesis (SVM + TF5 M2): --feature TF5 --classifier-name "Support Vector Machine".
+Model lain dipilih dengan --variant, --feature, dan --classifier-name.
 
 Cara menjalankan (environment Python 3.11 sudah aktif):
   python scripts/test_pretrained_pipeline.py
@@ -445,7 +446,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--similarity", default="jaro-distance", choices=["ratcliff", "jaccard", "sorensen-dice", "jaro-distance", "jaro-winkler"])
     parser.add_argument("--threshold", type=float, default=0.85)
     parser.add_argument("--variant", default=pm.DEFAULT_VARIANT, choices=["m1", "m2"], help="varian pretrained (bawaan m2)")
-    parser.add_argument("--feature", default=pm.DEFAULT_FEATURE, help="kode fitur TF1-TF5, gabungan pakai _ (mis. TF4_TF5); bawaan TF5")
+    parser.add_argument("--feature", default=pm.DEFAULT_FEATURE, help="kode fitur TF1-TF5, gabungan pakai _ (mis. TF4_TF5); bawaan TF4")
     parser.add_argument("--classifier-name", default=pm.DEFAULT_CLASSIFIER, choices=list(pm.ALGORITHM_FILE_PREFIX))
     parser.add_argument("--classifier-path", help="path langsung ke satu pickle classifier (mengabaikan --variant)")
     parser.add_argument("--label-encoder", help="path pickle label encoder, bila berbeda dari bawaan")

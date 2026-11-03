@@ -54,11 +54,12 @@ M2_FEATURE_BY_ALGORITHM = {
     "svm": "TF5",
 }
 
-# Model terbaik menurut buku tesis: SVM + TF5 (F1 rata-rata 10-fold CV 0,6811, Tabel 4.57/4.59);
-# varian M2 karena F1 data uji 0,6460 > M1 0,6366 (Tabel 4.60).
+# Default aplikasi untuk Pengguna Umum (keputusan pengembang, 4 Nov 2026): M2 KNN + TF4 (TF-IDF), F1 CV 0,6666
+# (Tabel 4.57) dan F1 uji 0,6451 (Tabel 4.60); hasilnya lebih baik pada satua uji pengembang.
+# Model terbaik menurut tesis tetap SVM + TF5 M2 (F1 CV 0,6811, Tabel 4.57/4.59; F1 uji 0,6460, Tabel 4.60).
 DEFAULT_VARIANT = "m2"
-DEFAULT_FEATURE = "TF5"
-DEFAULT_CLASSIFIER = "Support Vector Machine"
+DEFAULT_FEATURE = "TF4"
+DEFAULT_CLASSIFIER = "K-Nearest Neighbor"
 
 # FastText bahasa Bali untuk TF5, diambil lewat balinese_nlp.embeddings.gensims.BaliFastText.
 # WAJIB sama dengan file yang dipakai saat melatih pickle TF5: semua estimator TF5 punya n_features_in_ 300

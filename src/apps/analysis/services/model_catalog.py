@@ -119,6 +119,10 @@ class ClassifierEntry:
     def is_default(self) -> bool:
         return self.id == DEFAULT_CLASSIFIER_ID
 
+    @property
+    def is_thesis_best(self) -> bool:
+        return self.id == THESIS_BEST_CLASSIFIER_ID
+
     def as_dict(self) -> dict:
         data = asdict(self)
         data["feature_codes"] = list(self.feature_codes)
@@ -185,8 +189,12 @@ def _build_catalog() -> dict[str, ClassifierEntry]:
 CLASSIFIERS: dict[str, ClassifierEntry] = _build_catalog()
 
 # Best model in the thesis: SVM + TF5 has the highest CV F1 (0.6811, Tabel 4.57/4.59), and M2 has the higher test
-# F1 (0.6460 vs M1 0.6366, Tabel 4.60).
-DEFAULT_CLASSIFIER_ID = "m2-wordvector-tf5-svm"
+# F1 (0.6460 vs M1 0.6366, Tabel 4.60). Labelled "best in the thesis" in Mode Peneliti.
+THESIS_BEST_CLASSIFIER_ID = "m2-wordvector-tf5-svm"
+# Default for general users (developer decision, 4 Nov 2026): M2 KNN + TF4 (TF-IDF) gave better roles on the
+# developer's test satua in Mode Peneliti. Thesis: CV F1 0.6666 (best word-vector feature for KNN, Tabel 4.57) and
+# test F1 0.6451 (Tabel 4.60). It needs no FastText embedding.
+DEFAULT_CLASSIFIER_ID = "m2-wordvector-tf4-knn"
 
 
 def get_classifier_entry(catalog_id: str, *, require_available: bool = True) -> ClassifierEntry:

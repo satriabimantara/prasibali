@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 08:19+0800\n"
+"POT-Creation-Date: 2026-11-03 08:30+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -99,7 +99,7 @@ msgstr ""
 msgid "Your account and all of its data have been deleted."
 msgstr ""
 
-msgid "Simple"
+msgid "General user"
 msgstr ""
 
 msgid "Advanced"
@@ -117,6 +117,9 @@ msgid "test F1 –"
 msgstr ""
 
 msgid "best in the thesis"
+msgstr ""
+
+msgid "default"
 msgstr ""
 
 msgid "coming soon"
@@ -521,6 +524,9 @@ msgid "Analysing..."
 msgstr ""
 
 msgid "Analyse text"
+msgstr ""
+
+msgid "Reset"
 msgstr ""
 
 msgid "Up to 20,000 characters. Analysis usually takes a few seconds."

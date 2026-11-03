@@ -62,8 +62,11 @@ def test_get_shows_form_with_catalog_choices(client, verified_user):
 
     assert "data-analysis-form" in html and 'lang="ban"' in html
     assert f'value="{mc.DEFAULT_CLASSIFIER_ID}" selected' in html
-    assert "terbaik menurut tesis" in html
+    assert "KNN · TF4 · F1 CV 0,6666 (Tabel 4.57) · F1 uji 0,6451 (Tabel 4.60) · bawaan" in html
+    assert "SVM · TF5 · F1 CV 0,6811 (Tabel 4.59) · F1 uji 0,6460 (Tabel 4.60) · terbaik menurut tesis<" in html
     assert 'value="m1-lexicon-tf1-tf3-knn" disabled' in html
+    assert ">Pengguna Umum<" in html and "Sederhana" not in html
+    assert f'href="{URL}" data-reset' in html and ">Reset<" in html
     assert "0,6811" in html and "Tabel 4.59" in html
     assert "Copyright 2026 | I Made Satria Bimantara, S.Kom., M.Kom." in html
 

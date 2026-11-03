@@ -236,7 +236,7 @@ Dokumen ini adalah sumber kebenaran tampilan PrasiBali.ai. Saat membangun atau m
 | Pengguna | Juri lomba, peneliti, guru, siswa, Balai Bahasa, dan Dinas Kebudayaan |
 | Bahasa antarmuka | Indonesia (bawaan) dan Inggris, lewat gettext |
 | Tema | Terang sebagai bawaan, tombol ke tema gelap |
-| Mode | Sederhana sebagai bawaan, Lanjutan untuk peneliti |
+| Mode | Pengguna Umum sebagai bawaan, Lanjutan (Mode Peneliti) untuk peneliti |
 | Alur | Landing, lalu wajib login, lalu ruang kerja |
 | Teknologi | Django MVT, Tailwind CSS v4, HTMX |
 
@@ -244,7 +244,7 @@ Dokumen ini adalah sumber kebenaran tampilan PrasiBali.ai. Saat membangun atau m
 
 - **Tenang dan tepercaya.** Latar putih, garis tipis, satu warna aksen. Kesan premium datang dari tipografi dan jarak yang rapi, bukan dekorasi.
 - **Teks cerita adalah pusatnya.** Hasil AI ditampilkan langsung pada teks satua, lalu dijelaskan di panel tokoh.
-- **Istilah teknis tidak menghalangi.** Mode Sederhana tidak menampilkan nama model. Mode Lanjutan menampilkannya.
+- **Istilah teknis tidak menghalangi.** Mode Pengguna Umum tidak menampilkan nama model. Mode Lanjutan menampilkannya.
 - **Identitas Bali secukupnya.** Aksara Prasi dan pola ikat hanya muncul di landing dan halaman autentikasi. Ruang kerja tetap netral.
 - **Warna tidak bekerja sendirian.** Peran tokoh selalu dibedakan lewat warna, bentuk garis, dan teks.
 
@@ -425,12 +425,12 @@ Berisi judul cerita di kiri, lalu pengalih mode, tombol tema, dan tombol utama "
 
 ```html
 <div role="group" aria-label="Mode tampilan">
-  <button type="button" aria-pressed="true">Sederhana</button>
+  <button type="button" aria-pressed="true">Pengguna Umum</button>
   <button type="button" aria-pressed="false">Lanjutan</button>
 </div>
 ```
 
-| Konten | Sederhana | Lanjutan |
+| Konten | Pengguna Umum | Lanjutan |
 |---|---|---|
 | Teks cerita bertanda dan peran tokoh | Ya | Ya |
 | Nama lain dan jumlah kemunculan | Ya | Ya |
@@ -541,7 +541,7 @@ Satu panel dengan lebar baca maksimal `72ch`, header yang sama dengan halaman ak
 Sidebar: "Analisis baru", "Riwayat analisis", "Korpus satua", "Panduan". Tampilkan hanya menu yang halamannya sudah berfungsi.
 
 - **Sebelum analisis:** area teks, tombol "Muat contoh satua", dan tombol utama "Analisis teks". Mode Lanjutan menampilkan pilihan model.
-- **Versi dasar (Sesi 3):** satu kolom tanpa sidebar, formulir POST biasa. Mode Lanjutan (`.adv-only`) berisi pilihan model NER, metode dan ambang alias, serta classifier. Setiap pilihan menampilkan F1 CV dan F1 uji dari tesis beserta rujukan tabelnya; pilihan bawaan ditandai "terbaik menurut tesis", dan entri yang belum tersedia nonaktif. Panel "Model yang dipakai" (Lanjutan) menampilkan model, berkas, hash, embedding, versi paket, dan durasi per tahap. HTMX, sidebar, dan riwayat menyusul di Sesi 4.
+- **Versi dasar (Sesi 3):** satu kolom tanpa sidebar, formulir POST biasa. Mode Lanjutan (`.adv-only`) berisi pilihan model NER, metode dan ambang alias, serta classifier. Setiap pilihan menampilkan F1 CV dan F1 uji dari tesis beserta rujukan tabelnya; model terbaik menurut tesis ditandai "terbaik menurut tesis", pilihan bawaan ditandai "bawaan", dan entri yang belum tersedia nonaktif. Di samping tombol utama "Analisis teks" ada tombol sekunder "Reset" (ikon `rotate`, berupa tautan ke `/analisis/`): mengosongkan teks dan hasil, mengembalikan pilihan model ke bawaan, dan menyetel mode kembali ke Pengguna Umum. Panel "Model yang dipakai" (Lanjutan) menampilkan model, berkas, hash, embedding, versi paket, dan durasi per tahap. HTMX, sidebar, dan riwayat menyusul di Sesi 4.
 - **Sesudah analisis:** kartu ringkasan, panel teks cerita, daftar tokoh, dan panel detail.
 
 ### Halaman lain
@@ -557,9 +557,9 @@ Riwayat dan korpus memakai tabel di dalam panel: kepala tabel `label` warna `mut
 
 | Pakai | Jangan pakai |
 |---|---|
-| Tokoh | Entitas, di mode Sederhana |
+| Tokoh | Entitas, di mode Pengguna Umum |
 | Kelompok tokoh | Cluster, character group |
-| Disebut sebagai | Alias, di mode Sederhana |
+| Disebut sebagai | Alias, di mode Pengguna Umum |
 | Protagonis, Antagonis | Predicted as |
 | Teks cerita, satua | Input, dokumen |
 
@@ -762,7 +762,7 @@ Jangan memakai filter `|safe` pada teks pengguna, dan jangan menyisipkan tag ke 
 
 - [ ] Tidak ada warna, radius, atau ukuran huruf di luar token.
 - [ ] Halaman benar di tema terang dan gelap, tanpa kilatan tema saat dimuat ulang.
-- [ ] Mode Sederhana tidak menampilkan istilah teknis, dan pilihan mode tersimpan.
+- [ ] Mode Pengguna Umum tidak menampilkan istilah teknis, dan pilihan mode tersimpan.
 - [ ] Peran tokoh terbaca tanpa warna, lewat garis dan teks.
 - [ ] Semua kontrol dapat dipakai dengan keyboard dan fokusnya terlihat.
 - [ ] Tidak ada gulir horizontal pada lebar 390px, dan target sentuh minimal 44px.

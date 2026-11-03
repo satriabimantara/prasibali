@@ -16,7 +16,9 @@ The embedding file must be the one used to train the TF5 pickles: every TF5 esti
 ## Memory (measured on the development laptop, 3 Nov 2026)
 
 `python src/manage.py warm_models` loads SatuaNER, the label encoder, the default classifier
-(`m2-wordvector-tf5-svm`) and FastText, then runs one short analysis, in about 10 seconds when the files are local.
+(`m2-wordvector-tf4-knn`) and FastText (for the TF5 models in Mode Peneliti, such as `m2-wordvector-tf5-svm`), then
+runs one short analysis, in about 8–10 seconds when the files are local. The default needs no FastText; with
+`warm_models --skip-embedding` a process stays near 300 MB, but the first TF5 request then loads 2.3 GB per worker.
 Without a warm-up (`ANALYSIS_WARM_ON_START=false`, the default for development) the first request pays this time.
 
 ## Analysis speed (warm models, same laptop)

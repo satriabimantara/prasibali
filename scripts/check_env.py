@@ -16,7 +16,7 @@ Skrip ini memastikan:
   3. Alias clustering berjalan
   4. FastText bahasa Bali (fitur TF5) bisa diunduh/dimuat dari Hugging Face lewat BaliFastText
   5. Pickle classifier peran bisa dimuat dan dijalankan end-to-end pada teks contoh:
-     model default aplikasi (SVM + TF5, varian M2) dan pembandingnya, termasuk kecocokan
+     model default aplikasi (KNN + TF4, varian M2), model terbaik tesis (SVM + TF5 M2) dan pembandingnya, termasuk kecocokan
      dimensi embedding dengan n_features_in_ model
 """
 from __future__ import annotations
@@ -60,6 +60,7 @@ EXPECTED = {
 # (label, varian, kode fitur, algoritma). Baris pertama = default aplikasi (wajib lulus).
 CLASSIFIER_CHECKS = [
     ("default aplikasi", pm.DEFAULT_VARIANT, pm.DEFAULT_FEATURE, pm.DEFAULT_CLASSIFIER),
+    ("terbaik menurut tesis (TF5, FastText)", "m2", "TF5", "Support Vector Machine"),
     ("pembanding M1", "m1", "TF5", "Support Vector Machine"),
     ("terverifikasi 2 Nov", "m1", "TF4", "Support Vector Machine"),
     ("leksikon, web lama lx-1", "m1", "TF1_TF2", "Support Vector Machine"),

@@ -84,12 +84,20 @@ def test_model_version_is_complete(app_result):
     assert version["alias"] == {"method": "jaro-distance", "threshold": 0.85}
     classifier = version["classifier"]
     assert classifier["id"] == model_catalog.DEFAULT_CLASSIFIER_ID
-    assert classifier["file"] == "svm_pretrained_model.pkl" and len(classifier["sha256"]) == 12
+    assert classifier["file"] == "knn_pretrained_model.pkl" and len(classifier["sha256"]) == 12
     assert classifier["classes"] == ["Antagonis", "Protagonis"]
-    assert classifier["embedding"]["vector_size"] == 300
+    assert "embedding" not in classifier  # KNN + TF4 uses TF-IDF only
     assert set(app_result.timings) == {"preprocess", "identify", "alias", "role"}
     assert app_result.roles[0].role_key in {"protagonis", "antagonis"}
-    assert all(r.probability is None for r in app_result.roles)  # SVC without probability=True
+    assert all(r.decision_score is None for r in app_result.roles)  # KNN has no decision_function
+    assert all(r.known_terms is not None for r in app_result.roles)
+
+
+def test_thesis_best_model_uses_fasttext_300(raw_text):
+    config = model_catalog.validate_config(classifier_id=model_catalog.THESIS_BEST_CLASSIFIER_ID)
+    classifier = run_full_pipeline(raw_text, config).model_version["classifier"]
+    assert classifier["file"] == "svm_pretrained_model.pkl"
+    assert classifier["embedding"]["vector_size"] == 300
 
 
 def test_identify_only_task(raw_text):

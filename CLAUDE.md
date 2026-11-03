@@ -83,8 +83,8 @@ scripts/             check_env.py, test_pretrained_pipeline.py, prasibali_models
   - `f1_test`: F1 pada data uji, berbeda per varian (Tabel 4.60; Lampiran 15 untuk M1, Lampiran 16 untuk M2).
   - Angka yang sudah terverifikasi ada di tabel `_reference/konteks_proyek.md` bagian 4.3. Angka lain **tidak boleh dikarang**: biarkan `None` dan tampilkan "–".
 - Hanya entri yang ekstraksi fiturnya bisa direproduksi di aplikasi yang boleh `available=True`. TF4 (TF-IDF) terbukti punya `transform()`. TF5 dan fitur leksikon (TF1–TF3) mengikuti aturan di bagian "Word embedding (TF5)" dan harus dikonfirmasi pengembang sebelum ditandai tersedia.
-- **Default (mode biasa): `m2-wordvector-tf5-svm`**, yaitu model terbaik menurut buku tesis. Alasannya: SVM + TF5 memiliki F1 cross-validation tertinggi (0,6811; Tabel 4.57/4.59), dan varian M2 dipilih karena F1 data ujinya lebih tinggi daripada M1 (0,6460 vs 0,6366; Tabel 4.60). Default disimpan di satu konstanta.
-- Jika TF5 belum bisa dijalankan di aplikasi, default sementara adalah model terbaik berikutnya yang tersedia menurut F1 cross-validation, yaitu `m2-wordvector-tf4-knn` (0,6666; data uji M2 0,6451). Konfirmasi dulu ke pengembang sebelum menerapkannya.
+- **Default (mode Pengguna Umum): `m2-wordvector-tf4-knn`** (`DEFAULT_CLASSIFIER_ID`). Keputusan pengembang 4 November 2026: pada uji coba beberapa satua di Mode Peneliti, KNN + TF4 memberi hasil peran yang lebih baik. Rujukan tesis: F1 CV 0,6666 (fitur word vector terbaik untuk KNN, Tabel 4.57) dan F1 uji M2 0,6451 (Tabel 4.60). Model ini tidak butuh FastText.
+- **Model terbaik menurut tesis: `m2-wordvector-tf5-svm`** (`THESIS_BEST_CLASSIFIER_ID`): F1 CV tertinggi (0,6811; Tabel 4.57/4.59), dan M2 dipilih karena F1 ujinya lebih tinggi daripada M1 (0,6460 vs 0,6366; Tabel 4.60). Di Mode Peneliti ditandai "terbaik menurut tesis"; default ditandai "bawaan". `warm_models` tetap memuat FastText agar model TF5 siap tanpa menunggu.
 
 ### Word embedding (TF5) dan Hugging Face
 - TF5 = rata-rata vektor word embedding FastText bahasa Bali (Tabel 3.10 menyebut 300 dimensi). Interface di `balinese-nlp` 2.4.2 (sudah dikonfirmasi dari source pengembang):
@@ -141,9 +141,10 @@ Mode biasa memakai konfigurasi default tanpa pilihan. Mode Peneliti adalah panel
 |---|---|---|
 | (i) Identifikasi tokoh | Model NER: `satuaner`, `crf1_baseline`, `crf2_baseline`, `svm_baseline`, `hmm` | `satuaner` |
 | (ii) Alias clustering | Metode: `ratcliff`, `jaccard`, `sorensen-dice`, `jaro-distance`, `jaro-winkler`; ambang kemiripan | `jaro-distance`, 0,85 (terbaik menurut tesis untuk SatuaNER M2: F1 0,7172, Tabel 4.36/4.37) |
-| (iii) Klasifikasi peran | Varian pretrained (M1/M2) → jenis fitur → kode fitur → algoritma, hanya dari entri katalog yang `available` | `m2-wordvector-tf5-svm` |
+| (iii) Klasifikasi peran | Varian pretrained (M1/M2) → jenis fitur → kode fitur → algoritma, hanya dari entri katalog yang `available` | `m2-wordvector-tf4-knn` (terbaik menurut tesis: `m2-wordvector-tf5-svm`) |
 
-- Setiap pilihan classifier menampilkan keterangan singkat eksperimen beserta dua nilai F1 referensi dari tesis dan rujukan tabelnya, misalnya "F1 CV 0,6811 (Tabel 4.59) · F1 uji 0,6460 (Tabel 4.60)". Default ditandai "terbaik menurut tesis".
+- Setiap pilihan classifier menampilkan keterangan singkat eksperimen beserta dua nilai F1 referensi dari tesis dan rujukan tabelnya, misalnya "F1 CV 0,6811 (Tabel 4.59) · F1 uji 0,6460 (Tabel 4.60)". Model terbaik menurut tesis ditandai "terbaik menurut tesis", default ditandai "bawaan".
+- Mode tampilan: tombol "Pengguna Umum" (bawaan, memakai default) dan "Lanjutan (Mode Peneliti)". Tombol "Reset" di ruang kerja mengosongkan teks dan hasil serta kembali ke mode Pengguna Umum dan model bawaan.
 - Konfigurasi yang dipakai disimpan di riwayat, dan halaman detail riwayat menampilkannya.
 - Mode Peneliti tersedia untuk semua pengguna yang login; kuota hariannya sama dengan mode biasa.
 

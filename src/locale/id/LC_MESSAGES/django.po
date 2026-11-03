@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 08:19+0800\n"
+"POT-Creation-Date: 2026-11-03 08:30+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -98,8 +98,8 @@ msgstr "Profil Anda sudah disimpan."
 msgid "Your account and all of its data have been deleted."
 msgstr "Akun Anda beserta seluruh datanya sudah dihapus."
 
-msgid "Simple"
-msgstr "Sederhana"
+msgid "General user"
+msgstr "Pengguna Umum"
 
 msgid "Advanced"
 msgstr "Lanjutan"
@@ -117,6 +117,9 @@ msgstr "F1 uji –"
 
 msgid "best in the thesis"
 msgstr "terbaik menurut tesis"
+
+msgid "default"
+msgstr "bawaan"
 
 msgid "coming soon"
 msgstr "segera hadir"
@@ -565,8 +568,13 @@ msgstr "Menganalisis..."
 msgid "Analyse text"
 msgstr "Analisis teks"
 
+msgid "Reset"
+msgstr "Reset"
+
 msgid "Up to 20,000 characters. Analysis usually takes a few seconds."
-msgstr "Paling banyak 20.000 karakter. Analisis biasanya selesai dalam beberapa detik."
+msgstr ""
+"Paling banyak 20.000 karakter. Analisis biasanya selesai dalam beberapa "
+"detik."
 
 msgid "Try again"
 msgstr "Coba lagi"
@@ -739,3 +747,6 @@ msgstr "Tema gelap"
 
 msgid "Light theme"
 msgstr "Tema terang"
+
+#~ msgid "Simple"
+#~ msgstr "Sederhana"

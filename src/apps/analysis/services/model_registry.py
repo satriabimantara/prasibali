@@ -30,6 +30,7 @@ from .model_catalog import (
     DEFAULT_NER_MODEL,
     LABEL_ENCODER_PATH,
     NER_MODELS,
+    THESIS_BEST_CLASSIFIER_ID,
     ClassifierEntry,
     get_classifier_entry,
 )
@@ -173,8 +174,12 @@ def warm_up(include_embedding: bool = True, log=None) -> dict[str, float]:
     step(f"NER {DEFAULT_NER_MODEL}", lambda: get_ner_model(DEFAULT_NER_MODEL))
     step("label encoder", get_label_encoder)
     step(f"classifier {DEFAULT_CLASSIFIER_ID}", lambda: get_classifier(DEFAULT_CLASSIFIER_ID, with_embedding=False))
-    if include_embedding and get_classifier_entry(DEFAULT_CLASSIFIER_ID).uses_tf5:
-        step("FastText (TF5)", lambda: get_classifier(DEFAULT_CLASSIFIER_ID, with_embedding=True))
+    if include_embedding:
+        # The default (KNN + TF4) needs no embedding, but the TF5 models of Mode Peneliti do. Loading FastText here,
+        # before Gunicorn forks (--preload), lets all workers share one copy instead of each loading 2.5 GB later.
+        default_uses_tf5 = get_classifier_entry(DEFAULT_CLASSIFIER_ID).uses_tf5
+        tf5_id = DEFAULT_CLASSIFIER_ID if default_uses_tf5 else THESIS_BEST_CLASSIFIER_ID
+        step("FastText (TF5)", lambda: get_classifier(tf5_id, with_embedding=True))
     # One short analysis loads what the first request would otherwise pay for (TextPreprocessor dictionaries,
     # alias clustering and grouping imports, the shared POS tagger) and fills the POS cache with common words.
     step("pipeline warm-up", lambda: _warm_pipeline(include_roles=include_embedding))
@@ -189,4 +194,5 @@ def _warm_pipeline(include_roles: bool) -> None:
     from .pipeline import run_full_pipeline
 
     text = WARM_UP_TEXT.read_text(encoding="utf-8") if WARM_UP_TEXT.is_file() else "I Kancil luas ka alase."
-    run_full_pipeline(text, validate_config(task="full" if include_roles else "alias"))
+    task = "full" if include_roles or not get_classifier_entry(DEFAULT_CLASSIFIER_ID).uses_tf5 else "alias"
+    run_full_pipeline(text, validate_config(task=task))

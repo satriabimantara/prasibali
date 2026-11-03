@@ -20,6 +20,16 @@
         });
       }
     }
+    // Reset: the link reloads an empty workspace (no text, no result, default models); here we also switch
+    // back to the default display mode before leaving the page.
+    var reset = document.querySelector("[data-reset]");
+    if (reset) {
+      reset.addEventListener("click", function () {
+        try {
+          localStorage.setItem("prasibali-mode", "simple");
+        } catch (e) {}
+      });
+    }
     var title = document.getElementById("result-title");
     if (title) title.focus();
   });

@@ -39,6 +39,7 @@
 
     <div class="flex flex-wrap items-center gap-3">
       <button type="submit" class="btn btn-primary gap-2" data-label-busy="{% translate 'Analysing...' %}">{% icon "play" %}<span data-label>{% translate "Analyse text" %}</span></button>
+      <a class="btn gap-2" href="{% url 'analysis:workspace' %}" data-reset>{% icon "rotate" %}<span>{% translate "Reset" %}</span></a>
       <p class="help">{% blocktranslate %}Up to 20,000 characters. Analysis usually takes a few seconds.{% endblocktranslate %}</p>
     </div>
   </form>
