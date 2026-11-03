@@ -219,41 +219,60 @@ File embedding harus sama dengan yang dipakai melatih pickle TF5: semua estimato
 
 ## Memori dan jumlah worker
 
-Diukur 3 November 2026 di Docker Desktop (Linux, kernel WSL 2) dengan paket yang sama persis dengan image produksi, `docker-compose.prod.yml` (web + db), model asli di `./models` (FastText dari file lokal), `ANALYSIS_WARM_ON_START=true`, dan Gunicorn `--preload`. Angka per proses dibaca dari `/proc/<pid>/smaps_rollup` (PSS = memori yang dibagi rata antarproses yang memakainya); angka container dari cgroup (`memory.peak`).
+**Uji penuh 3 November 2026.** Uji ini memakai image hasil `docker/Dockerfile` multi-stage apa adanya: kode, entrypoint, CMD Gunicorn, `collectstatic`, dan CSS hasil build di dalam image, tanpa kode yang di-mount. Image yang dipakai adalah build dari `docker compose up --build`; bedanya dengan image produksi hanya paket dev (pytest, ruff) yang tidak dimuat saat aplikasi berjalan.
 
-**Proses Gunicorn**
+Stack yang dijalankan adalah `docker-compose.prod.yml` (`web` + `db`) di Docker Desktop (Linux, WSL 2), dengan model asli di `./models` (FastText dari file lokal). CPU dan memori container dibatasi seperti paket VPS:
 
-| Keadaan | Master | Tiap worker (privat) | Total container `web` |
-|---|---|---|---|
-| 2 worker, setelah warm-up | RSS 2.657 MB, privat 49 MB | 4–104 MB | 2,68 GB |
-| 2 worker, setelah 8 analisis (KNN + TF4 dan SVM + TF5) | privat 143 MB | sekitar 111 MB | 2,80 GB |
-| 4 worker, setelah warm-up | privat 56 MB | 4 MB | 2,66 GB |
-| 4 worker, setelah 12 analisis satua terpanjang (16.876 karakter) | privat 40 MB | sekitar 115 MB | 2,98 GB (puncak cgroup 3,09 GB) |
+- angka per proses dibaca dari `/proc/<pid>/smaps_rollup` (PSS = memori yang dibagi rata antarproses);
+- angka container dibaca dari cgroup (`memory.peak`, `memory.events`).
 
-Sekitar 2,5 GB model (SatuaNER, classifier, label encoder, FastText 300) dimuat sekali di master dan **dibagi** ke semua worker (kolom "shared" sekitar 2.500–2.600 MB di setiap proses). Satu worker hanya menambah sekitar **115 MB** setelah melayani analisis, termasuk model TF5. Postgres memakai paling banyak 120 MB. Caddy tidak diukur di laptop (TLS hanya berjalan di server).
+Beban yang dijalankan di setiap skenario:
 
-**Waktu start:** `warm_models` di entrypoint sekitar 43 detik (FastText 37 detik dari file lokal), lalu master Gunicorn memuat ulang model sekitar 25 detik. Total sekitar 70 detik sebelum melayani request; `start_period` healthcheck adalah 300 detik. Kedua pemuatan berjalan berurutan, jadi puncak memori tidak berlipat.
+- 6 analisis satua contoh dan 6 analisis satua terpanjang (16.876 karakter, "Bintang Lara"), masing-masing bergantian dengan model bawaan KNN + TF4 dan SVM + TF5;
+- lalu 3 klien bersamaan, masing-masing 4 analisis satua terpanjang.
 
-**Kecepatan di container:** satua contoh 0,1–0,3 detik; satua terpanjang 1,0–1,9 detik (KNN + TF4 dan SVM + TF5).
+| Ukuran | KVM 1: 1 vCPU, `GUNICORN_WORKERS=2`, `WEB_MEM_LIMIT=3500m` | KVM 2: 2 vCPU, `GUNICORN_WORKERS=3`, `WEB_MEM_LIMIT=6g` |
+|---|---|---|
+| Siap melayani sejak `up` | 119 detik | 118 detik |
+| `warm_models` (FastText lokal) | 48,5 detik (FastText 43,3 detik) | 44,7 detik (FastText 39,9 detik) |
+| Container `web` setelah warm-up | sekitar 2,66 GB | sekitar 2,75 GB |
+| Container `web` setelah 12 analisis | 2,86 GB | 2,98 GB |
+| Puncak cgroup `web` (termasuk uji bersamaan) | **2.910 MB** | **3.022 MB** |
+| Memori dibagi (model) per proses | sekitar 2.515 MB | sekitar 2.515 MB |
+| Memori privat master / tiap worker | 139 MB / 114–117 MB | 138 MB / 114–116 MB |
+| Postgres (puncak) | 83 MB | 82 MB |
+| OOM kill / restart / health | 0 / 0 / healthy | 0 / 0 / healthy |
+| Satua contoh, satu klien | 0,11–0,61 detik | serupa |
+| Satua terpanjang, satu klien | 1,06–1,66 detik | serupa |
+| Satua terpanjang, 3 klien bersamaan | 1,05–4,74 detik (12 analisis dalam 21 detik) | 1,63–2,61 detik (12 analisis dalam 11 detik) |
+
+Juga diperiksa di uji ini: user non-root (uid 1000), manifest static whitenoise tanpa folder `src`, `HF_HUB_OFFLINE=1` dipasang entrypoint sebelum `exec gunicorn`, header CSP/HSTS/`X-Frame-Options: DENY`, dan halaman 404 khusus.
+
+Kesimpulan:
+
+- Sekitar 2,5 GB model (SatuaNER, classifier, label encoder, FastText 300) dimuat sekali di master lalu **dibagi** ke semua worker berkat `--preload`.
+- Setiap worker hanya menambah sekitar **115 MB**, termasuk setelah memakai model TF5.
+- `warm_models` dan master Gunicorn memuat model secara berurutan, sehingga puncak memori tidak berlipat.
+- Caddy dan OS tidak diukur di laptop (TLS hanya berjalan di server). Perkiraannya sekitar 0,5 GB untuk Ubuntu minimal + Caddy.
 
 **Rumus jumlah worker**
 
 ```
-RAM untuk web  = RAM VPS − OS (sekitar 0,4 GB) − Postgres (0,15 GB) − Caddy (sekitar 0,05 GB) − cadangan (0,5 GB)
-batas memori   = floor((RAM untuk web − 2,6 GB) / 0,12 GB)
-batas CPU      = jumlah vCPU + 1        (worker sync dan analisis yang CPU-bound: lebih banyak worker tidak mempercepat)
+RAM untuk web    = RAM VPS − OS dan Caddy (sekitar 0,5 GB) − Postgres (0,1 GB) − cadangan (0,5 GB)
+batas memori     = floor((RAM untuk web − 2,8 GB) / 0,12 GB) + 1
+batas CPU        = jumlah vCPU + 1   (worker sync, analisis CPU-bound: lebih banyak worker tidak mempercepat)
 GUNICORN_WORKERS = min(batas memori, batas CPU)
 ```
 
-| VPS | RAM untuk web | Batas memori | Batas CPU | `GUNICORN_WORKERS` | `WEB_MEM_LIMIT` |
-|---|---|---|---|---|---|
-| 8 GB, 4 vCPU (rencana awal) | 6,9 GB | 35 | 5 | 5 | `6g` |
-| 8 GB, 2 vCPU (Hostinger KVM 2) | 6,9 GB | 35 | 3 | 3 | `6g` |
-| 4 GB, 1 vCPU (Hostinger KVM 1) | 2,9 GB | 2 | 2 | 2 | `3500m` |
+| VPS | RAM untuk web | Batas memori | Batas CPU | `GUNICORN_WORKERS` | `WEB_MEM_LIMIT` | Puncak terukur |
+|---|---|---|---|---|---|---|
+| 4 GB, 1 vCPU (Hostinger KVM 1) | 2,9 GB | 1–2 | 2 | 2 | `3500m` | 2,91 GB |
+| 8 GB, 2 vCPU (Hostinger KVM 2) | 6,9 GB | 35 | 3 | 3 | `6g` | 3,02 GB |
+| 8 GB, 4 vCPU (rencana awal) | 6,9 GB | 35 | 5 | 5 | `6g` | tidak diukur (sekitar 3,3 GB menurut rumus) |
 
-Di semua ukuran VPS, yang membatasi adalah CPU, bukan RAM, selama FastText dimuat sekali di master. VPS dengan RAM di bawah sekitar 3,5 GB tidak muat FastText; di sana model TF5 tidak bisa dipakai.
+Yang membatasi adalah CPU, bukan RAM, selama FastText dimuat sekali di master. Di KVM 1, `WEB_MEM_LIMIT=3500m` menyisakan sekitar 0,5 GB untuk OS, Caddy, dan Postgres, sehingga swap 4 GB tetap dianjurkan. VPS dengan RAM di bawah sekitar 3,5 GB tidak muat FastText.
 
-Pantau setelah deploy: `docker stats --no-stream`, `free -h`, dan log `web` untuk pesan `Killed` atau `WORKER TIMEOUT`. `ANALYSIS_CLASSIFIER_CACHE_SIZE` (bawaan 4) membatasi jumlah pickle classifier tambahan yang tetap dimuat setelah dipilih di Mode Peneliti; file M1 TF4 sekitar 48 MB per file, dan pemuatan setelah fork dihitung per worker.
+Pantau setelah deploy: `docker stats --no-stream`, `free -h`, `cat /sys/fs/cgroup/memory.events` di container `web` (`oom_kill` harus 0), dan log `web` untuk `Killed` atau `WORKER TIMEOUT`. `ANALYSIS_CLASSIFIER_CACHE_SIZE` (bawaan 4) membatasi jumlah pickle classifier tambahan yang tetap dimuat setelah dipilih di Mode Peneliti. File M1 TF4 sekitar 48 MB per file, dan pemuatan setelah fork dihitung per worker, jadi di KVM 1 sisakan ruang untuk itu atau turunkan nilainya ke 2.
 
 ## Kecepatan analisis (model hangat, laptop pengembang)
 

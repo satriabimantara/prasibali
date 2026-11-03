@@ -16,27 +16,60 @@ Paket web hosting (shared) Hostinger tidak bisa dipakai, karena tidak mendukung 
 
 ## Apakah KVM 1 cukup?
 
-Ya, untuk akses juri dengan semua model termasuk TF5, asalkan **tanpa Coolify**. Angka berikut diukur di container Linux (`docs/deploy.md`, bagian "Memori dan jumlah worker"):
+Ya, untuk akses juri dengan semua model termasuk TF5, asalkan **tanpa Coolify**. Angka berikut dari uji penuh image produksi dengan batas seperti KVM 1 (1 vCPU, `GUNICORN_WORKERS=2`, `WEB_MEM_LIMIT=3500m`); rinciannya di `docs/deploy.md` bagian "Memori dan jumlah worker".
 
-| Komponen | RAM terukur |
+| Komponen | Terukur |
 |---|---|
-| Container `web`, 2 worker, setelah analisis KNN + TF4 dan SVM + TF5 | 2,8 GB (model 2,5 GB dibagi master dan worker; tiap worker sekitar 115 MB) |
-| Postgres | paling banyak 120 MB |
-| Caddy + Ubuntu minimal | sekitar 0,5 GB (perkiraan, tidak diukur) |
-| **Total** | **sekitar 3,4 GB dari 4 GB** |
+| Container `web`, puncak setelah 12 analisis + 3 klien bersamaan (KNN + TF4 dan SVM + TF5) | **2.910 MB** (model 2,5 GB dibagi master dan worker; tiap worker sekitar 115 MB) |
+| Postgres, puncak | 83 MB |
+| Caddy + Ubuntu minimal | sekitar 0,5 GB (perkiraan, tidak diukur di laptop) |
+| **Total** | **sekitar 3,5 GB dari 4 GB**; OOM kill 0, restart 0 |
+| Siap melayani sejak `up` | 119 detik (`warm_models` 48,5 detik) |
+| Satua contoh / satua terpanjang (16.876 karakter), satu klien | 0,11–0,61 detik / 1,06–1,66 detik |
+| Satua terpanjang, 3 klien bersamaan | 1,05–4,74 detik per analisis |
 
 Konsekuensinya:
 
-- Sisa RAM hanya sekitar 0,6 GB, jadi pakai swap 4 GB sebagai pengaman dan jangan menjalankan layanan lain di VPS ini.
-- Dengan 1 vCPU, analisis berjalan bergantian: satua contoh 0,1–0,3 detik, satua terpanjang 1–2 detik. Ini cukup untuk beberapa juri, tapi lebih lambat bila banyak yang mengirim satua panjang bersamaan.
+- Sisa RAM hanya sekitar 0,5 GB, jadi pakai swap 4 GB sebagai pengaman dan jangan menjalankan layanan berat lain di VPS ini.
+- Dengan 1 vCPU, beberapa juri tetap terlayani; satua panjang yang dikirim bersamaan hanya sedikit lebih lama (paling lama sekitar 5 detik).
 - Build image pertama di 1 vCPU lebih lama (sekitar 20–40 menit).
-- Start container butuh sekitar 70 detik untuk memuat model.
+- Container butuh sekitar 2 menit setelah `up` sebelum melayani request.
 
 **Coolify tidak disarankan di KVM 1.** Dokumentasi Coolify menyebut kebutuhan minimum 2 core CPU dan 2 GB RAM untuk Coolify sendiri. KVM 1 hanya punya 1 vCPU, dan RAM-nya sudah terpakai sekitar 3,4 GB oleh PrasiBali.ai. Coolify juga memasang proxy sendiri di port 80/443, sehingga bentrok dengan Caddy di `docker-compose.prod.yml` dan compose harus disesuaikan. Panduan ini memakai Docker Compose langsung: lebih ringan, sudah diuji, dan tetap mudah diperbarui (`git pull` lalu `up -d --build`).
 
 **OS: pakai Ubuntu 24.04 LTS**, bukan 26.04. Docker dan seluruh panduan ini diuji untuk 24.04, dan dokumentasi Coolify pun hanya menyebut LTS sampai 24.04. Ubuntu 26.04 kemungkinan juga berjalan (sudah ada panduan instalasi Docker untuk 26.04), tapi 24.04 lebih aman menjelang tenggat.
 
-KVM 2 memberi ruang lebih (3 worker, sisa RAM sekitar 5 GB). Pilih KVM 2 bila ingin memasang Coolify atau bila juri diperkirakan banyak yang mengakses bersamaan.
+KVM 2 memberi ruang lebih: 3 worker, puncak `web` terukur 3.022 MB dari 8 GB, dan 3 klien bersamaan selesai dalam 1,6–2,6 detik per satua terpanjang. Pilih KVM 2 bila ingin memasang Coolify atau bila juri diperkirakan banyak yang mengakses bersamaan.
+
+## Kontrol panel tanpa biaya tambahan
+
+PrasiBali.ai **tidak membutuhkan kontrol panel**. Semua operasi cukup dengan satu file compose dan beberapa perintah SSH (langkah 7–9). Yang sudah tersedia tanpa biaya:
+
+- **hPanel Hostinger** (termasuk paket VPS): start/stop/reboot, snapshot dan backup mingguan, firewall, grafik CPU/RAM/disk, browser terminal, dan instal ulang OS.
+- **SSH + Docker Compose**: `docker compose -f docker-compose.prod.yml ps | logs | up -d --build`, `docker stats`.
+
+Panel hosting gratis seperti CyberPanel atau CloudPanel ditujukan untuk situs PHP/WordPress. Panel itu memasang web server sendiri yang bentrok dengan Caddy di port 80/443, jadi jangan dipasang.
+
+Jika tetap ingin antarmuka web, pilih yang ringan, gratis, dan tidak mengambil port 80/443:
+
+| Pilihan | Kegunaan | Catatan untuk KVM 1 |
+|---|---|---|
+| **Cockpit** (paket resmi Ubuntu, `sudo apt install cockpit`) | Memantau CPU/RAM/disk, log systemd, terminal web, update paket | Paling cocok: hanya berjalan saat dibuka (socket activation), jadi hampir tidak memakai RAM saat idle. Port 9090 |
+| **Dockge** (open source) | Melihat dan menjalankan stack Docker Compose (log, restart, edit `compose`) | Satu container kecil yang selalu berjalan. Arahkan ke folder `~/prasibali` |
+| **Portainer CE** (open source) | Manajemen container yang lebih lengkap | Lebih berat dari Dockge; tidak perlu untuk satu stack |
+
+Coolify versi self-hosted sebenarnya juga gratis. Masalahnya di KVM 1 bukan biaya, melainkan kebutuhan minimum 2 core dan 2 GB RAM serta proxy-nya yang bentrok dengan Caddy.
+
+Aturan keamanan untuk panel apa pun:
+
+- Jangan buka port panel (9090, 5001, 9443) di firewall hPanel atau UFW.
+- Akses lewat SSH tunnel dari laptop, lalu buka `http://localhost:9090` di browser laptop:
+
+  ```powershell
+  PS> ssh -L 9090:localhost:9090 deploy@IP_VPS
+  ```
+
+- Untuk Dockge atau Portainer, ikat port-nya ke `127.0.0.1` saja (misalnya `127.0.0.1:5001:5001`), karena Docker melewati aturan UFW untuk port yang dipublikasikan.
 
 Perintah yang diawali `$` dijalankan di VPS sebagai user `deploy`. Perintah yang diawali `PS>` dijalankan di laptop Windows (PowerShell).
 
