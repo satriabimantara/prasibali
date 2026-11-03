@@ -1,240 +1,320 @@
-# Deploy PrasiBali.ai ke Hostinger VPS KVM 1 / KVM 2 (Ubuntu 24.04 64 bit)
+# Deploy PrasiBali.ai v1.0 ke Hostinger VPS KVM 1 (`prasibali.tech`)
 
-Panduan langkah demi langkah untuk menjalankan PrasiBali.ai di Hostinger VPS dengan domain `prasibali.tech`. Semua layanan berjalan dengan Docker Compose (`docker-compose.prod.yml`), tanpa control panel. Penjelasan umum tentang arsitektur, backup, pembaruan, dan pengukuran memori ada di `docs/deploy.md`; dokumen ini berisi langkah khusus Hostinger.
+Panduan ini diikuti urut dari atas ke bawah. Bagian A–E dikerjakan **sekali** saat deploy pertama. Bagian F adalah rutinitas setiap ada rilis baru: cukup `git push prod master` dari laptop.
 
-| Spesifikasi | KVM 1 | KVM 2 |
-|---|---|---|
-| CPU (AMD EPYC) | 1 vCPU | 2 vCPU |
-| RAM | 4 GB | 8 GB |
-| Disk NVMe | 50 GB | 100 GB |
-| Bandwidth | 4 TB | 8 TB |
-| `GUNICORN_WORKERS` | `2` | `3` |
-| `WEB_MEM_LIMIT` | `3500m` | `6g` |
-| Swap | 4 GB | 2 GB |
+| Komponen | Nilai |
+|---|---|
+| VPS | Hostinger KVM 1: 1 vCPU, 4 GB RAM, 50 GB NVMe, Ubuntu 26.04 LTS 64 bit, tanpa control panel |
+| Alamat | `https://prasibali.tech` (`www.prasibali.tech` dialihkan ke sana), IP 187.124.141.29 |
+| Email aplikasi | mailbox `noreply@prasibali.tech` lewat SMTP Hostinger (`smtp.hostinger.com:587`, STARTTLS) |
+| Layanan | Docker Compose (`docker-compose.prod.yml`): Caddy (HTTPS otomatis), Django + Gunicorn, PostgreSQL, backup harian |
+| Rilis | laptop `git push prod master` → hook di server → `deploy/server/deploy.sh` → `docker compose up -d --build` |
 
-Paket web hosting (shared) Hostinger tidak bisa dipakai, karena tidak mendukung Docker maupun model Python.
+Penanda perintah:
+
+- `PS>`: PowerShell di laptop, dari folder repo `#15-prasibali.ai`;
+- `root$`: di VPS sebagai `root`;
+- `$`: di VPS sebagai user `deploy`.
+
+Sudah siap (diperiksa 3 November 2026):
+
+- DNS `prasibali.tech` dan `www` → 187.124.141.29;
+- MX `mx1/mx2.hostinger.com`, SPF `include:_spf.mail.hostinger.com`, dan DKIM `hostingermail1._domainkey`;
+- kunci SSH laptop terdaftar di `root`.
 
 ## Apakah KVM 1 cukup?
 
-Ya, untuk akses juri dengan semua model termasuk TF5, asalkan **tanpa Coolify**. Angka berikut dari uji penuh image produksi dengan batas seperti KVM 1 (1 vCPU, `GUNICORN_WORKERS=2`, `WEB_MEM_LIMIT=3500m`); rinciannya di `docs/deploy.md` bagian "Memori dan jumlah worker".
+Ya. Angka berikut dari uji penuh image produksi dengan batas seperti KVM 1 (1 vCPU, 2 worker, batas memori 3.500 MB); rinciannya di `docs/deploy.md` bagian "Memori dan jumlah worker".
 
-| Komponen | Terukur |
+| Ukuran | Hasil |
 |---|---|
-| Container `web`, puncak setelah 12 analisis + 3 klien bersamaan (KNN + TF4 dan SVM + TF5) | **2.910 MB** (model 2,5 GB dibagi master dan worker; tiap worker sekitar 115 MB) |
-| Postgres, puncak | 83 MB |
-| Caddy + Ubuntu minimal | sekitar 0,5 GB (perkiraan, tidak diukur di laptop) |
-| **Total** | **sekitar 3,5 GB dari 4 GB**; OOM kill 0, restart 0 |
-| Siap melayani sejak `up` | 119 detik (`warm_models` 48,5 detik) |
-| Satua contoh / satua terpanjang (16.876 karakter), satu klien | 0,11–0,61 detik / 1,06–1,66 detik |
-| Satua terpanjang, 3 klien bersamaan | 1,05–4,74 detik per analisis |
+| Puncak memori container `web` (12 analisis + 3 klien bersamaan, termasuk SVM + TF5) | 2.910 MB; OOM 0, restart 0 |
+| Postgres | 83 MB |
+| Perkiraan total dengan Ubuntu + Caddy | sekitar 3,5 GB dari 4 GB (swap 4 GB sebagai pengaman) |
+| Satua terpanjang (16.876 karakter): 1 klien / 3 klien bersamaan | 1,1–1,7 detik / 1,1–4,7 detik |
+| Siap melayani setelah container start | sekitar 2 menit |
 
-Konsekuensinya:
+Coolify tidak dipasang: kebutuhan minimumnya 2 core CPU, dan proxy-nya bentrok dengan Caddy. Pilihan kontrol panel gratis ada di bagian G.
 
-- Sisa RAM hanya sekitar 0,5 GB, jadi pakai swap 4 GB sebagai pengaman dan jangan menjalankan layanan berat lain di VPS ini.
-- Dengan 1 vCPU, beberapa juri tetap terlayani; satua panjang yang dikirim bersamaan hanya sedikit lebih lama (paling lama sekitar 5 detik).
-- Build image pertama di 1 vCPU lebih lama (sekitar 20–40 menit).
-- Container butuh sekitar 2 menit setelah `up` sebelum melayani request.
+---
 
-**Coolify tidak disarankan di KVM 1.** Dokumentasi Coolify menyebut kebutuhan minimum 2 core CPU dan 2 GB RAM untuk Coolify sendiri. KVM 1 hanya punya 1 vCPU, dan RAM-nya sudah terpakai sekitar 3,4 GB oleh PrasiBali.ai. Coolify juga memasang proxy sendiri di port 80/443, sehingga bentrok dengan Caddy di `docker-compose.prod.yml` dan compose harus disesuaikan. Panduan ini memakai Docker Compose langsung: lebih ringan, sudah diuji, dan tetap mudah diperbarui (`git pull` lalu `up -d --build`).
+## A. Persiapan di hPanel (sekali, sekitar 10 menit)
 
-**OS: pakai Ubuntu 24.04 LTS**, bukan 26.04. Docker dan seluruh panduan ini diuji untuk 24.04, dan dokumentasi Coolify pun hanya menyebut LTS sampai 24.04. Ubuntu 26.04 kemungkinan juga berjalan (sudah ada panduan instalasi Docker untuk 26.04), tapi 24.04 lebih aman menjelang tenggat.
+Nama menu hPanel bisa sedikit berbeda menurut bahasa tampilan dan pembaruan Hostinger. Yang dicari selalu bagian **VPS** dan **Emails** untuk domain `prasibali.tech`.
 
-KVM 2 memberi ruang lebih: 3 worker, puncak `web` terukur 3.022 MB dari 8 GB, dan 3 klien bersamaan selesai dalam 1,6–2,6 detik per satua terpanjang. Pilih KVM 2 bila ingin memasang Coolify atau bila juri diperkirakan banyak yang mengakses bersamaan.
+### A1. Buka port di firewall VPS
 
-## Kontrol panel tanpa biaya tambahan
+Ada dua lapisan firewall: firewall hPanel (di luar server) dan UFW (di dalam server, dipasang otomatis di langkah B). Keduanya harus membuka port yang sama.
 
-PrasiBali.ai **tidak membutuhkan kontrol panel**. Semua operasi cukup dengan satu file compose dan beberapa perintah SSH (langkah 7–9). Yang sudah tersedia tanpa biaya:
+1. hPanel → **VPS** → pilih VPS 187.124.141.29 → **Security** (Keamanan) → **Firewall**.
+2. **Create firewall configuration** (Tambah konfigurasi firewall), beri nama `prasibali`.
+3. Tambahkan aturan **Accept** dengan sumber **Any**:
 
-- **hPanel Hostinger** (termasuk paket VPS): start/stop/reboot, snapshot dan backup mingguan, firewall, grafik CPU/RAM/disk, browser terminal, dan instal ulang OS.
-- **SSH + Docker Compose**: `docker compose -f docker-compose.prod.yml ps | logs | up -d --build`, `docker stats`.
+   | Protokol | Port | Fungsi |
+   |---|---|---|
+   | TCP | 22 | SSH dan `git push prod` |
+   | TCP | 80 | HTTP (Let's Encrypt dan pengalihan ke HTTPS) |
+   | TCP | 443 | HTTPS |
+   | UDP | 443 | HTTP/3 |
 
-Panel hosting gratis seperti CyberPanel atau CloudPanel ditujukan untuk situs PHP/WordPress. Panel itu memasang web server sendiri yang bentrok dengan Caddy di port 80/443, jadi jangan dipasang.
+4. Aktifkan konfigurasi itu untuk VPS ini (**Activate** atau **Synchronize**).
 
-Jika tetap ingin antarmuka web, pilih yang ringan, gratis, dan tidak mengambil port 80/443:
+Jangan membuka port lain (misalnya 5432 Postgres atau 8000 Gunicorn); keduanya hanya dipakai di dalam jaringan Docker.
 
-| Pilihan | Kegunaan | Catatan untuk KVM 1 |
+### A2. Buat mailbox `noreply@prasibali.tech`
+
+1. hPanel → **Emails** → pilih domain `prasibali.tech` → **Email accounts** (Akun email) → **Create email account**.
+2. Nama: `noreply`, password: buat password kuat dan simpan di password manager. Password ini adalah `EMAIL_HOST_PASSWORD` di langkah D2.
+3. Lupa password: di daftar akun email, menu titik tiga pada `noreply@prasibali.tech` → **Change password**.
+
+Pengaturan SMTP bisa dilihat di hPanel → **Emails** → **Connect apps & devices** (atau *Configuration settings*). Aplikasi memakai `smtp.hostinger.com`, port **587**, **STARTTLS** sebagai bawaan; port 465/SSL adalah cadangan (bagian H).
+
+### A3. Akses darurat
+
+- **Browser terminal**: hPanel → VPS → **Overview** → tombol **Browser terminal**. Dipakai bila SSH dari laptop gagal.
+- **Password root VPS** (hanya untuk browser terminal atau console; SSH memakai kunci): hPanel → VPS → **Settings** → **Root password** → ubah. Isi sendiri dan jangan ditulis di repo atau chat.
+
+### A4. Cek DNS dari laptop
+
+```powershell
+PS> Resolve-DnsName prasibali.tech -Type A
+PS> Resolve-DnsName www.prasibali.tech
+```
+
+Keduanya harus berujung di `187.124.141.29`.
+
+---
+
+## B. Siapkan VPS (sekali, sekitar 10–15 menit)
+
+Skrip `deploy/server/setup_vps.sh` melakukan semuanya dan aman dijalankan ulang:
+
+1. update sistem, zona waktu Asia/Makassar, swap 4 GB;
+2. Docker Engine + Compose (dari repo Docker; bila repo Docker belum mendukung Ubuntu 26.04, otomatis memakai paket Ubuntu);
+3. UFW: OpenSSH, 80/tcp, 443/tcp, 443/udp;
+4. user `deploy` (grup docker) dengan kunci SSH yang sama dengan root, dan login SSH **hanya dengan kunci** (login dengan password dimatikan);
+5. tujuan `git push`: repo `~deploy/prasibali.git` dengan hook yang men-deploy otomatis ke `~deploy/prasibali`.
+
+```powershell
+PS> scp deploy\server\setup_vps.sh root@prasibali.tech:
+PS> ssh root@prasibali.tech "bash setup_vps.sh"
+```
+
+Di akhir, skrip mencetak `Docker version ...`, status UFW, dan "Next steps". **Sebelum menutup sesi**, buka PowerShell baru dan pastikan user `deploy` bisa masuk:
+
+```powershell
+PS> ssh deploy@prasibali.tech "echo ok && docker --version && free -h"
+```
+
+Jika gagal, jangan logout dari root. Perbaiki lewat browser terminal (A3), misalnya periksa `/home/deploy/.ssh/authorized_keys`.
+
+---
+
+## C. Unggah model pretrained (sekali, sekitar 30 MB)
+
+Folder `models/` tidak ada di git. Bundel berisi tepat model yang dipakai v1.0, dibaca dari katalog model:
+
+- 9 pickle classifier word vector (M1: TF4, TF5, TF4+TF5; M2: DT, GNB, KNN, MLP, RF, SVM);
+- label encoder;
+- `SHA256SUMS`.
+
+Model leksikon belum dipakai di v1.0. FastText 300 dimensi (2,4 GB) **tidak** diunggah: container mengunduhnya sekali dari Hugging Face saat start pertama dan menyimpannya di volume `hf_cache`.
+
+```powershell
+PS> .venv\Scripts\python.exe scripts\bundle_models.py
+PS> scp dist\prasibali-models-v1.0.tar.gz deploy@prasibali.tech:
+PS> ssh deploy@prasibali.tech "tar -xzf prasibali-models-v1.0.tar.gz -C prasibali/models && cd prasibali/models && sha256sum -c SHA256SUMS && rm ~/prasibali-models-v1.0.tar.gz"
+```
+
+Semua baris harus `OK`. `deploy.sh` mengulang pemeriksaan ini sebelum setiap deploy.
+
+Jika suatu saat Hugging Face tidak bisa diakses dari server, buat bundel lengkap dengan `scripts\bundle_models.py --with-fasttext` (sekitar 2,4 GB) dan unggah dengan cara yang sama. Untuk mengganti model di kemudian hari: buat bundel baru, unggah, ekstrak, lalu jalankan `bash ~/prasibali/deploy/server/deploy.sh` di server.
+
+---
+
+## D. Deploy pertama (sekitar 30–45 menit, sebagian besar build image)
+
+### D1. Kirim kode dari laptop
+
+Pastikan semua perubahan sudah di-commit, termasuk `.env.example`. Yang dikirim hanya isi commit, bukan file yang belum di-commit.
+
+```powershell
+PS> git status
+PS> git remote add prod deploy@prasibali.tech:prasibali.git
+PS> git push prod master
+```
+
+Output akan berisi `Checked out ...` dan `Deploy started in the background`. Pada push pertama, log deploy berhenti dengan `.env is missing`. **Itu wajar**; lanjutkan ke D2.
+
+### D2. Buat dan isi `.env` di server
+
+```powershell
+PS> ssh deploy@prasibali.tech
+```
+
+```bash
+$ bash ~/prasibali/deploy/server/init_env.sh
+$ nano ~/prasibali/.env
+```
+
+`init_env.sh` sudah mengisi semua nilai, termasuk `DJANGO_SECRET_KEY` dan `POSTGRES_PASSWORD` acak yang dibuat di server. Isi tiga baris yang masih kosong:
+
+| Variabel | Isi | Didapat dari |
 |---|---|---|
-| **Cockpit** (paket resmi Ubuntu, `sudo apt install cockpit`) | Memantau CPU/RAM/disk, log systemd, terminal web, update paket | Paling cocok: hanya berjalan saat dibuka (socket activation), jadi hampir tidak memakai RAM saat idle. Port 9090 |
-| **Dockge** (open source) | Melihat dan menjalankan stack Docker Compose (log, restart, edit `compose`) | Satu container kecil yang selalu berjalan. Arahkan ke folder `~/prasibali` |
-| **Portainer CE** (open source) | Manajemen container yang lebih lengkap | Lebih berat dari Dockge; tidak perlu untuk satu stack |
+| `EMAIL_HOST_PASSWORD` | password mailbox `noreply@prasibali.tech` | langkah A2 (hPanel → Emails → Email accounts) |
+| `DEMO_USER_EMAIL` | email akun demo juri, misalnya `demo@prasibali.tech` atau alamat lain milik Anda | Anda tentukan |
+| `DEMO_USER_PASSWORD` | password akun demo (minimal 8 karakter, tidak umum) | Anda tentukan, lalu kirim ke panitia lewat formulir resmi |
 
-Coolify versi self-hosted sebenarnya juga gratis. Masalahnya di KVM 1 bukan biaya, melainkan kebutuhan minimum 2 core dan 2 GB RAM serta proxy-nya yang bentrok dengan Caddy.
+Simpan di nano dengan `Ctrl+O`, `Enter`, lalu keluar dengan `Ctrl+X`. Jangan ubah `POSTGRES_PASSWORD` setelah deploy pertama: password itu dipakai saat database dibuat.
 
-Aturan keamanan untuk panel apa pun:
+### D3. Jalankan deploy
 
-- Jangan buka port panel (9090, 5001, 9443) di firewall hPanel atau UFW.
-- Akses lewat SSH tunnel dari laptop, lalu buka `http://localhost:9090` di browser laptop:
-
-  ```powershell
-  PS> ssh -L 9090:localhost:9090 deploy@IP_VPS
-  ```
-
-- Untuk Dockge atau Portainer, ikat port-nya ke `127.0.0.1` saja (misalnya `127.0.0.1:5001:5001`), karena Docker melewati aturan UFW untuk port yang dipublikasikan.
-
-Perintah yang diawali `$` dijalankan di VPS sebagai user `deploy`. Perintah yang diawali `PS>` dijalankan di laptop Windows (PowerShell).
-
-## 1. Pesan dan siapkan VPS di hPanel
-
-1. Pilih paket **KVM 1** (atau KVM 2).
-2. Lokasi server: pilih data center terdekat dengan juri (Asia, misalnya Indonesia atau Singapura).
-3. Sistem operasi: **Ubuntu 24.04 64 bit** polos ("Plain OS", tanpa control panel atau template aplikasi).
-4. Buat password root yang kuat, lalu tempel public key SSH laptop:
-   - lihat dengan `PS> type $env:USERPROFILE\.ssh\id_ed25519.pub`;
-   - buat dulu dengan `PS> ssh-keygen -t ed25519` bila belum ada.
-5. Catat IP publik VPS dari hPanel (VPS → Overview).
-6. **Firewall hPanel** (VPS → Security → Firewall): buat aturan yang mengizinkan TCP 22, TCP 80, TCP 443, dan UDP 443, lalu aktifkan untuk VPS ini. Firewall hPanel bekerja di luar server; UFW di langkah 2 bekerja di dalam server. Keduanya harus membuka port yang sama.
-
-Masuk pertama kali (atau pakai "Browser terminal" di hPanel):
-
-```powershell
-PS> ssh root@IP_VPS
-```
-
-## 2. Siapkan server
+Masih di server sebagai `deploy`:
 
 ```bash
-apt-get update && apt-get -y upgrade
-timedatectl set-timezone Asia/Makassar
-adduser --disabled-password --gecos "" deploy
-usermod -aG sudo deploy
-passwd deploy
-mkdir -p /home/deploy/.ssh && cp ~/.ssh/authorized_keys /home/deploy/.ssh/
-chown -R deploy:deploy /home/deploy/.ssh && chmod 700 /home/deploy/.ssh && chmod 600 /home/deploy/.ssh/authorized_keys
+$ setsid nohup bash ~/prasibali/deploy/server/deploy.sh >> ~/prasibali/deploy.log 2>&1 < /dev/null &
+$ tail -f ~/prasibali/deploy.log
 ```
 
-Uji `PS> ssh deploy@IP_VPS` di jendela lain. Setelah berhasil, matikan login root dan password di `/etc/ssh/sshd_config` (`PermitRootLogin no`, `PasswordAuthentication no`), lalu `systemctl restart ssh`.
+Tekan `Ctrl+C` untuk berhenti mengikuti log; deploy tetap berjalan walau SSH terputus. Urutannya:
 
-Firewall di dalam server:
+1. build image (20–40 menit di 1 vCPU);
+2. `migrate`, lalu `warm_models` (pertama kali mengunduh FastText 2,4 GB dari Hugging Face);
+3. Gunicorn menyala dan Caddy mengambil sertifikat Let's Encrypt;
+4. log berakhir dengan `Deploy ... finished: web is healthy`.
 
-```bash
-$ sudo ufw allow OpenSSH && sudo ufw allow 80/tcp && sudo ufw allow 443/tcp && sudo ufw allow 443/udp
-$ sudo ufw enable
-```
-
-Swap sebagai pengaman saat build image dan lonjakan memori: **4 GB untuk KVM 1**, 2 GB untuk KVM 2 (ganti `4G` menjadi `2G`):
-
-```bash
-$ sudo fallocate -l 4G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile
-$ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-$ echo 'vm.swappiness=10' | sudo tee /etc/sysctl.d/99-swap.conf && sudo sysctl --system
-```
-
-Docker Engine + Compose dari repositori resmi Docker:
-
-```bash
-$ sudo apt-get install -y ca-certificates curl git
-$ sudo install -m 0755 -d /etc/apt/keyrings
-$ sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-$ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-$ sudo apt-get update && sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-$ sudo usermod -aG docker deploy && newgrp docker
-$ docker compose version
-```
-
-## 3. Ambil kode
-
-```bash
-$ git clone https://github.com/satriabimantara/prasibali.ai.git ~/prasibali
-$ cd ~/prasibali && mkdir -p models backups
-```
-
-Selama repo masih privat, pakai deploy key atau `gh auth login` di VPS.
-
-## 4. Salin folder model dari laptop
-
-Dari PowerShell di akar repo laptop. Total sekitar 2,6 GB; file `100_*` tidak dipakai, jadi tidak disalin.
-
-```powershell
-PS> scp -r models\character-classification models\label-encoder models\balisentilex deploy@IP_VPS:~/prasibali/models/
-PS> ssh deploy@IP_VPS "mkdir -p ~/prasibali/models/balinese-word-embedding"
-PS> scp models\balinese-word-embedding\300_fasttext_model.bin models\balinese-word-embedding\300_fasttext_model.bin.wv.vectors_ngrams.npy deploy@IP_VPS:~/prasibali/models/balinese-word-embedding/
-```
-
-Periksa di server:
-
-```bash
-$ chmod -R a+rX ~/prasibali/models
-$ du -sh ~/prasibali/models/*
-$ sha256sum ~/prasibali/models/balinese-word-embedding/300_fasttext_model.bin*
-```
-
-Bandingkan hash dengan laptop (`PS> Get-FileHash models\balinese-word-embedding\300_fasttext_model.bin*`). Jika FastText tidak disalin, `warm_models` mengunduhnya sekali dari Hugging Face ke volume `hf_cache`.
-
-## 5. Domain `prasibali.tech` dan DNS
-
-Domain `prasibali.tech` didapat dari promo Hostinger (gratis satu tahun) dan DNS-nya dikelola di hPanel (nameserver `*.dns-parking.com`). Di hPanel (Domain → DNS / Nameservers → kelola record DNS) pastikan:
-
-| Tipe | Nama | Isi | TTL |
-|---|---|---|---|
-| A | `@` | IP_VPS | 300 |
-| A | `www` | IP_VPS | 300 |
-
-Hapus record A/AAAA bawaan lain untuk `@` dan `www` yang menunjuk ke server parkir Hostinger. Jika VPS punya IPv6 dan Anda menambahkan record AAAA, pastikan Docker dan Caddy menerima IPv6; bila ragu, cukup pakai record A. Cek dengan:
-
-```bash
-$ dig +short prasibali.tech
-$ dig +short www.prasibali.tech
-```
-
-## 6. Isi `.env`
-
-Buat `~/prasibali/.env` dengan `nano .env`, lalu `chmod 600 .env`. Nilai tidak pernah di-commit. Daftar lengkap variabel ada di `docs/deploy.md` bagian 5; nilai khusus Hostinger dan `prasibali.tech`:
-
-```text
-DJANGO_ALLOWED_HOSTS=prasibali.tech,www.prasibali.tech
-CSRF_TRUSTED_ORIGINS=https://prasibali.tech,https://www.prasibali.tech
-SITE_DOMAIN=prasibali.tech
-# KVM 1 (untuk KVM 2: GUNICORN_WORKERS=3 dan WEB_MEM_LIMIT=6g)
-GUNICORN_WORKERS=2
-WEB_MEM_LIMIT=3500m
-EMAIL_HOST_USER=alamat-mailbox@prasibali.tech
-DEFAULT_FROM_EMAIL=PrasiBali.ai <alamat-mailbox@prasibali.tech>
-```
-
-Variabel wajib lain:
-
-- `DJANGO_SECRET_KEY` (buat dengan `python3 -c "import secrets; print(secrets.token_urlsafe(50))"`);
-- `ACME_EMAIL`;
-- `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`;
-- `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` (Gmail App Password);
-- `DEMO_USER_EMAIL`, `DEMO_USER_PASSWORD`.
-
-Catatan email: aplikasi mengirim email verifikasi dan reset kata sandi lewat **SMTP Hostinger Email** (`smtp.hostinger.com`, port 587 STARTTLS; ini bawaan settings). `EMAIL_HOST_USER` adalah alamat mailbox lengkap, `EMAIL_HOST_PASSWORD` adalah password mailbox (atur di hPanel → Email → kelola mailbox), dan `DEFAULT_FROM_EMAIL` harus memakai alamat mailbox yang sama. Bila port 587 bermasalah, pakai `EMAIL_PORT=465`, `EMAIL_USE_TLS=False`, `EMAIL_USE_SSL=True`. Record MX dan SPF (`include:_spf.mail.hostinger.com`) sudah dibuat Hostinger; aktifkan juga DKIM di hPanel → Email → Email deliverability agar email tidak masuk spam. Mail API Hostinger (token Bearer) tidak dipakai aplikasi.
-
-## 7. Build dan jalankan
+### D4. Buat akun demo juri
 
 ```bash
 $ cd ~/prasibali
-$ docker compose -f docker-compose.prod.yml config --quiet
-$ docker compose -f docker-compose.prod.yml up -d --build
-$ docker compose -f docker-compose.prod.yml logs -f web
-```
-
-Build pertama butuh sekitar 20–40 menit di KVM 1 dan 10–20 menit di KVM 2 (torch dan dependensi). Saat start, container `web` menjalankan `migrate`, `createcachetable`, lalu `warm_models` (SatuaNER, classifier bawaan, FastText), memasang `HF_HUB_OFFLINE=1`, lalu menyalakan Gunicorn. Caddy mengambil sertifikat Let's Encrypt untuk `prasibali.tech` dan `www.prasibali.tech`; `www` dialihkan 301 ke `https://prasibali.tech`.
-
-Pemeriksaan:
-
-```bash
-$ docker compose -f docker-compose.prod.yml ps                 # web "healthy"
-$ curl -s https://prasibali.tech/healthz                        # {"status": "ok", "database": "ok"}
-$ curl -sI https://www.prasibali.tech/ | head -n 3              # 301 ke https://prasibali.tech/
-$ curl -sI https://prasibali.tech/ | grep -iE "strict-transport|content-security"
-$ docker stats --no-stream && free -h
-```
-
-Jika sertifikat gagal (`docker compose ... logs caddy`), periksa DNS (langkah 5), lalu firewall hPanel dan UFW untuk port 80/443.
-
-## 8. Akun demo juri
-
-```bash
 $ docker compose -f docker-compose.prod.yml exec web python manage.py create_demo_user
 ```
 
-Perintah ini membaca `DEMO_USER_EMAIL` dan `DEMO_USER_PASSWORD` dari `.env` dan tidak pernah mencetak password. Sebelum mengirim kredensial lewat formulir panitia, uji sendiri: masuk dengan akun demo, klik salah satu contoh satua, jalankan "Analisis teks", lalu coba model SVM + TF5 di Mode Peneliti.
+Output: `Demo user created: ...`. Password tidak pernah dicetak.
 
-## 9. Backup dan pembaruan
+---
 
-- Backup database harian otomatis ke `~/prasibali/backups/` (layanan `backup`). Untuk backup manual dan restore, lihat `docs/deploy.md` bagian 9.
-- Backup mingguan gratis Hostinger (snapshot seluruh VPS) melengkapi backup database ini. Aktifkan di hPanel → VPS → Backups.
-- Untuk pembaruan aplikasi (`git pull` lalu `up -d --build web`), lihat `docs/deploy.md` bagian 10.
-- Jika domain belum aktif saat tenggat: isi `SITE_DOMAIN=IP-VPS-dengan-tanda-hubung.sslip.io`, sesuaikan `DJANGO_ALLOWED_HOSTS` dan `CSRF_TRUSTED_ORIGINS`, lalu `up -d`.
+## E. Verifikasi
+
+Dari laptop:
+
+```powershell
+PS> curl.exe -s https://prasibali.tech/healthz
+PS> curl.exe -sI https://www.prasibali.tech/
+PS> curl.exe -sI https://prasibali.tech/
+```
+
+Hasil yang diharapkan:
+
+- `/healthz` mengembalikan `{"status": "ok", "database": "ok"}`;
+- `www` mengembalikan `301` ke `https://prasibali.tech/`;
+- halaman utama mengembalikan `200` dengan header `strict-transport-security`, `content-security-policy`, dan `x-frame-options: DENY`.
+
+Uji email SMTP dari server, ke alamat yang bisa Anda buka:
+
+```bash
+$ cd ~/prasibali
+$ docker compose -f docker-compose.prod.yml exec web python manage.py sendtestemail alamat-anda@contoh.com
+```
+
+Pengirimnya harus `PrasiBali.ai <noreply@prasibali.tech>`; periksa juga folder spam. Jika gagal, lihat bagian H.
+
+Uji manual di browser (sebaiknya jendela privat):
+
+1. **Daftar** di `https://prasibali.tech/daftar/` → email "konfirmasi" datang dari `noreply@prasibali.tech` → klik tautannya (`https://prasibali.tech/akun/confirm-email/...`).
+2. **Masuk** → **Analisis** → klik satu contoh satua → **Analisis teks** → hasil tampil.
+3. **Lanjutan (Mode Peneliti)** → pilih SVM + TF5 (M2) → analisis lagi.
+4. **Riwayat** → buka detail → hapus satu.
+5. **Profil** → ubah nama → simpan (tidak ada email). **Pengaturan** → ganti bahasa ke English.
+6. **Akun → Email** → tambah alamat lain → email konfirmasi datang.
+7. Keluar → **Lupa kata sandi?** → email reset datang → set kata sandi baru → masuk dengan kata sandi baru.
+8. Masuk dengan akun demo juri (D4).
+
+---
+
+## F. Rutinitas rilis berikutnya
+
+Setiap ada perubahan yang siap dipublikasikan:
+
+```powershell
+PS> git add ... ; git commit -m "..."
+PS> git push prod master
+PS> ssh deploy@prasibali.tech tail -f prasibali/deploy.log
+```
+
+Selebihnya otomatis, tanpa konfigurasi ulang:
+
+- hook `post-receive` meng-checkout commit baru ke `~/prasibali`; `.env`, `models/`, dan `backups/` tidak tersentuh;
+- `deploy.sh` memeriksa `.env` dan model, membangun image baru, lalu mengganti container dan menunggu status `healthy`;
+- migrasi database berjalan otomatis saat container start.
+
+Build berikutnya hanya beberapa menit, karena layer dependensi tersimpan di cache; build lama hanya bila `requirements.txt` berubah. Jika build gagal, **versi lama tetap berjalan** dan log menulis `DEPLOY FAILED`. Push ke GitHub tetap terpisah: `git push origin master`.
+
+| Keperluan | Perintah |
+|---|---|
+| Versi yang sedang berjalan | `ssh deploy@prasibali.tech cat prasibali/REVISION` |
+| Deploy ulang commit yang sama (misalnya setelah mengubah `.env`) | `ssh deploy@prasibali.tech "setsid nohup bash prasibali/deploy/server/deploy.sh >> prasibali/deploy.log 2>&1 < /dev/null &"` |
+| Batalkan rilis (cara aman) | `git revert <sha>` lalu `git push prod master` |
+| Kembali paksa ke commit lama | `git push prod <sha-lama>:master --force` |
+
+Hanya branch `master` yang di-deploy; push ke branch lain diabaikan.
+
+---
+
+## G. Operasional harian
+
+```bash
+$ cd ~/prasibali
+$ docker compose -f docker-compose.prod.yml ps                       # status semua layanan
+$ docker compose -f docker-compose.prod.yml logs --tail 100 web      # log aplikasi (JSON)
+$ docker stats --no-stream && free -h                                # memori
+$ docker compose -f docker-compose.prod.yml restart web              # restart aplikasi
+```
+
+- **Backup database** berjalan otomatis setiap hari pukul 02.00 WITA ke `~/prasibali/backups/` dan disimpan 14 hari. Backup sekarang: `docker compose -f docker-compose.prod.yml exec backup sh /usr/local/bin/backup.sh now`. Unduh ke laptop: `PS> scp deploy@prasibali.tech:prasibali/backups/*.dump .\backups\`. Cara restore ada di `docs/deploy.md` bagian 9.
+- **Backup mingguan Hostinger** (snapshot VPS): hPanel → VPS → **Backups**.
+- **Kontrol panel gratis (opsional)**:
+  - hPanel sudah mencakup reboot, firewall, snapshot, grafik CPU/RAM, dan browser terminal.
+  - Bila ingin tampilan web, pasang **Cockpit** (`sudo apt install cockpit`). Cockpit hanya berjalan saat dibuka, jadi hampir tidak memakai RAM. Jangan buka port 9090 di firewall; akses lewat tunnel `PS> ssh -L 9090:localhost:9090 deploy@prasibali.tech`, lalu buka `http://localhost:9090`.
+  - Jangan pasang CyberPanel atau CloudPanel, karena keduanya bentrok dengan Caddy di port 80/443.
+
+---
+
+## H. Troubleshooting
+
+| Gejala | Penyebab dan perbaikan |
+|---|---|
+| `ssh deploy@...` ditolak | Kunci tidak tersalin. Masuk lewat browser terminal, cek `/home/deploy/.ssh/authorized_keys`, jalankan ulang `bash setup_vps.sh` sebagai root |
+| `setup_vps.sh` gagal memasang Docker di 26.04 | Jalankan `root$ apt-get install -y docker.io docker-compose-v2 docker-buildx`, lalu ulangi skrip |
+| Log: `.env is missing` / `models/ is empty` / `sha256sum` gagal | Kerjakan D2 atau C, lalu jalankan ulang deploy (tabel di F) |
+| Log: `web is unhealthy` | Baca 60 baris log yang dicetak. `Model warm-up failed` biasanya berarti unduhan Hugging Face gagal (pakai bundel `--with-fasttext`) |
+| Sertifikat HTTPS gagal (`docker compose ... logs caddy`) | Port 80/443 belum terbuka di firewall hPanel (A1) atau DNS belum mengarah ke VPS (A4) |
+| `sendtestemail` gagal: autentikasi | `EMAIL_HOST_USER` harus alamat lengkap `noreply@prasibali.tech` dan `EMAIL_HOST_PASSWORD` harus password mailbox itu (A2) |
+| `sendtestemail` timeout di port 587 | Di `.env` tambahkan `EMAIL_PORT=465`, `EMAIL_USE_TLS=False`, `EMAIL_USE_SSL=True`, lalu deploy ulang |
+| Email masuk spam | Pastikan DKIM aktif (hPanel → Emails → Email deliverability) dan SPF/MX tidak diubah |
+| `Killed`, `oom_kill`, atau `WORKER TIMEOUT` di log | Turunkan `GUNICORN_WORKERS=1` di `.env`, lalu deploy ulang; cek `free -h` dan swap |
+| Perubahan `.env` tidak berlaku | Container membaca `.env` saat dibuat: jalankan deploy ulang (tabel di F) atau `docker compose -f docker-compose.prod.yml up -d` |
+
+---
+
+## Lampiran: uji email Hostinger dari laptop (lokal)
+
+Secara bawaan, settings lokal (`config.settings.dev`) hanya mencetak email ke konsol. Untuk mencoba pengiriman sungguhan dari laptop, ubah baris email di `.env` lokal (jangan di-commit). Baris `EMAIL_HOST=smtp.gmail.com` yang lama harus diganti:
+
+```text
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp.hostinger.com
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
+EMAIL_HOST_USER=noreply@prasibali.tech
+EMAIL_HOST_PASSWORD=<password mailbox noreply>
+DEFAULT_FROM_EMAIL="PrasiBali.ai <noreply@prasibali.tech>"
+```
+
+```powershell
+PS> .venv\Scripts\python.exe src\manage.py sendtestemail alamat-anda@contoh.com
+PS> .venv\Scripts\python.exe src\manage.py runserver
+```
+
+Lalu coba daftar, lupa kata sandi, dan tambah email di `http://localhost:8000`. Tautan di email lokal memakai `http://localhost:8000`; di server memakai `https://prasibali.tech`. Hapus baris `EMAIL_BACKEND` untuk kembali ke mode konsol.
