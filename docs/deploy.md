@@ -60,3 +60,10 @@ On the 8 GB VPS:
 
 - `BALINESE_NLP_WORK_DIR`: folder for the `saved_file` directory that `RuleBasedSentenceGrouping` creates.
   It defaults to `<system temp>/prasibali/saved_file`. Nothing is written into it per request.
+
+## Daily quota
+
+- `ANALYSIS_DAILY_QUOTA` (default 10): analyses per user per local day (`Asia/Makassar`, resets at midnight WITA).
+  Failed runs are refunded; Mode Peneliti uses the same quota. `0` means unlimited.
+- Usage is counted in the `DailyUsage` table, separate from the history, so deleting history does not restore the
+  quota. An administrator can lower `used` for a user in the Django admin ("Daily usage").

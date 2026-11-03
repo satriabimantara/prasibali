@@ -33,6 +33,12 @@ colors:
   group-4: "#8A6A00"
   group-5: "#2B6CB0"
   group-6: "#4A5568"
+  label-pname: "#B42318"
+  label-anm: "#1E3A8A"
+  label-gods: "#8A4B00"
+  label-adj: "#0F6B63"
+  label-obj: "#4A5468"
+  on-label: "#FFFFFF"
 
 colors-dark:
   bg: "#0C1224"
@@ -62,6 +68,12 @@ colors-dark:
   group-4: "#E6C35C"
   group-5: "#8EC1F5"
   group-6: "#B4BED2"
+  label-pname: "#FDA29B"
+  label-anm: "#A4BCFD"
+  label-gods: "#F5C451"
+  label-adj: "#5FE9D0"
+  label-obj: "#D0D5DD"
+  on-label: "#0C1224"
 
 typography:
   family-ui: "'Schibsted Grotesk', system-ui, -apple-system, 'Segoe UI', sans-serif"
@@ -266,6 +278,7 @@ Nilai heksadesimal ada di frontmatter. Komponen hanya memakai nama token.
 | `antagonis`, `antagonis-bg` | Hanya untuk peran antagonis |
 | `danger`, `success`, `warning` beserta `-bg` | Hanya untuk umpan balik sistem |
 | `group-1` sampai `group-6` | Hanya untuk tepi kiri kartu kelompok tokoh dan titik penanda kelompok |
+| `label-pname`, `label-anm`, `label-gods`, `label-adj`, `label-obj`, `on-label` | Hanya untuk lencana label entitas (`.entity-tag--pname` dst.): latar terisi, teks `on-label`. Kontras teks minimal 6,3:1 di kedua tema (dihitung Sesi 4). PNAME merah dan ANM biru tua atas permintaan pengembang |
 
 Aturan:
 
@@ -401,7 +414,7 @@ Ukuran huruf tersedia sebagai utilitas Tailwind dari token: `text-page-title`, `
 
 - Ikon garis SVG lewat `{% icon "nama" %}` (`apps/pages/templatetags/ui.py`, jalur ikon Lucide, lisensi ISC). Ukuran bawaan 18px, `stroke="currentColor"`, `aria-hidden="true"`.
 - Ikon selalu berdampingan dengan label teks di dalam tombol (`btn gap-2`). Tombol tanpa teks wajib punya `aria-label`.
-- Nama yang tersedia: `log-in`, `log-out`, `user-plus`, `user`, `sun`, `moon`, `languages`, `file-text`, `play`, `flask`, `arrow-right`, `book-open`, `search`, `link`, `scale`, `alert`, `info`, `rotate`.
+- Nama yang tersedia: `log-in`, `log-out`, `user-plus`, `user`, `sun`, `moon`, `languages`, `file-text`, `play`, `flask`, `arrow-right`, `arrow-left`, `book-open`, `search`, `link`, `scale`, `alert`, `info`, `rotate`, `history`, `trash`.
 
 ### Navigasi situs
 
@@ -484,11 +497,17 @@ Tiga kartu: "Kelompok tokoh", "Protagonis", dan "Antagonis". Isinya dihitung dar
 
 Setelah setiap sorotan tokoh ada lencana kecil `.entity-tag` berisi label entitas (PNAME, ANM, GODS, ADJ, OBJ), di kedua mode (keputusan pengembang, Sesi 0). Mode Lanjutan menambahkan nomor kelompok di dalam lencana. Bila tugas peran tidak dijalankan, sorotan memakai `.entity--none` (netral, garis bawah titik-titik `line-strong`). Penjelasan label tersedia dalam `<details>` di bawah teks.
 
+### Konteks kalimat (Sesi 4)
+
+- Sorotan tokoh di teks adalah `<button class="entity" data-char="KUNCI" aria-pressed aria-controls="context-panel">`. Kunci = id kelompok alias, atau `n1`, `n2`, ... untuk nama tanpa kelompok (tugas identifikasi saja).
+- Memilih sorotan (klik, Enter/Spasi) atau tombol "Lihat kalimat" di kartu kelompok menandai semua kemunculan kelompok itu dan menampilkan panel "Konteks kalimat": daftar kalimat yang menyebut tokoh, dengan sebutannya ditandai `<mark class="context-mark">` (latar `surface-selected`, garis bawah `accent`).
+- Isi panel dirender di server (autoescape) sebagai `<div data-context-for hidden>` per tokoh; `static/js/analysis.js` hanya menukar `hidden`. Roving tabindex: satu sorotan di urutan Tab, panah kiri/kanan, Home/End.
+
 ### Panel detail tokoh
 
 Judul nama tokoh, lalu "Disebut sebagai" dan "Kemunculan". Mode Lanjutan menambahkan label entitas, nomor kelompok, dan model yang dipakai.
 
-Pada tahap ini jangan menampilkan skor keyakinan atau persentase, karena model klasifikasi belum menghasilkan probabilitas. Sisakan ruang tata letak agar skor bisa ditambahkan kelak tanpa mengubah struktur panel.
+Skor model hanya tampil di mode Lanjutan, apa adanya dan selalu dengan penjelasan: SVM memakai `decision_function` (jarak bertanda ke hyperplane, positif = Protagonis, bukan probabilitas); algoritma lain memakai estimasi probabilitas `predict_proba` (0 sampai 1, bukan persentase). Jangan menyebut skor sebagai keyakinan. `tabular-nums` hanya untuk bilangan bulat; angka berkoma desimal dan jam tidak memakainya karena tanda baca ikut melebar.
 
 ### Umpan balik
 
@@ -541,8 +560,15 @@ Satu panel dengan lebar baca maksimal `72ch`, header yang sama dengan halaman ak
 Sidebar: "Analisis baru", "Riwayat analisis", "Korpus satua", "Panduan". Tampilkan hanya menu yang halamannya sudah berfungsi.
 
 - **Sebelum analisis:** area teks, tombol "Muat contoh satua", dan tombol utama "Analisis teks". Mode Lanjutan menampilkan pilihan model.
-- **Versi dasar (Sesi 3):** satu kolom tanpa sidebar, formulir POST biasa. Mode Lanjutan (`.adv-only`) berisi pilihan model NER, metode dan ambang alias, serta classifier. Setiap pilihan menampilkan F1 CV dan F1 uji dari tesis beserta rujukan tabelnya; model terbaik menurut tesis ditandai "terbaik menurut tesis", pilihan bawaan ditandai "bawaan", dan entri yang belum tersedia nonaktif. Di samping tombol utama "Analisis teks" ada tombol sekunder "Reset" (ikon `rotate`, berupa tautan ke `/analisis/`): mengosongkan teks dan hasil, mengembalikan pilihan model ke bawaan, dan menyetel mode kembali ke Pengguna Umum. Panel "Model yang dipakai" (Lanjutan) menampilkan model, berkas, hash, embedding, versi paket, dan durasi per tahap. HTMX, sidebar, dan riwayat menyusul di Sesi 4.
+- **Versi dasar (Sesi 3):** satu kolom tanpa sidebar, formulir POST biasa. Mode Lanjutan (`.adv-only`) berisi pilihan model NER, metode dan ambang alias, serta classifier. Setiap pilihan menampilkan F1 CV dan F1 uji dari tesis beserta rujukan tabelnya; model terbaik menurut tesis ditandai "terbaik menurut tesis", pilihan bawaan ditandai "bawaan", dan entri yang belum tersedia nonaktif. Di samping tombol utama "Analisis teks" ada tombol sekunder "Reset" (ikon `rotate`, berupa tautan ke `/analisis/`): mengosongkan teks dan hasil, mengembalikan pilihan model ke bawaan, dan menyetel mode kembali ke Pengguna Umum. Panel "Model yang dipakai" (Lanjutan) menampilkan model, berkas, hash, embedding, versi paket, dan durasi per tahap. Diperbarui di Sesi 4 (lihat di bawah).
+- **Sesi 4:** layout `templates/base_app.html` dengan sidebar ("Analisis baru", "Riwayat analisis"; `.nav-item`, `aria-current="page"`). Formulir dikirim lewat HTMX (`hx-post`, `hx-target="#workspace"`, `hx-swap="outerHTML"`); server mengembalikan `analysis/partials/workspace_body.html` sehingga teks dan pilihan tetap ada. Status memproses: `#analysis-loading.htmx-indicator` (`role="status"`) berisi daftar tahap tanpa persentase. Panel Mode Peneliti (`analysis/partials/research_panel.html`, Alpine.js `classifierPicker` di `static/js/research.js`) memilih classifier bertingkat varian → jenis fitur → kode fitur → algoritma dari JSON katalog (`json_script`); opsi tanpa entri tersedia nonaktif dengan "(segera hadir)"; bawaan bertanda "bawaan" dan "rekomendasi", SVM + TF5 M2 bertanda "terbaik menurut tesis"; kotak keterangan menampilkan F1 makro CV dan F1 makro uji beserta tabelnya. Sisa kuota harian tampil di bawah tombol; saat habis tombol nonaktif dan muncul `alert--warning`.
 - **Sesudah analisis:** kartu ringkasan, panel teks cerita, daftar tokoh, dan panel detail.
+
+### Riwayat `/riwayat/` (Sesi 4)
+
+- Daftar: tabel di panel (`.table`), kolom Waktu, Teks satua (tautan ke detail), Tugas, Mode, Status (`.status--success/failed/processing`), Durasi, tombol bahaya "Hapus". Tombol bahaya "Hapus semua riwayat" di kanan judul. Keadaan kosong dengan tombol utama "Analisis teks".
+- Detail `/riwayat/<id>/`: judul satua, waktu, tugas, status, pengalih mode, tombol "Hapus"; panel "Konfigurasi model" (selalu tampil); lalu hasil yang sama dengan ruang kerja. Run gagal menampilkan pesan ramah dan teks masukan.
+- Hapus satu atau semua selalu lewat halaman konfirmasi (`analysis/confirm_delete.html`, POST).
 
 ### Halaman lain
 
