@@ -1419,7 +1419,7 @@ msgid ""
 "analysing and understanding Satua Bali narrative stories, developed in "
 "research by a team from Universitas Udayana and Institut Teknologi Sepuluh "
 "Nopember."
-msgstr "Model Natural Language Processing untuk bahasa Bali pertama untuk analisis dan pemahaman teks cerita naratif Satua Bali, sebagai bagian dari riset dengan tim Universitas Udayana dan Institut Teknologi Sepuluh Nopember."
+msgstr "Model Natural Language Processing berbahasa Bali pertama untuk analisis dan pemahaman teks cerita naratif Satua Bali, sebagai bagian dari riset dengan tim Universitas Udayana dan Institut Teknologi Sepuluh Nopember."
 
 msgid "Read more"
 msgstr "Selengkapnya"

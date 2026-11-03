@@ -55,6 +55,7 @@ def test_about_page(client):
     assert "Prof. Dr. Ir. Diana Purwitasari, S.Kom., M.Sc." in html
     assert 'href="https://doi.org/10.1007/978-3-031-48316-5_15" rel="noopener"' in html
     assert "Balinese Story Texts Dataset for Narrative Text Analyses" in html
+    assert 'href="https://doi.org/10.1016/j.dib.2024.110781" rel="noopener"' in html
     assert "https://pypi.org/project/balinese-nlp/2.4.2/" in html
 
 

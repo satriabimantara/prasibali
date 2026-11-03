@@ -60,7 +60,7 @@ PUBLICATIONS = (
         "I.M.S. Bimantara, D. Purwitasari, N.A.S. Sanjaya ER, P.G.S. Natha",
         "Data in Brief vol. 56, 110781 (Elsevier)",
         2024,
-        None,  # DOI not verified yet (developer, 3 Nov 2026)
+        "https://doi.org/10.1016/j.dib.2024.110781",
         _("The Balinese satua text dataset for narrative analysis that PrasiBali.ai builds on."),
     ),
 )
