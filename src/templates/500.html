@@ -1,0 +1,31 @@
+{% load static i18n %}<!DOCTYPE html>
+{# Rendered by Django's server_error view without a request context: no user, no context processors. #}
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE|default:'id' }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% translate "Something went wrong" %} · PrasiBali.ai</title>
+  <script src="{% static 'js/theme-init.js' %}"></script>
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+</head>
+<body class="flex min-h-screen flex-col antialiased">
+  <header class="border-b border-line bg-surface">
+    <div class="mx-auto flex min-h-[64px] max-w-[1440px] items-center px-[clamp(16px,3vw,32px)]">
+      <a href="/" class="inline-flex min-h-[44px] items-center" aria-label="PrasiBali.ai">
+        <img src="{% static 'img/prasibali-logo-latar-terang.svg' %}" alt="PrasiBali" width="87" height="32" class="h-8 w-auto dark:hidden">
+        <img src="{% static 'img/prasibali-logo-latar-gelap.svg' %}" alt="PrasiBali" width="87" height="32" class="hidden h-8 w-auto dark:block">
+      </a>
+    </div>
+  </header>
+  <main id="main" class="mx-auto grid w-full max-w-[1040px] flex-1 content-start px-[clamp(16px,5vw,64px)] py-10">
+    <section class="panel grid justify-items-start gap-4" aria-labelledby="error-title">
+      <p class="text-caption text-muted">{% translate "Error 500" %}</p>
+      <h1 id="error-title" class="text-page-title">{% translate "Something went wrong" %}</h1>
+      <p class="max-w-[60ch] text-muted">{% translate "The server could not finish this request. The problem has been logged. Try again in a moment; your saved analyses are not affected." %}</p>
+      <div><a class="btn btn-primary" href="/">{% translate "Back to the home page" %}</a></div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{% extends "layouts/content.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "Access denied" %} · PrasiBali.ai{% endblock title %}
+{% block content %}
+  <section class="panel grid justify-items-start gap-4" aria-labelledby="error-title">
+    <p class="text-caption text-muted">{% translate "Error 403" %}</p>
+    <h1 id="error-title" class="text-page-title">{% translate "Access denied" %}</h1>
+    <p class="max-w-[60ch] text-muted">{% translate "You do not have access to this page, or the form expired. Reload the page and try again." %}</p>
+    <div><a class="btn btn-primary gap-2" href="{% url 'pages:landing' %}">{% icon "arrow-left" %}<span>{% translate "Back to the home page" %}</span></a></div>
+  </section>
+{% endblock content %}

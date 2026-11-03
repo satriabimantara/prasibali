@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 10:16+0800\n"
+"POT-Creation-Date: 2026-11-03 10:34+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -497,6 +497,45 @@ msgid "Indonesian"
 msgstr ""
 
 msgid "English"
+msgstr ""
+
+msgid "Access denied"
+msgstr ""
+
+msgid "Error 403"
+msgstr ""
+
+msgid ""
+"You do not have access to this page, or the form expired. Reload the page "
+"and try again."
+msgstr ""
+
+msgid "Back to the home page"
+msgstr ""
+
+msgid "Page not found"
+msgstr ""
+
+msgid "Error 404"
+msgstr ""
+
+msgid ""
+"The address may be mistyped, or the page has moved. An analysis that was "
+"deleted from your history cannot be opened again."
+msgstr ""
+
+msgid "Open the workspace"
+msgstr ""
+
+msgid "Something went wrong"
+msgstr ""
+
+msgid "Error 500"
+msgstr ""
+
+msgid ""
+"The server could not finish this request. The problem has been logged. Try "
+"again in a moment; your saved analyses are not affected."
 msgstr ""
 
 #, python-format
@@ -1329,9 +1368,6 @@ msgstr ""
 msgid ""
 "Create an account, verify your email, and run your first analysis in a few "
 "minutes."
-msgstr ""
-
-msgid "Open the workspace"
 msgstr ""
 
 msgid "Privacy policy"

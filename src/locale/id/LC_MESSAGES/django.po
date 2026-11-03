@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 10:16+0800\n"
+"POT-Creation-Date: 2026-11-03 10:34+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -538,6 +538,45 @@ msgstr "Indonesia"
 
 msgid "English"
 msgstr "Inggris"
+
+msgid "Access denied"
+msgstr "Akses ditolak"
+
+msgid "Error 403"
+msgstr "Kesalahan 403"
+
+msgid ""
+"You do not have access to this page, or the form expired. Reload the page "
+"and try again."
+msgstr "Anda tidak punya akses ke halaman ini, atau formulirnya sudah kedaluwarsa. Muat ulang halaman lalu coba lagi."
+
+msgid "Back to the home page"
+msgstr "Kembali ke beranda"
+
+msgid "Page not found"
+msgstr "Halaman tidak ditemukan"
+
+msgid "Error 404"
+msgstr "Kesalahan 404"
+
+msgid ""
+"The address may be mistyped, or the page has moved. An analysis that was "
+"deleted from your history cannot be opened again."
+msgstr "Alamat mungkin salah ketik, atau halamannya sudah dipindah. Analisis yang sudah dihapus dari riwayat tidak bisa dibuka lagi."
+
+msgid "Open the workspace"
+msgstr "Buka ruang kerja"
+
+msgid "Something went wrong"
+msgstr "Terjadi kesalahan"
+
+msgid "Error 500"
+msgstr "Kesalahan 500"
+
+msgid ""
+"The server could not finish this request. The problem has been logged. Try "
+"again in a moment; your saved analyses are not affected."
+msgstr "Server tidak dapat menyelesaikan permintaan ini. Masalahnya sudah dicatat. Coba lagi sebentar lagi; analisis yang sudah tersimpan tidak terpengaruh."
 
 #, python-format
 msgid "Hello %(name)s,"
@@ -1143,7 +1182,10 @@ msgid ""
 "PrasiBali.ai is an Artificial Intelligence web application with "
 "comprehensive Natural Language Processing, developed for understanding and "
 "analysing Balinese folk tales (Satua Bali)."
-msgstr "PrasiBali.ai merupakan aplikasi web berbasis Artificial Intelligence dengan Natural Language Processing komprehensif yang dikembangkan untuk pemahaman dan analisis cerita rakyat Bali (Satua Bali)."
+msgstr ""
+"PrasiBali.ai merupakan aplikasi web berbasis Artificial Intelligence dengan "
+"Natural Language Processing komprehensif yang dikembangkan untuk pemahaman "
+"dan analisis cerita rakyat Bali (Satua Bali)."
 
 msgid "Research"
 msgstr "Riset"
@@ -1419,7 +1461,10 @@ msgid ""
 "analysing and understanding Satua Bali narrative stories, developed in "
 "research by a team from Universitas Udayana and Institut Teknologi Sepuluh "
 "Nopember."
-msgstr "Model Natural Language Processing berbahasa Bali pertama untuk analisis dan pemahaman teks cerita naratif Satua Bali, sebagai bagian dari riset dengan tim Universitas Udayana dan Institut Teknologi Sepuluh Nopember."
+msgstr ""
+"Model Natural Language Processing berbahasa Bali pertama untuk analisis dan "
+"pemahaman teks cerita naratif Satua Bali, sebagai bagian dari riset dengan "
+"tim Universitas Udayana dan Institut Teknologi Sepuluh Nopember."
 
 msgid "Read more"
 msgstr "Selengkapnya"
@@ -1494,9 +1539,6 @@ msgid ""
 msgstr ""
 "Buat akun, verifikasi email Anda, dan jalankan analisis pertama dalam "
 "beberapa menit."
-
-msgid "Open the workspace"
-msgstr "Buka ruang kerja"
 
 msgid "Privacy policy"
 msgstr "Kebijakan privasi"
