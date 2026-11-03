@@ -40,6 +40,14 @@ def delete_account(request):
     return render(request, "accounts/delete_account.html", {"form": form})
 
 
+@verified_email_required
+@require_http_methods(["GET"])
+def settings_view(request):
+    """Settings: interface language (posted to set_language, stored on the profile) and theme (browser only)."""
+    languages = [(code, name) for code, name in settings.LANGUAGES]
+    return render(request, "accounts/settings.html", {"languages": languages})
+
+
 @require_POST
 def set_language(request):
     """Django's set_language, which also stores the choice on the signed-in user's profile."""

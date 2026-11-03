@@ -1,0 +1,40 @@
+{% extends "accounts/base_account.html" %}
+{% load i18n ui %}
+{% block head_title %}{% translate "Settings" %}{% endblock head_title %}
+{% block content %}
+  <div class="grid gap-2">
+    <h1 class="text-page-title">{% translate "Settings" %}</h1>
+    <p class="text-muted">{% translate "Choose the interface language and theme." %}</p>
+  </div>
+
+  {% get_current_language as LANGUAGE_CODE %}
+  <section class="grid gap-3" aria-labelledby="language-title">
+    <h2 id="language-title" class="flex items-center gap-2 text-panel-title">{% icon "languages" %}{% translate "Language" %}</h2>
+    <form action="{% url 'accounts:set_language' %}" method="post" class="grid gap-4">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{% url 'accounts:settings' %}">
+      <fieldset class="grid gap-1">
+        <legend class="field-label mb-1">{% translate "Interface language" %}</legend>
+        {% for code, name in languages %}
+          <label class="check items-center">
+            <input type="radio" class="checkbox" name="language" value="{{ code }}"{% if code == LANGUAGE_CODE %} checked{% endif %}>
+            <span lang="{{ code }}">{% if code == "id" %}Bahasa Indonesia{% else %}English{% endif %}</span>
+          </label>
+        {% endfor %}
+        <p class="help">{% translate "Saved to your profile, so it is used again the next time you sign in." %}</p>
+      </fieldset>
+      <div><button type="submit" class="btn btn-primary gap-2">{% icon "languages" %}<span>{% translate "Save language" %}</span></button></div>
+    </form>
+  </section>
+
+  <hr class="border-line">
+
+  <section class="grid gap-3" aria-labelledby="theme-title">
+    <h2 id="theme-title" class="flex items-center gap-2 text-panel-title">{% icon "sun" %}{% translate "Theme" %}</h2>
+    <div role="group" aria-labelledby="theme-title" class="flex flex-wrap gap-2">
+      <button type="button" class="btn gap-2" data-theme-set="light" aria-pressed="true">{% icon "sun" %}<span>{% translate "Light theme" %}</span></button>
+      <button type="button" class="btn gap-2" data-theme-set="dark" aria-pressed="false">{% icon "moon" %}<span>{% translate "Dark theme" %}</span></button>
+    </div>
+    <p class="help">{% translate "The theme is stored in this browser only and applies right away." %}</p>
+  </section>
+{% endblock content %}

@@ -30,8 +30,8 @@ def test_update_profile(client, verified_user, password):
     assert verified_user.full_name == "Ketut Lontar"
     assert verified_user.institution == "SMA 1 Denpasar"
     assert verified_user.role == "teacher"
-    assert verified_user.language == "en"
-    assert response.cookies["django_language"].value == "en"
+    # The interface language moved to the settings page (session 5); the profile form ignores it.
+    assert verified_user.language == "id"
 
 
 @pytest.mark.django_db

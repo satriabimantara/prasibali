@@ -5,6 +5,7 @@
   <div class="grid gap-2">
     <h1 class="text-page-title">{% translate "Profile" %}</h1>
     <p class="text-muted">{{ user.email }}</p>
+    <p class="help">{% url 'accounts:settings' as settings_url %}{% blocktranslate %}Change the interface language and theme in <a class="link" href="{{ settings_url }}">Settings</a>.{% endblocktranslate %}</p>
   </div>
   <form method="post" class="grid gap-5" novalidate>
     {% csrf_token %}

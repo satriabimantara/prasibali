@@ -74,12 +74,11 @@ class SignupForm(AllauthSignupForm):
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ["full_name", "institution", "role", "language"]
+        fields = ["full_name", "institution", "role"]  # the interface language lives on the settings page
         labels = {
             "full_name": _("Full name"),
             "institution": _("Institution"),
             "role": _("I am a"),
-            "language": _("Interface language"),
         }
         help_texts = {"institution": _("School, university, or organisation. Optional.")}
         widgets = {

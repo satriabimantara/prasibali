@@ -1,18 +1,20 @@
 {% extends "allauth/layouts/base.html" %}
-{% load i18n %}
+{% load i18n ui %}
 {# Account pages for signed-in users (profile, password, email). Neutral: no Prasi script or ikat (DESIGN.md). #}
 {% block body %}
 <div class="flex flex-1 flex-col">
-  {% include "partials/site_header.html" with bordered=True %}
-  <main class="mx-auto grid w-full max-w-[720px] content-start gap-6 px-[clamp(16px,3vw,32px)] py-8">
+  {% include "partials/site_header.html" %}
+  <main id="main" class="mx-auto grid w-full max-w-[720px] content-start gap-6 px-[clamp(16px,3vw,32px)] py-8">
     {% if user.is_authenticated %}
       <nav aria-label="{% translate 'Account' %}" class="flex flex-wrap gap-2">
         {% url 'accounts:profile' as profile_url %}
         {% url 'account_change_password' as password_url %}
         {% url 'account_email' as email_url %}
+        {% url 'accounts:settings' as settings_url %}
         <a class="btn" href="{{ profile_url }}"{% if request.path == profile_url %} aria-current="page"{% endif %}>{% translate "Profile" %}</a>
         <a class="btn" href="{{ password_url }}"{% if request.path == password_url %} aria-current="page"{% endif %}>{% translate "Password" %}</a>
         <a class="btn" href="{{ email_url }}"{% if request.path == email_url %} aria-current="page"{% endif %}>{% translate "Email" %}</a>
+        <a class="btn gap-2" href="{{ settings_url }}"{% if request.path == settings_url %} aria-current="page"{% endif %}>{% icon "settings" %}<span>{% translate "Settings" %}</span></a>
       </nav>
     {% endif %}
     {% include "partials/messages.html" %}
