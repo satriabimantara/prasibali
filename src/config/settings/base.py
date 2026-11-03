@@ -137,3 +137,5 @@ ANALYSIS_CLASSIFIER_CACHE_SIZE = env.int("ANALYSIS_CLASSIFIER_CACHE_SIZE", defau
 ANALYSIS_LOW_CONTEXT_WORDS = env.int("ANALYSIS_LOW_CONTEXT_WORDS", default=20)
 # Maximum length of a submitted satua.
 ANALYSIS_MAX_CHARS = 20_000
+# Analyses per user per day (local day in TIME_ZONE); failed runs do not count. 0 = unlimited.
+ANALYSIS_DAILY_QUOTA = env.int("ANALYSIS_DAILY_QUOTA", default=10)

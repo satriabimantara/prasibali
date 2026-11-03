@@ -85,8 +85,24 @@ class AnalysisResult:
         return {role.group_id: role for role in self.roles}
 
     def as_dict(self) -> dict:
-        """JSON-serialisable form (stored with each analysis run from Sesi 4 on)."""
+        """JSON-serialisable form, stored as AnalysisRun.output."""
         return asdict(self)
+
+    @classmethod
+    def from_dict(cls, data: dict) -> AnalysisResult:
+        """Inverse of as_dict(), used to show a stored run from the history again."""
+        return cls(
+            config=dict(data.get("config") or {}),
+            display_text=data.get("display_text", ""),
+            sentences=list(data.get("sentences") or []),
+            characters=list(data.get("characters") or []),
+            mentions=[EntityMention(**m) for m in data.get("mentions") or []],
+            groups=[CharacterGroup(**g) for g in data.get("groups") or []],
+            roles=[RoleResult(**r) for r in data.get("roles") or []],
+            timings=dict(data.get("timings") or {}),
+            model_version=dict(data.get("model_version") or {}),
+            warnings=[str(w) for w in data.get("warnings") or []],
+        )
 
 
 # --------------------------------------------------------------------------- task (i)
