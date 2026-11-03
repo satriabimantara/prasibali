@@ -1,0 +1,62 @@
+{% extends "layouts/content.html" %}
+{% load i18n ui %}
+{% block title %}{% translate "About" %} · PrasiBali.ai{% endblock title %}
+{% block content %}
+  <header class="grid gap-4">
+    <h1 class="text-page-title">{% translate "About PrasiBali.ai" %}</h1>
+    <p class="text-lead max-w-[60ch] text-muted">{% translate "PrasiBali.ai brings the results of master's thesis research at Universitas Udayana into a web application for analysing the characters of Balinese satua." %}</p>
+  </header>
+
+  <section class="grid gap-4" aria-labelledby="research-title">
+    <h2 id="research-title" class="flex items-center gap-2 text-panel-title"><span class="text-accent">{% icon "graduation-cap" 22 %}</span>{% translate "Research" %}</h2>
+    <div class="panel reading">
+      <p>{% translate "The research built three models for satua texts: character identification with entity labels, alias clustering of the different names of a character, and classification of each character group as protagonist or antagonist. The thesis compared many models and features for each task; the research mode of PrasiBali.ai lets you choose them and shows their reference scores from the thesis." %}</p>
+      <p>{% translate "Components that existed before this competition: the balinese-nlp package (character identification and alias clustering), the BaliStoryAnalyzer research software, and the pretrained role classifiers from the thesis experiments. Built for the AI Web Innovation Challenge, Bali Digital Festival 2026: this web application, including the research mode, analysis history, quota and accounts." %}</p>
+      <ul>
+        {% for f in features %}<li><a class="link" href="{{ f.url }}">{{ f.title }}</a>: {{ f.summary }}</li>{% endfor %}
+      </ul>
+    </div>
+  </section>
+
+  <section class="grid gap-4" aria-labelledby="team-title">
+    <h2 id="team-title" class="flex items-center gap-2 text-panel-title"><span class="text-accent">{% icon "users" 22 %}</span>{% translate "Team" %}</h2>
+    <ul class="grid gap-4 md:grid-cols-3">
+      {% for member in team %}
+        <li class="panel grid content-start gap-2">
+          <p class="text-section-title">{{ member.name }}</p>
+          <p><span class="tag">{{ member.role }}</span></p>
+          <p class="text-muted">{{ member.affiliation }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section class="grid gap-4" aria-labelledby="publications-title">
+    <h2 id="publications-title" class="flex items-center gap-2 text-panel-title"><span class="text-accent">{% icon "book-open" 22 %}</span>{% translate "Publications" %}</h2>
+    <ol class="grid gap-4">
+      {% for pub in publications %}
+        <li class="panel grid gap-2">
+          <p class="text-section-title" lang="en">{{ pub.title }}</p>
+          <p class="text-muted"><span lang="en">{{ pub.authors }}</span> · <span lang="en">{{ pub.venue }}</span> · {{ pub.year }}</p>
+          <p>{{ pub.relevance }}</p>
+          {% if pub.url %}
+            <p><a class="link inline-flex items-center gap-1 break-all" href="{{ pub.url }}" rel="noopener" target="_blank">{{ pub.url }}{% icon "external-link" 16 %}<span class="sr-only"> ({% translate "opens in a new tab" %})</span></a></p>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ol>
+  </section>
+
+  <section class="grid gap-4" aria-labelledby="software-title">
+    <h2 id="software-title" class="flex items-center gap-2 text-panel-title"><span class="text-accent">{% icon "package" 22 %}</span>{% translate "Software" %}</h2>
+    <ul class="grid gap-4 md:grid-cols-2">
+      {% for item in software %}
+        <li class="panel grid content-start gap-2">
+          <p class="text-section-title">{{ item.name }}</p>
+          <p class="text-muted">{{ item.description }}</p>
+          <p><a class="link inline-flex items-center gap-1 break-all" href="{{ item.url }}" rel="noopener" target="_blank">{{ item.url }}{% icon "external-link" 16 %}<span class="sr-only"> ({% translate "opens in a new tab" %})</span></a></p>
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+{% endblock content %}

@@ -9,13 +9,13 @@
   {% block app_head %}{% endblock app_head %}
 {% endblock extra_head %}
 {% block body %}
-{% include "partials/site_header.html" with bordered=True %}
+{% include "partials/site_header.html" %}
 <div class="mx-auto grid w-full max-w-[1440px] flex-1 content-start gap-6 px-[clamp(16px,3vw,32px)] py-6 lg:grid-cols-[224px_minmax(0,1fr)]">
   <nav aria-label="{% translate 'Workspace' %}" class="flex flex-wrap content-start gap-1 lg:sticky lg:top-6 lg:flex-col lg:self-start">
     <a class="nav-item" href="{% url 'analysis:workspace' %}"{% if nav == "workspace" %} aria-current="page"{% endif %}>{% icon "file-text" %}<span>{% translate "New analysis" %}</span></a>
     <a class="nav-item" href="{% url 'analysis:history' %}"{% if nav == "history" %} aria-current="page"{% endif %}>{% icon "history" %}<span>{% translate "Analysis history" %}</span></a>
   </nav>
-  <main class="grid min-w-0 content-start gap-6">
+  <main id="main" class="grid min-w-0 content-start gap-6">
     {% include "partials/messages.html" %}
     {% block content %}{% endblock content %}
   </main>

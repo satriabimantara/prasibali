@@ -1,0 +1,12 @@
+{% load i18n ui %}{% with current=request.resolver_match.view_name %}
+<ul class="grid gap-1">
+  <li><a class="menu-item items-center" href="{% url 'accounts:profile' %}"{% if current == "accounts:profile" %} aria-current="page"{% endif %}>{% icon "user" %}<span>{% translate "Profile" %}</span></a></li>
+  <li><a class="menu-item items-center" href="{% url 'analysis:history' %}"{% if current == "analysis:history" %} aria-current="page"{% endif %}>{% icon "history" %}<span>{% translate "Analysis history" %}</span></a></li>
+  <li><a class="menu-item items-center" href="{% url 'accounts:settings' %}"{% if current == "accounts:settings" %} aria-current="page"{% endif %}>{% icon "settings" %}<span>{% translate "Settings" %}<span class="menu-item-desc">{% translate "Language and theme" %}</span></span></a></li>
+</ul>
+<hr class="menu-divider">
+<form action="{% url 'account_logout' %}" method="post">
+  {% csrf_token %}
+  <button type="submit" class="menu-item items-center">{% icon "log-out" %}<span>{% translate "Sign out" %}</span></button>
+</form>
+{% endwith %}

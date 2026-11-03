@@ -1,0 +1,33 @@
+{% load i18n %}
+<section class="panel reading" aria-labelledby="what-title">
+  <h2 id="what-title" class="text-panel-title">{% translate "What it does" %}</h2>
+  <p>{% translate "The model reads the satua word by word and marks the words that name a character. Each name gets one of five entity labels:" %}</p>
+  <dl class="grid gap-2">
+    <div class="flex flex-wrap items-center gap-2"><dt><span class="entity-tag entity-tag--pname">PNAME</span></dt><dd>{% translate "a proper name, such as Made Bhaskara" %}</dd></div>
+    <div class="flex flex-wrap items-center gap-2"><dt><span class="entity-tag entity-tag--anm">ANM</span></dt><dd>{% translate "an animal or object acting as a character, such as I Kancil" %}</dd></div>
+    <div class="flex flex-wrap items-center gap-2"><dt><span class="entity-tag entity-tag--gods">GODS</span></dt><dd>{% translate "a god or holy figure, such as Bhatara Indra" %}</dd></div>
+    <div class="flex flex-wrap items-center gap-2"><dt><span class="entity-tag entity-tag--adj">ADJ</span></dt><dd>{% translate "a name derived from a trait, such as I Belog" %}</dd></div>
+    <div class="flex flex-wrap items-center gap-2"><dt><span class="entity-tag entity-tag--obj">OBJ</span></dt><dd>{% translate "a reference without a proper name, such as memene" %}</dd></div>
+  </dl>
+</section>
+
+<section class="panel reading" aria-labelledby="how-title">
+  <h2 id="how-title" class="text-panel-title">{% translate "How it works" %}</h2>
+  <p>{% blocktranslate with model=default_ner.label %}The default model is {{ model }}: a Conditional Random Field (CRF) whose features were selected with binary particle swarm optimisation (BPSO). It comes from the thesis research, was published at iiWAS 2023, and is distributed in the balinese-nlp package.{% endblocktranslate %}</p>
+  <p>{% translate "In the research mode you can choose one of the other models from the thesis experiments. Reference scores from the thesis:" %}</p>
+  <div class="overflow-x-auto rounded-lg border border-line">
+    <table class="table">
+      <caption class="sr-only">{% translate "Character identification models and their F1 scores in the thesis" %}</caption>
+      <thead><tr><th scope="col">{% translate "Model" %}</th><th scope="col">{% translate "F1 cross-validation (Table 4.18)" %}</th><th scope="col">{% translate "F1 test data (Table 4.19)" %}</th></tr></thead>
+      <tbody>
+        {% for m in ner_models %}
+          <tr>
+            <th scope="row" class="font-medium text-ink">{{ m.label }}{% if m.id == default_ner.id %} <span class="tag">{% translate "default" %}</span>{% endif %}</th>
+            <td>{% if m.f1_cv is not None %}{{ m.f1_cv|floatformat:4 }}{% else %}–{% endif %}</td>
+            <td>{% if m.f1_test is not None %}{{ m.f1_test|floatformat:4 }}{% else %}–{% endif %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>

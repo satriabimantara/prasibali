@@ -15,6 +15,7 @@ from .forms import AnalysisForm, research_catalog
 from .models import AnalysisRun
 from .presenters import present, present_config
 from .runs import QuotaExceeded, execute_run, quota_message, quota_status, start_run
+from .services import model_catalog as mc
 from .services.exceptions import TextValidationError
 from .services.pipeline import AnalysisResult, run_full_pipeline
 
@@ -66,6 +67,9 @@ def workspace(request):
     sample = load_sample(request.GET.get("contoh", ""))
     if sample:
         initial["text"] = sample
+    task = request.GET.get("tugas", "")
+    if task in mc.TASKS:  # whitelist: links from the feature pages preselect a task
+        initial["task"] = task
     form = AnalysisForm(request.POST or None, initial=initial)
     view, error, run = None, None, None
     if request.method == "POST" and form.is_valid():

@@ -8,4 +8,6 @@ urlpatterns = [
     path("", views.landing, name="landing"),
     path("healthz", views.healthz, name="healthz"),
     path("privasi/", views.privacy, name="privacy"),
+    path("tentang/", views.about, name="about"),
+    path("fitur/<slug:slug>/", views.feature, name="feature"),
 ]

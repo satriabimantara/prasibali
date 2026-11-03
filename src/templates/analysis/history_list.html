@@ -3,7 +3,10 @@
 {% block title %}{% translate "Analysis history" %} · PrasiBali.ai{% endblock title %}
 {% block content %}
   <div class="flex flex-wrap items-center justify-between gap-3">
-    <h1 class="text-page-title">{% translate "Analysis history" %}</h1>
+    <div class="grid gap-1">
+      <h1 class="text-page-title">{% translate "Analysis history" %}</h1>
+      <p class="text-muted">{% translate "Every analysis you run is saved here with the models it used." %}</p>
+    </div>
     {% if page.paginator.count %}
       <a class="btn btn-danger gap-2" href="{% url 'analysis:history_delete_all' %}">{% icon "trash" %}<span>{% translate "Delete all history" %}</span></a>
     {% endif %}

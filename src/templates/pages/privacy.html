@@ -1,10 +1,8 @@
-{% extends "base.html" %}
+{% extends "layouts/content.html" %}
 {% load i18n %}
 {% block title %}{% translate "Privacy policy" %} · PrasiBali.ai{% endblock title %}
-{% block body %}
-<div class="flex flex-1 flex-col">
-  {% include "partials/site_header.html" with bordered=True %}
-  <main class="mx-auto grid w-full max-w-[72ch] content-start gap-6 px-[clamp(16px,3vw,32px)] py-8">
+{% block main_width %}max-w-[calc(72ch+128px)]{% endblock main_width %}
+{% block content %}
     <div class="grid gap-2">
       <h1 class="text-page-title">{% translate "Privacy policy" %}</h1>
       <p class="text-caption text-muted">{% blocktranslate with version=policy_version %}Version {{ version }}{% endblocktranslate %}</p>
@@ -33,6 +31,4 @@
         <p>{% translate "You can delete individual analyses or your whole history. You can delete your account from the profile page; this permanently deletes your account and all of your analyses." %}</p>
       </section>
     </article>
-  </main>
-</div>
-{% endblock body %}
+{% endblock content %}

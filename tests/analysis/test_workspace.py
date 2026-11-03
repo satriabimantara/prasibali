@@ -248,3 +248,18 @@ def test_identify_only_lists_characters_without_roles(logged_in, monkeypatch):
     assert 'class="entity entity--none" data-char="n' in html
     assert "Tokoh yang ditemukan" in html and "di bawah 0,70" not in html
     assert 'data-context-for="n1"' in html
+
+
+# --------------------------------------------------------------------------- task preselected from feature pages
+@pytest.mark.django_db
+@pytest.mark.parametrize("task", ["identify", "alias", "role"])
+def test_task_query_preselects_task(logged_in, task):
+    response = logged_in.get(URL, {"tugas": task})
+    assert response.context["form"]["task"].value() == task
+
+
+@pytest.mark.django_db
+def test_unknown_task_query_is_ignored(logged_in):
+    response = logged_in.get(URL, {"tugas": "../evil"})
+    assert response.status_code == 200
+    assert response.context["form"]["task"].value() == mc.DEFAULT_TASK

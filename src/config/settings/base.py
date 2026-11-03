@@ -61,6 +61,7 @@ TEMPLATES = [
                 "django.template.context_processors.i18n",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "apps.pages.context_processors.site_nav",
             ],
         },
     },

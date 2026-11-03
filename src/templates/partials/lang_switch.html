@@ -1,9 +1,10 @@
 {% load i18n %}{% get_current_language as LANGUAGE_CODE %}{% get_language_info_list for LANGUAGES as languages %}
-<form action="{% url 'accounts:set_language' %}" method="post" role="group" aria-label="{% translate 'Interface language' %}" class="flex gap-2">
+{# compact=True shows "ID"/"EN"; the accessible name still contains the full language name (WCAG 2.5.3). #}
+<form action="{% url 'accounts:set_language' %}" method="post" role="group" aria-label="{% translate 'Interface language' %}" class="flex {% if compact %}lang-compact gap-1{% else %}gap-2{% endif %}">
   {% csrf_token %}
   <input type="hidden" name="next" value="{{ request.get_full_path }}">
   {% for language in languages %}
     <button type="submit" name="language" value="{{ language.code }}" lang="{{ language.code }}" class="btn"
-            aria-pressed="{% if language.code == LANGUAGE_CODE %}true{% else %}false{% endif %}">{{ language.name_local|capfirst }}</button>
+            aria-pressed="{% if language.code == LANGUAGE_CODE %}true{% else %}false{% endif %}">{% if compact %}{{ language.code|upper }}<span class="sr-only"> · {{ language.name_local|capfirst }}</span>{% else %}{{ language.name_local|capfirst }}{% endif %}</button>
   {% endfor %}
 </form>

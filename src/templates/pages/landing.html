@@ -1,71 +1,144 @@
 {% extends "base.html" %}
-{% load i18n ui form_tags %}
+{% load i18n ui %}
 {% block title %}PrasiBali.ai · {% translate "Character analysis of Balinese satua" %}{% endblock title %}
 {% block body %}
 {% include "partials/site_header.html" with gutter="5vw,64px" %}
-<main class="mx-auto grid w-full max-w-[1440px] gap-10 px-[clamp(16px,5vw,64px)] pb-16 pt-6">
-  <div class="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_440px]">
-    <section class="grid content-start gap-6" aria-labelledby="landing-title">
+<main id="main" class="mx-auto grid w-full max-w-[1440px] gap-16 px-[clamp(16px,5vw,64px)] pb-16 pt-10">
+
+  {# 1. Hero: Prasi script, title, lead, calls to action; on the right an example of how results look. #}
+  <section class="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,520px)]" aria-labelledby="landing-title">
+    <div class="grid content-start gap-6">
       <div lang="ban" role="img" aria-label="{% translate 'Prasi in Balinese script' %}" class="font-aksara text-accent leading-tight text-[clamp(56px,7vw,96px)]">&#x1B27;&#x1B44;&#x1B2D;&#x1B32;&#x1B36;</div>
       <h1 id="landing-title" class="text-display max-w-[18ch]">{% translate "Character analysis of Balinese satua in one workspace." %}</h1>
       <p class="text-lead max-w-[54ch] text-muted">{% translate "Recognise characters, group their other names, and see whether they are protagonists or antagonists in a text written in Balinese." %}</p>
-      <figure class="panel grid max-w-[72ch] gap-3">
+      <div class="flex flex-wrap gap-3">
+        {% if user.is_authenticated %}
+          <a class="btn btn-primary gap-2" href="{% url 'analysis:workspace' %}">{% translate "Continue to the workspace" %}{% icon "arrow-right" %}</a>
+        {% else %}
+          <a class="btn btn-primary gap-2" href="{% url 'analysis:workspace' %}">{% translate "Start analysing" %}{% icon "arrow-right" %}</a>
+        {% endif %}
+        <a class="btn" href="#cara-kerja">{% translate "See how it works" %}</a>
+      </div>
+      {% if not user.is_authenticated %}
+        <p class="help">{% translate "Analysis needs an account with a verified email address. Texts are processed on our own server." %}</p>
+      {% endif %}
+    </div>
+
+    <figure class="overflow-hidden rounded-lg border border-line bg-surface">
+      {% include "partials/ikat.html" %}
+      <div class="grid gap-3 p-6">
         <figcaption class="text-caption text-muted">{% translate "Example of how results are shown" %}</figcaption>
         <blockquote lang="ban" class="story">
-          <span class="entity entity--protagonis entity--static">I Kancil</span> parilaksananné jemet, wicaksana, tur demen mapitulung. Di tengah alasé masih ada <span class="entity entity--antagonis entity--static">I Macan Gading</span>. <span class="entity entity--antagonis entity--static">I Macan Gading</span> bikasné jelé, demen nguluk-nguluk, tur loba pesan.
+          <span class="entity entity--protagonis entity--static">I Kancil</span><span class="entity-tag entity-tag--anm">ANM</span> parilaksananné jemet, wicaksana, tur demen mapitulung. Di tengah alasé masih ada <span class="entity entity--antagonis entity--static">I Macan Gading</span><span class="entity-tag entity-tag--anm">ANM</span>. <span class="entity entity--antagonis entity--static">I Macan Gading</span><span class="entity-tag entity-tag--anm">ANM</span> bikasné jelé, demen nguluk-nguluk, tur loba pesan.
         </blockquote>
-        <p class="flex flex-wrap gap-2 text-caption">
+        <p class="flex flex-wrap items-center gap-2 text-caption">
           <span class="role role--protagonis">{% translate "Protagonist" %}</span>
           <span class="role role--antagonis">{% translate "Antagonist" %}</span>
           <span class="text-muted">{% translate "Solid underline: protagonist. Dashed underline: antagonist." %}</span>
         </p>
-      </figure>
-    </section>
-
-    <section class="overflow-hidden rounded-lg border border-line bg-surface" aria-labelledby="signin-title">
-      {% include "partials/ikat.html" %}
-      <div class="grid gap-6 p-6">
-        {% if user.is_authenticated %}
-          <div class="grid gap-2">
-            <h2 id="signin-title" class="text-page-title">{% translate "Welcome back" %}</h2>
-            <p class="text-muted">{% blocktranslate with name=user.full_name|default:user.email %}You are signed in as {{ name }}.{% endblocktranslate %}</p>
-          </div>
-          <a class="btn btn-primary gap-2" href="{% url 'analysis:workspace' %}">{% translate "Continue to the workspace" %}{% icon "arrow-right" %}</a>
-        {% else %}
-          <h2 id="signin-title" class="text-page-title">{% translate "Sign in to your account" %}</h2>
-          {% include "partials/messages.html" %}
-          <form method="post" action="{% url 'account_login' %}" class="grid gap-4">
-            {% csrf_token %}
-            {% form_field form.login %}
-            {% form_field form.password %}
-            {% if form.remember %}{% form_field form.remember %}{% endif %}
-            <div class="flex flex-wrap gap-2">
-              <button type="submit" class="btn btn-primary gap-2">{% icon "log-in" %}<span>{% translate "Sign in" %}</span></button>
-              <a class="btn gap-2" href="{% url 'account_signup' %}">{% icon "user-plus" %}<span>{% translate "Create a new account" %}</span></a>
-            </div>
-            <p class="text-caption"><a class="link" href="{% url 'account_reset_password' %}">{% translate "Forgot your password?" %}</a></p>
-          </form>
-        {% endif %}
       </div>
-    </section>
-  </div>
+    </figure>
+  </section>
 
-  <section class="grid gap-4 md:grid-cols-3" aria-label="{% translate 'What PrasiBali.ai does' %}">
-    <article class="panel grid content-start gap-2">
-      <span class="text-accent">{% icon "search" 22 %}</span>
-      <h2 class="text-panel-title">{% translate "Recognise characters" %}</h2>
-      <p class="text-muted">{% translate "SatuaNER finds the names of characters in the story: people, animals, gods and objects that act like characters." %}</p>
-    </article>
-    <article class="panel grid content-start gap-2">
-      <span class="text-accent">{% icon "link" 22 %}</span>
-      <h2 class="text-panel-title">{% translate "Group other names" %}</h2>
-      <p class="text-muted">{% translate "Different names for the same character, such as I Kancil and Kancil, are combined into one character group." %}</p>
-    </article>
-    <article class="panel grid content-start gap-2">
-      <span class="text-accent">{% icon "scale" 22 %}</span>
-      <h2 class="text-panel-title">{% translate "See their roles" %}</h2>
-      <p class="text-muted">{% translate "A model trained in the thesis research labels each character group as protagonist or antagonist, as an aid to analysis." %}</p>
-    </article>
+  {# 2. The problem. Qualitative statements only: no statistics (DESIGN.md "Beranda"). #}
+  <section id="masalah" class="grid gap-6" aria-labelledby="problem-title">
+    <div class="grid max-w-[72ch] gap-2">
+      <h2 id="problem-title" class="text-page-title">{% translate "Reading the characters of a satua takes time" %}</h2>
+      <p class="text-lead text-muted">{% translate "Teachers, students and researchers still trace characters by hand, page by page." %}</p>
+    </div>
+    <ul class="grid gap-4 md:grid-cols-3">
+      <li class="panel grid content-start gap-3">
+        <span class="icon-tile">{% icon "book-open" 22 %}</span>
+        <h3 class="text-panel-title">{% translate "Satua are rich in characters" %}</h3>
+        <p class="text-muted">{% translate "Satua Bali are folk tales passed down orally, full of people, animals and gods that act as characters." %}</p>
+      </li>
+      <li class="panel grid content-start gap-3">
+        <span class="icon-tile">{% icon "link" 22 %}</span>
+        <h3 class="text-panel-title">{% translate "One character, many names" %}</h3>
+        <p class="text-muted">{% translate "The same character can be called I Kancil in one sentence and Kancil in the next, so tracking characters by hand is easy to get wrong." %}</p>
+      </li>
+      <li class="panel grid content-start gap-3">
+        <span class="icon-tile">{% icon "search" 22 %}</span>
+        <h3 class="text-panel-title">{% translate "Few tools for the Balinese language" %}</h3>
+        <p class="text-muted">{% translate "Most text analysis tools are built for other languages, so Balinese texts are still analysed manually." %}</p>
+      </li>
+    </ul>
+  </section>
+
+  {# 3. The solution: the three available features, read from the feature registry. #}
+  <section id="solusi" class="grid gap-6" aria-labelledby="solution-title">
+    <div class="grid max-w-[72ch] gap-2">
+      <h2 id="solution-title" class="text-page-title">{% translate "PrasiBali.ai does the first reading with you" %}</h2>
+      <p class="text-lead text-muted">{% translate "Three models from a master's thesis at Universitas Udayana work in sequence on your text. The results are an aid to analysis, not a final judgement." %}</p>
+    </div>
+    <ul class="grid gap-4 md:grid-cols-3">
+      {% for f in features %}
+        <li class="panel grid content-start gap-3">
+          <span class="icon-tile">{% icon f.icon 22 %}</span>
+          <h3 class="text-panel-title">{{ f.title }}</h3>
+          <p class="text-muted">{{ f.summary }}</p>
+          <a class="link inline-flex items-center gap-1 text-label" href="{{ f.url }}">{% translate "Read more" %}<span class="sr-only"> · {{ f.title }}</span>{% icon "arrow-right" 16 %}</a>
+        </li>
+      {% endfor %}
+    </ul>
+    <p class="alert alert--info flex items-start gap-2">{% icon "shield" %}<span>{% translate "All AI models run on the PrasiBali.ai server. Your texts are not sent to third-party AI services." %}</span></p>
+  </section>
+
+  {# 4. How it works in three steps. #}
+  <section id="cara-kerja" class="grid gap-6" aria-labelledby="steps-title">
+    <h2 id="steps-title" class="text-page-title">{% translate "How it works in three steps" %}</h2>
+    <ol class="grid gap-4 md:grid-cols-3">
+      <li class="panel grid content-start gap-3">
+        <span class="step-number" aria-hidden="true">1</span>
+        <h3 class="text-panel-title"><span class="sr-only">{% translate "Step" %} 1: </span>{% translate "Paste a satua text" %}</h3>
+        <p class="text-muted">{% translate "Paste a Balinese text of up to 20,000 characters, or load one of the sample satua with one click." %}</p>
+      </li>
+      <li class="panel grid content-start gap-3">
+        <span class="step-number" aria-hidden="true">2</span>
+        <h3 class="text-panel-title"><span class="sr-only">{% translate "Step" %} 2: </span>{% translate "Run the analysis" %}</h3>
+        <p class="text-muted">{% translate "Choose the full pipeline or a single task. Researchers can open the research mode to choose the models from the thesis experiments." %}</p>
+      </li>
+      <li class="panel grid content-start gap-3">
+        <span class="step-number" aria-hidden="true">3</span>
+        <h3 class="text-panel-title"><span class="sr-only">{% translate "Step" %} 3: </span>{% translate "Explore the results" %}</h3>
+        <p class="text-muted">{% translate "Character names are highlighted in the text with their entity labels, grouped with their other names, and labelled protagonist or antagonist. Every analysis is saved in your history." %}</p>
+      </li>
+    </ol>
+  </section>
+
+  {# 5. Coming soon (display only). #}
+  <section class="grid gap-4" aria-labelledby="soon-title">
+    <div class="grid gap-2">
+      <h2 id="soon-title" class="text-panel-title">{% translate "In development" %}</h2>
+      <p class="text-muted">{% translate "These features are on the PrasiBali.ai roadmap and are not available yet." %}</p>
+    </div>
+    <ul class="flex flex-wrap gap-2">
+      {% for f in features_soon %}
+        <li><a class="btn gap-2" href="{{ f.url }}">{% icon f.icon %}<span>{{ f.title }}</span><span class="tag">{% translate "Coming soon" %}</span></a></li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  {# 6. Call to action. #}
+  <section class="panel grid items-center gap-6 md:grid-cols-[minmax(0,1fr)_auto]" aria-labelledby="cta-title">
+    <div class="grid gap-2">
+      {% if user.is_authenticated %}
+        <h2 id="cta-title" class="text-page-title">{% translate "Ready for the next satua?" %}</h2>
+        <p class="text-muted">{% translate "Open the workspace to run a new analysis, or look back at your earlier ones." %}</p>
+      {% else %}
+        <h2 id="cta-title" class="text-page-title">{% translate "Ready to read a satua?" %}</h2>
+        <p class="text-muted">{% translate "Create an account, verify your email, and run your first analysis in a few minutes." %}</p>
+      {% endif %}
+    </div>
+    <div class="flex flex-wrap gap-3">
+      {% if user.is_authenticated %}
+        <a class="btn btn-primary gap-2" href="{% url 'analysis:workspace' %}">{% icon "file-text" %}<span>{% translate "Open the workspace" %}</span></a>
+        <a class="btn gap-2" href="{% url 'analysis:history' %}">{% icon "history" %}<span>{% translate "Analysis history" %}</span></a>
+      {% else %}
+        <a class="btn btn-primary gap-2" href="{% url 'account_signup' %}">{% icon "user-plus" %}<span>{% translate "Create a new account" %}</span></a>
+        <a class="btn gap-2" href="{% url 'account_login' %}">{% icon "log-in" %}<span>{% translate "Sign in" %}</span></a>
+      {% endif %}
+    </div>
   </section>
 </main>
 {% endblock body %}

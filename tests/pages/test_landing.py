@@ -13,9 +13,14 @@ def test_landing_for_visitors(client):
     assert "img/prasibali-logo-latar-terang" in html and "img/prasibali-logo-latar-gelap" in html
     assert "&#x1B27;&#x1B44;&#x1B2D;&#x1B32;&#x1B36;" in html
     assert "Analisis tokoh satua Bali dalam satu ruang kerja." in html
-    assert f'action="{reverse("account_login")}"' in html and 'name="password"' in html
-    assert f'href="{reverse("account_signup")}"' in html
-    assert "Kenali tokoh" in html and "Satukan nama lain" in html and "Lihat perannya" in html
+    # Problem, solution, three steps and the call to action (session 5); no sign-in form any more.
+    assert 'id="masalah"' in html and 'id="solusi"' in html and 'id="cara-kerja"' in html
+    assert "Identifikasi tokoh" in html and "Alias clustering" in html and "Klasifikasi peran" in html
+    assert html.count('class="step-number"') == 3
+    assert "Mulai analisis" in html and f'href="{reverse("analysis:workspace")}"' in html
+    assert f'href="{reverse("account_signup")}"' in html and f'href="{reverse("account_login")}"' in html
+    assert 'name="password"' not in html
+    assert "Contoh tampilan hasil" in html
     assert FOOTER in html
 
 
@@ -24,9 +29,10 @@ def test_landing_for_signed_in_user(client, verified_user):
     client.force_login(verified_user)
     html = client.get("/").content.decode()
 
-    assert f'href="{reverse("analysis:workspace")}"' in html
-    assert 'name="password"' not in html
+    assert "Lanjutkan ke ruang kerja" in html
+    assert f'href="{reverse("analysis:history")}"' in html
     assert f'action="{reverse("account_logout")}"' in html
+    assert f'href="{reverse("account_signup")}"' not in html
 
 
 @pytest.mark.django_db
@@ -37,17 +43,14 @@ def test_logout_redirects_to_landing(client, verified_user):
 
 
 @pytest.mark.django_db
-def test_navbar_auth_buttons(client, verified_user):
-    html = client.get(reverse("pages:privacy")).content.decode()
-    assert "Masuk" in html and "Daftar" in html and FOOTER in html
-    assert "<svg" in html  # icons next to the button labels
-
-    client.force_login(verified_user)
-    html = client.get(reverse("pages:privacy")).content.decode()
-    assert "Keluar" in html and "Profil" in html and f'href="{reverse("analysis:workspace")}"' in html
-
-
-@pytest.mark.django_db
 def test_login_page_has_logo_and_footer(client):
     html = client.get(reverse("account_login")).content.decode()
     assert "img/prasibali-logo-latar-terang" in html and FOOTER in html
+
+
+@pytest.mark.django_db
+def test_landing_in_english(client):
+    client.cookies["django_language"] = "en"
+    html = client.get("/").content.decode()
+    assert "Character analysis of Balinese satua in one workspace." in html
+    assert "How it works in three steps" in html and "Start analysing" in html

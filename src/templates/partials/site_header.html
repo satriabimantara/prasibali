@@ -1,27 +1,99 @@
 {% load i18n static ui %}
-{# Shared navbar (DESIGN.md "Navigasi situs"): logo on the left; language, theme and account actions on the right. #}
-<header class="{% if bordered %}border-b border-line bg-surface{% endif %}">
-  <div class="mx-auto flex max-w-[1440px] flex-wrap items-center justify-between gap-3 px-[clamp(16px,{{ gutter|default:'3vw,32px' }})] py-3">
-    <a href="{% url 'pages:landing' %}" class="inline-flex min-h-[44px] items-center" aria-label="{% translate 'PrasiBali.ai home' %}">
+{# Shared navbar (DESIGN.md "Navigasi situs"). Desktop from 1024px: Analysis, Features (dropdown), About on the left; #}
+{# theme, then language + sign in/up (visitors) or the account menu (signed in) on the right. Below 1024px the links #}
+{# move into the "Menu" panel. Disclosures are driven by static/js/nav.js. hide_auth_links=True on sign-in/up pages. #}
+{% url 'analysis:workspace' as workspace_url %}{% url 'pages:about' as about_url %}
+{% with current=request.resolver_match.view_name current_slug=request.resolver_match.kwargs.slug %}
+<header class="border-b border-line bg-surface">
+  <div class="mx-auto flex min-h-[64px] max-w-[1440px] items-center gap-2 px-[clamp(16px,{{ gutter|default:'3vw,32px' }})] py-2 lg:gap-6">
+    <a href="{% url 'pages:landing' %}" class="inline-flex min-h-[44px] shrink-0 items-center" aria-label="{% translate 'PrasiBali.ai home' %}">
       <img src="{% static 'img/prasibali-logo-latar-terang.svg' %}" alt="PrasiBali" width="87" height="32" class="h-8 w-auto dark:hidden">
       <img src="{% static 'img/prasibali-logo-latar-gelap.svg' %}" alt="PrasiBali" width="87" height="32" class="hidden h-8 w-auto dark:block">
     </a>
-    <nav aria-label="{% translate 'Site' %}" class="flex flex-wrap items-center gap-2">
-      {% include "partials/lang_switch.html" %}
-      {% include "partials/theme_toggle.html" %}
+
+    <nav aria-label="{% translate 'Main' %}" class="hidden items-center gap-1 lg:flex">
+      <a class="nav-link" href="{{ workspace_url }}"{% if current == "analysis:workspace" %} aria-current="page"{% endif %}>{% translate "Analysis" %}</a>
+      <div class="relative">
+        <button type="button" class="nav-link" data-disclosure aria-expanded="false" aria-controls="features-menu"{% if current == "pages:feature" %} data-current{% endif %}>
+          <span>{% translate "Features" %}</span><span class="chevron inline-flex">{% icon "chevron-down" 16 %}</span>
+        </button>
+        <div id="features-menu" class="menu left-0 grid w-[640px] grid-cols-2 gap-2" hidden>
+          <div>
+            <p class="menu-heading" id="features-menu-available">{% translate "Available" %}</p>
+            <ul aria-labelledby="features-menu-available">
+              {% for f in nav_features %}
+                <li><a class="menu-item" href="{{ f.url }}"{% if current == "pages:feature" and current_slug == f.slug %} aria-current="page"{% endif %}>{% icon f.icon %}<span>{{ f.title }}<span class="menu-item-desc">{{ f.summary }}</span></span></a></li>
+              {% endfor %}
+            </ul>
+          </div>
+          <div class="border-l border-line pl-2">
+            <p class="menu-heading" id="features-menu-soon">{% translate "Coming soon" %}</p>
+            <ul aria-labelledby="features-menu-soon">
+              {% for f in nav_features_soon %}
+                <li><a class="menu-item items-center" href="{{ f.url }}"{% if current == "pages:feature" and current_slug == f.slug %} aria-current="page"{% endif %}>{% icon f.icon %}<span class="flex-1">{{ f.title }}</span><span class="tag">{% translate "Coming soon" %}</span></a></li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+      <a class="nav-link" href="{{ about_url }}"{% if current == "pages:about" %} aria-current="page"{% endif %}>{% translate "About" %}</a>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-2">
+      {% include "partials/theme_toggle.html" with compact=True %}
       {% if user.is_authenticated %}
-        {% url 'analysis:workspace' as workspace_url %}
-        {% url 'accounts:profile' as profile_url %}
-        <a class="btn gap-2" href="{{ workspace_url }}"{% if request.path == workspace_url %} aria-current="page"{% endif %}>{% icon "file-text" %}<span>{% translate "Analysis" %}</span></a>
-        <a class="btn gap-2" href="{{ profile_url }}"{% if request.path == profile_url %} aria-current="page"{% endif %}>{% icon "user" %}<span>{% translate "Profile" %}</span></a>
-        <form action="{% url 'account_logout' %}" method="post">
-          {% csrf_token %}
-          <button type="submit" class="btn gap-2">{% icon "log-out" %}<span>{% translate "Sign out" %}</span></button>
-        </form>
+        <div class="relative hidden lg:block">
+          <button type="button" class="btn gap-2" data-disclosure aria-expanded="false" aria-controls="account-menu">
+            {% icon "user" %}<span class="max-w-[16ch] truncate">{{ user.full_name|default:user.email }}</span><span class="sr-only"> · {% translate "Account menu" %}</span><span class="chevron inline-flex">{% icon "chevron-down" 16 %}</span>
+          </button>
+          <div id="account-menu" class="menu right-0 w-[280px]" hidden>
+            <p class="menu-heading truncate">{{ user.email }}</p>
+            {% include "partials/account_links.html" %}
+          </div>
+        </div>
       {% elif not hide_auth_links %}
-        <a class="btn gap-2" href="{% url 'account_login' %}">{% icon "log-in" %}<span>{% translate "Sign in" %}</span></a>
-        <a class="btn gap-2" href="{% url 'account_signup' %}">{% icon "user-plus" %}<span>{% translate "Sign up" %}</span></a>
+        <div class="hidden items-center gap-2 lg:flex">
+          {% include "partials/lang_switch.html" with compact=True %}
+          <a class="btn gap-2" href="{% url 'account_login' %}">{% icon "log-in" %}<span>{% translate "Sign in" %}</span></a>
+          <a class="btn btn-primary gap-2" href="{% url 'account_signup' %}">{% icon "user-plus" %}<span>{% translate "Sign up" %}</span></a>
+        </div>
+      {% else %}
+        <div class="hidden lg:flex">{% include "partials/lang_switch.html" with compact=True %}</div>
+      {% endif %}
+      <button type="button" class="btn gap-2 lg:hidden" data-disclosure aria-expanded="false" aria-controls="mobile-menu">
+        {% icon "menu" %}<span>{% translate "Menu" %}</span>
+      </button>
+    </div>
+  </div>
+
+  {# Mobile and tablet menu (below 1024px). #}
+  <div id="mobile-menu" class="border-t border-line lg:hidden" hidden>
+    <nav aria-label="{% translate 'Main' %}" class="mx-auto grid max-w-[1440px] gap-1 px-[clamp(16px,3vw,32px)] py-3">
+      <a class="menu-item" href="{{ workspace_url }}"{% if current == "analysis:workspace" %} aria-current="page"{% endif %}>{% icon "file-text" %}<span>{% translate "Analysis" %}</span></a>
+      <p class="menu-heading" id="mobile-features-available">{% translate "Features" %}</p>
+      <ul aria-labelledby="mobile-features-available" class="grid gap-1">
+        {% for f in nav_features %}
+          <li><a class="menu-item" href="{{ f.url }}"{% if current == "pages:feature" and current_slug == f.slug %} aria-current="page"{% endif %}>{% icon f.icon %}<span>{{ f.title }}</span></a></li>
+        {% endfor %}
+        {% for f in nav_features_soon %}
+          <li><a class="menu-item items-center" href="{{ f.url }}"{% if current == "pages:feature" and current_slug == f.slug %} aria-current="page"{% endif %}>{% icon f.icon %}<span class="flex-1">{{ f.title }}</span><span class="tag">{% translate "Coming soon" %}</span></a></li>
+        {% endfor %}
+      </ul>
+      <a class="menu-item" href="{{ about_url }}"{% if current == "pages:about" %} aria-current="page"{% endif %}>{% icon "info" %}<span>{% translate "About" %}</span></a>
+      <hr class="menu-divider">
+      {% if user.is_authenticated %}
+        <p class="menu-heading truncate">{{ user.email }}</p>
+        {% include "partials/account_links.html" %}
+      {% else %}
+        <div class="flex flex-wrap items-center gap-2 px-3 py-2">{% include "partials/lang_switch.html" %}</div>
+        {% if not hide_auth_links %}
+          <div class="flex flex-wrap gap-2 px-3 py-2">
+            <a class="btn gap-2" href="{% url 'account_login' %}">{% icon "log-in" %}<span>{% translate "Sign in" %}</span></a>
+            <a class="btn btn-primary gap-2" href="{% url 'account_signup' %}">{% icon "user-plus" %}<span>{% translate "Sign up" %}</span></a>
+          </div>
+        {% endif %}
       {% endif %}
     </nav>
   </div>
 </header>
+{% endwith %}

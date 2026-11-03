@@ -1,2 +1,3 @@
-{% load i18n ui %}<button type="button" class="btn gap-2" data-theme-toggle aria-pressed="false"
-        data-label-dark="{% translate 'Dark theme' %}" data-label-light="{% translate 'Light theme' %}"><span class="inline-flex dark:hidden">{% icon "moon" %}</span><span class="hidden dark:inline-flex">{% icon "sun" %}</span><span data-label>{% translate "Dark theme" %}</span></button>
+{% load i18n ui %}{# compact=True: icon-only button; the label stays as screen-reader text and theme.js keeps it current. #}
+<button type="button" class="btn gap-2{% if compact %} btn-icon{% endif %}" data-theme-toggle aria-pressed="false"
+        data-label-dark="{% translate 'Dark theme' %}" data-label-light="{% translate 'Light theme' %}"><span class="inline-flex dark:hidden">{% icon "moon" %}</span><span class="hidden dark:inline-flex">{% icon "sun" %}</span><span data-label{% if compact %} class="sr-only"{% endif %}>{% translate "Dark theme" %}</span></button>

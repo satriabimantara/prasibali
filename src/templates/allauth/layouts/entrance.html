@@ -4,7 +4,7 @@
 {% block body %}
 <div class="flex flex-1 flex-col">
   {% include "partials/site_header.html" with gutter="5vw,64px" hide_auth_links=True %}
-  <main class="flex flex-1 justify-center px-[clamp(16px,5vw,64px)] pb-16 pt-2">
+  <main id="main" class="flex flex-1 justify-center px-[clamp(16px,5vw,64px)] pb-16 pt-6">
     <div class="grid w-full max-w-[480px] content-start gap-6">
       <div lang="ban" role="img" aria-label="{% translate 'Prasi in Balinese script' %}" class="font-aksara text-center text-accent leading-tight text-[clamp(56px,7vw,96px)]">&#x1B27;&#x1B44;&#x1B2D;&#x1B32;&#x1B36;</div>
       <div class="overflow-hidden rounded-lg border border-line bg-surface">

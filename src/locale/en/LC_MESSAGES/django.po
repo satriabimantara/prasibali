@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 09:06+0800\n"
+"POT-Creation-Date: 2026-11-03 10:01+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -411,6 +411,88 @@ msgstr ""
 msgid "Your analysis history has been deleted (%(n)s items)."
 msgstr ""
 
+msgid "Informatics Study Program, FMIPA, Universitas Udayana"
+msgstr ""
+
+msgid "Team lead"
+msgstr ""
+
+msgid "Team member"
+msgstr ""
+
+msgid ""
+"Department of Informatics Engineering, Institut Teknologi Sepuluh Nopember "
+"(ITS)"
+msgstr ""
+
+msgid ""
+"The core of the character identification module (BPSO-CRF, five entity "
+"labels)."
+msgstr ""
+
+msgid ""
+"The Balinese satua text dataset for narrative analysis that PrasiBali.ai "
+"builds on."
+msgstr ""
+
+msgid ""
+"Python package on PyPI with the character identification and alias "
+"clustering models."
+msgstr ""
+
+msgid ""
+"GitHub repository of the earlier research software for Balinese story "
+"analysis."
+msgstr ""
+
+msgid "Character identification"
+msgstr ""
+
+msgid ""
+"Find character names in a satua and label each one with its entity type."
+msgstr ""
+
+msgid "Alias clustering"
+msgstr ""
+
+msgid "Group the different names that refer to the same character."
+msgstr ""
+
+msgid "Label each character group as protagonist or antagonist."
+msgstr ""
+
+msgid "Coreference"
+msgstr ""
+
+msgid "Link pronouns and other references back to the character they refer to."
+msgstr ""
+
+msgid "Social graph"
+msgstr ""
+
+msgid "Draw the network of characters that appear together in a story."
+msgstr ""
+
+msgid "Quote attribution"
+msgstr ""
+
+msgid "Find direct speech in a satua and identify which character says it."
+msgstr ""
+
+msgid "Summarization"
+msgstr ""
+
+msgid "Produce a short summary of a satua."
+msgstr ""
+
+msgid "Aksara Bali"
+msgstr ""
+
+msgid ""
+"Transliterate Balinese script to Latin script so that texts in aksara Bali "
+"can be analysed too."
+msgstr ""
+
 msgid "Indonesian"
 msgstr ""
 
@@ -521,6 +603,9 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
+msgid "Settings"
+msgstr ""
+
 msgid "Delete account"
 msgstr ""
 
@@ -535,12 +620,42 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#, python-format
+msgid ""
+"Change the interface language and theme in <a class=\"link\" href="
+"\"%(settings_url)s\">Settings</a>."
+msgstr ""
+
 msgid "Save profile"
 msgstr ""
 
 msgid ""
 "Deleting your account also deletes your analysis history. This cannot be "
 "undone."
+msgstr ""
+
+msgid "Choose the interface language and theme."
+msgstr ""
+
+msgid "Language"
+msgstr ""
+
+msgid "Saved to your profile, so it is used again the next time you sign in."
+msgstr ""
+
+msgid "Save language"
+msgstr ""
+
+msgid "Theme"
+msgstr ""
+
+msgid "Light theme"
+msgstr ""
+
+msgid "Dark theme"
+msgstr ""
+
+msgid "The theme is stored in this browser only and applies right away."
 msgstr ""
 
 msgid "Prasi in Balinese script"
@@ -596,6 +711,9 @@ msgid "This analysis did not finish, so there is no result to show."
 msgstr ""
 
 msgid "Story text"
+msgstr ""
+
+msgid "Every analysis you run is saved here with the models it used."
 msgstr ""
 
 #, python-format
@@ -853,6 +971,9 @@ msgstr ""
 msgid "Satua analysis"
 msgstr ""
 
+msgid "Paste a satua text, choose what to analyse, then explore the results."
+msgstr ""
+
 msgid ""
 "The analysis could not be completed because the server did not respond. Your "
 "text has not been lost. Try again."
@@ -900,10 +1021,188 @@ msgstr ""
 msgid "No analysis yet. Paste a satua text to begin."
 msgstr ""
 
+msgid ""
+"Recognise characters, group their other names, and see whether they are "
+"protagonists or antagonists in a text written in Balinese."
+msgstr ""
+
+msgid "Skip to main content"
+msgstr ""
+
 msgid "Workspace"
 msgstr ""
 
 msgid "New analysis"
+msgstr ""
+
+msgid "About"
+msgstr ""
+
+msgid "About PrasiBali.ai"
+msgstr ""
+
+msgid ""
+"PrasiBali.ai brings the results of master's thesis research at Universitas "
+"Udayana into a web application for analysing the characters of Balinese "
+"satua."
+msgstr ""
+
+msgid "Research"
+msgstr ""
+
+msgid ""
+"The research built three models for satua texts: character identification "
+"with entity labels, alias clustering of the different names of a character, "
+"and classification of each character group as protagonist or antagonist. The "
+"thesis compared many models and features for each task; the research mode of "
+"PrasiBali.ai lets you choose them and shows their reference scores from the "
+"thesis."
+msgstr ""
+
+msgid ""
+"Components that existed before this competition: the balinese-nlp package "
+"(character identification and alias clustering), the BaliStoryAnalyzer "
+"research software, and the pretrained role classifiers from the thesis "
+"experiments. Built for the AI Web Innovation Challenge, Bali Digital "
+"Festival 2026: this web application, including the research mode, analysis "
+"history, quota and accounts."
+msgstr ""
+
+msgid "Team"
+msgstr ""
+
+msgid "Publications"
+msgstr ""
+
+msgid "opens in a new tab"
+msgstr ""
+
+msgid "Software"
+msgstr ""
+
+msgid "Breadcrumb"
+msgstr ""
+
+msgid "Home"
+msgstr ""
+
+msgid "Coming soon"
+msgstr ""
+
+msgid "Try it in the workspace"
+msgstr ""
+
+msgid ""
+"This feature is on the PrasiBali.ai roadmap and is not available yet. The "
+"three features below already work end to end."
+msgstr ""
+
+msgid "Other features"
+msgstr ""
+
+msgid "Available now"
+msgstr ""
+
+msgid "F1 test"
+msgstr ""
+
+msgid "What it does"
+msgstr ""
+
+msgid ""
+"The names found by character identification are compared with each other. "
+"Names that are similar enough are joined into one character group, such as I "
+"Kancil and Kancil. The results show each group with the names it is called "
+"by and how often it appears."
+msgstr ""
+
+msgid "How it works"
+msgstr ""
+
+msgid ""
+"The grouping is rule-based, so it needs no training data. A string "
+"similarity method measures how alike two names are, and names whose "
+"similarity reaches the threshold join the same group."
+msgstr ""
+
+#, python-format
+msgid ""
+"The default is %(method)s with a threshold of %(threshold)s, the best "
+"setting for SatuaNER in the thesis (F1 %(f1)s, Tables 4.36 and 4.37). The "
+"research mode offers all five methods and lets you change the threshold."
+msgstr ""
+
+msgid "Name similarity methods and their F1 scores in the thesis"
+msgstr ""
+
+msgid "Method"
+msgstr ""
+
+msgid "F1 with SatuaNER (Table 4.37)"
+msgstr ""
+
+msgid "Things to keep in mind"
+msgstr ""
+
+msgid ""
+"Names with a suffix, such as Kakua and Kakuane, can end up in separate "
+"groups, and general terms such as pekak can form a group of their own. Check "
+"the groups before drawing conclusions."
+msgstr ""
+
+msgid ""
+"The model reads the satua word by word and marks the words that name a "
+"character. Each name gets one of five entity labels:"
+msgstr ""
+
+#, python-format
+msgid ""
+"The default model is %(model)s: a Conditional Random Field (CRF) whose "
+"features were selected with binary particle swarm optimisation (BPSO). It "
+"comes from the thesis research, was published at iiWAS 2023, and is "
+"distributed in the balinese-nlp package."
+msgstr ""
+
+msgid ""
+"In the research mode you can choose one of the other models from the thesis "
+"experiments. Reference scores from the thesis:"
+msgstr ""
+
+msgid "Character identification models and their F1 scores in the thesis"
+msgstr ""
+
+msgid "Model"
+msgstr ""
+
+msgid "F1 cross-validation (Table 4.18)"
+msgstr ""
+
+msgid "F1 test data (Table 4.19)"
+msgstr ""
+
+msgid ""
+"For each character group, the sentences that mention the character become "
+"its context. A model trained in the thesis labels the group as protagonist "
+"or antagonist from that context."
+msgstr ""
+
+#, python-format
+msgid ""
+"The thesis compared six algorithms (%(algorithms)s) with word-vector "
+"features (TF-IDF and FastText word embeddings) and lexicon features "
+"(BaliSentiLex and part-of-speech tags)."
+msgstr ""
+
+msgid "Default model"
+msgstr ""
+
+msgid "Best model according to the thesis"
+msgstr ""
+
+msgid ""
+"The research mode lets you choose any of the available models from the "
+"thesis experiments. Character groups with very little context get a warning, "
+"because their labels are less reliable."
 msgstr ""
 
 msgid "Character analysis of Balinese satua"
@@ -912,52 +1211,125 @@ msgstr ""
 msgid "Character analysis of Balinese satua in one workspace."
 msgstr ""
 
+msgid "Continue to the workspace"
+msgstr ""
+
+msgid "Start analysing"
+msgstr ""
+
+msgid "See how it works"
+msgstr ""
+
 msgid ""
-"Recognise characters, group their other names, and see whether they are "
-"protagonists or antagonists in a text written in Balinese."
+"Analysis needs an account with a verified email address. Texts are processed "
+"on our own server."
 msgstr ""
 
 msgid "Example of how results are shown"
 msgstr ""
 
-msgid "Welcome back"
-msgstr ""
-
-#, python-format
-msgid "You are signed in as %(name)s."
-msgstr ""
-
-msgid "Continue to the workspace"
-msgstr ""
-
-msgid "Forgot your password?"
-msgstr ""
-
-msgid "What PrasiBali.ai does"
-msgstr ""
-
-msgid "Recognise characters"
+msgid "Reading the characters of a satua takes time"
 msgstr ""
 
 msgid ""
-"SatuaNER finds the names of characters in the story: people, animals, gods "
-"and objects that act like characters."
+"Teachers, students and researchers still trace characters by hand, page by "
+"page."
 msgstr ""
 
-msgid "Group other names"
-msgstr ""
-
-msgid ""
-"Different names for the same character, such as I Kancil and Kancil, are "
-"combined into one character group."
-msgstr ""
-
-msgid "See their roles"
+msgid "Satua are rich in characters"
 msgstr ""
 
 msgid ""
-"A model trained in the thesis research labels each character group as "
-"protagonist or antagonist, as an aid to analysis."
+"Satua Bali are folk tales passed down orally, full of people, animals and "
+"gods that act as characters."
+msgstr ""
+
+msgid "One character, many names"
+msgstr ""
+
+msgid ""
+"The same character can be called I Kancil in one sentence and Kancil in the "
+"next, so tracking characters by hand is easy to get wrong."
+msgstr ""
+
+msgid "Few tools for the Balinese language"
+msgstr ""
+
+msgid ""
+"Most text analysis tools are built for other languages, so Balinese texts "
+"are still analysed manually."
+msgstr ""
+
+msgid "PrasiBali.ai does the first reading with you"
+msgstr ""
+
+msgid ""
+"Three models from a master's thesis at Universitas Udayana work in sequence "
+"on your text. The results are an aid to analysis, not a final judgement."
+msgstr ""
+
+msgid "Read more"
+msgstr ""
+
+msgid ""
+"All AI models run on the PrasiBali.ai server. Your texts are not sent to "
+"third-party AI services."
+msgstr ""
+
+msgid "How it works in three steps"
+msgstr ""
+
+msgid "Step"
+msgstr ""
+
+msgid "Paste a satua text"
+msgstr ""
+
+msgid ""
+"Paste a Balinese text of up to 20,000 characters, or load one of the sample "
+"satua with one click."
+msgstr ""
+
+msgid "Run the analysis"
+msgstr ""
+
+msgid ""
+"Choose the full pipeline or a single task. Researchers can open the research "
+"mode to choose the models from the thesis experiments."
+msgstr ""
+
+msgid "Explore the results"
+msgstr ""
+
+msgid ""
+"Character names are highlighted in the text with their entity labels, "
+"grouped with their other names, and labelled protagonist or antagonist. "
+"Every analysis is saved in your history."
+msgstr ""
+
+msgid "In development"
+msgstr ""
+
+msgid ""
+"These features are on the PrasiBali.ai roadmap and are not available yet."
+msgstr ""
+
+msgid "Ready for the next satua?"
+msgstr ""
+
+msgid ""
+"Open the workspace to run a new analysis, or look back at your earlier ones."
+msgstr ""
+
+msgid "Ready to read a satua?"
+msgstr ""
+
+msgid ""
+"Create an account, verify your email, and run your first analysis in a few "
+"minutes."
+msgstr ""
+
+msgid "Open the workspace"
 msgstr ""
 
 msgid "Privacy policy"
@@ -981,11 +1353,6 @@ msgid ""
 msgstr ""
 
 msgid "How your texts are processed"
-msgstr ""
-
-msgid ""
-"All AI models run on the PrasiBali.ai server. Your texts are not sent to "
-"third-party AI services."
 msgstr ""
 
 msgid "What we use the data for"
@@ -1020,23 +1387,32 @@ msgid ""
 "and all of your analyses."
 msgstr ""
 
-msgid "PrasiBali.ai home"
-msgstr ""
-
-msgid "Site"
-msgstr ""
-
-msgid "Analysis"
+msgid "Language and theme"
 msgstr ""
 
 msgid "Sign out"
 msgstr ""
 
+msgid "Footer"
+msgstr ""
+
+msgid "PrasiBali.ai home"
+msgstr ""
+
+msgid "Main"
+msgstr ""
+
+msgid "Analysis"
+msgstr ""
+
+msgid "Available"
+msgstr ""
+
+msgid "Account menu"
+msgstr ""
+
 msgid "Sign up"
 msgstr ""
 
-msgid "Dark theme"
-msgstr ""
-
-msgid "Light theme"
+msgid "Menu"
 msgstr ""

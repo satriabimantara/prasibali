@@ -1,0 +1,45 @@
+{% extends "layouts/content.html" %}
+{% load i18n ui %}
+{% block title %}{{ feature.title }} · PrasiBali.ai{% endblock title %}
+{% block content %}
+  <nav aria-label="{% translate 'Breadcrumb' %}" class="text-caption text-muted">
+    <ol class="flex flex-wrap items-center gap-2">
+      <li><a class="link text-muted" href="{% url 'pages:landing' %}">{% translate "Home" %}</a></li>
+      <li aria-hidden="true">/</li>
+      <li>{% translate "Features" %}</li>
+      <li aria-hidden="true">/</li>
+      <li aria-current="page">{{ feature.title }}</li>
+    </ol>
+  </nav>
+
+  <header class="grid gap-4">
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="icon-tile">{% icon feature.icon 22 %}</span>
+      {% if not feature.available %}<span class="tag">{% translate "Coming soon" %}</span>{% endif %}
+    </div>
+    <h1 class="text-page-title">{{ feature.title }}</h1>
+    <p class="text-lead max-w-[54ch] text-muted">{{ feature.summary }}</p>
+    {% if feature.available %}
+      <div class="flex flex-wrap gap-3">
+        <a class="btn btn-primary gap-2" href="{% url 'analysis:workspace' %}?tugas={{ feature.task }}">{% icon "play" %}<span>{% translate "Try it in the workspace" %}</span></a>
+      </div>
+    {% endif %}
+  </header>
+
+  {% if feature.available %}
+    {% include feature.body_template %}
+  {% else %}
+    <section class="panel reading">
+      <p>{% translate "This feature is on the PrasiBali.ai roadmap and is not available yet. The three features below already work end to end." %}</p>
+    </section>
+  {% endif %}
+
+  <section class="grid gap-4" aria-labelledby="other-features">
+    <h2 id="other-features" class="text-panel-title">{% if feature.available %}{% translate "Other features" %}{% else %}{% translate "Available now" %}{% endif %}</h2>
+    <ul class="grid gap-3 md:grid-cols-3">
+      {% for f in features %}{% if f.slug != feature.slug %}
+        <li class="h-full"><a class="panel card-link" href="{{ f.url }}">{% icon f.icon %}<span>{{ f.title }}<span class="menu-item-desc">{{ f.summary }}</span></span></a></li>
+      {% endif %}{% endfor %}
+    </ul>
+  </section>
+{% endblock content %}

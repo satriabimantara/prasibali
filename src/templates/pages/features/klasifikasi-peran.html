@@ -1,0 +1,22 @@
+{% load i18n ui %}
+<section class="panel reading" aria-labelledby="what-title">
+  <h2 id="what-title" class="text-panel-title">{% translate "What it does" %}</h2>
+  <p>{% translate "For each character group, the sentences that mention the character become its context. A model trained in the thesis labels the group as protagonist or antagonist from that context." %}</p>
+  <p class="alert alert--warning flex items-start gap-2">{% icon "info" %}<span>{% blocktranslate %}Role labels are an aid to analysis, not a final judgement. The models have limited accuracy: the average F1 of every model in the thesis is below 0.70.{% endblocktranslate %}</span></p>
+</section>
+
+<section class="panel reading" aria-labelledby="how-title">
+  <h2 id="how-title" class="text-panel-title">{% translate "How it works" %}</h2>
+  <p>{% blocktranslate with algorithms=algorithms|join:", " %}The thesis compared six algorithms ({{ algorithms }}) with word-vector features (TF-IDF and FastText word embeddings) and lexicon features (BaliSentiLex and part-of-speech tags).{% endblocktranslate %}</p>
+  <dl class="grid gap-4">
+    <div class="grid gap-1">
+      <dt class="text-label text-muted">{% translate "Default model" %}</dt>
+      <dd>{% include "pages/features/_classifier.html" with entry=default_classifier %}</dd>
+    </div>
+    <div class="grid gap-1">
+      <dt class="text-label text-muted">{% translate "Best model according to the thesis" %}</dt>
+      <dd>{% include "pages/features/_classifier.html" with entry=best_classifier %}</dd>
+    </div>
+  </dl>
+  <p>{% translate "The research mode lets you choose any of the available models from the thesis experiments. Character groups with very little context get a warning, because their labels are less reliable." %}</p>
+</section>

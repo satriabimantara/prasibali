@@ -2,7 +2,10 @@
 {# Swapped as a whole by HTMX (outerHTML) after every analysis, so the form keeps the posted text and choices. #}
 <div id="workspace" class="grid gap-6">
   <div class="flex flex-wrap items-center justify-between gap-3">
-    <h1 class="text-page-title">{% translate "Satua analysis" %}</h1>
+    <div class="grid gap-1">
+      <h1 class="text-page-title">{% translate "Satua analysis" %}</h1>
+      <p class="text-muted">{% translate "Paste a satua text, choose what to analyse, then explore the results." %}</p>
+    </div>
     {% include "partials/mode_toggle.html" %}
   </div>
 

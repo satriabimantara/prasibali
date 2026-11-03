@@ -1,0 +1,30 @@
+{% load i18n %}
+<section class="panel reading" aria-labelledby="what-title">
+  <h2 id="what-title" class="text-panel-title">{% translate "What it does" %}</h2>
+  <p>{% translate "The names found by character identification are compared with each other. Names that are similar enough are joined into one character group, such as I Kancil and Kancil. The results show each group with the names it is called by and how often it appears." %}</p>
+</section>
+
+<section class="panel reading" aria-labelledby="how-title">
+  <h2 id="how-title" class="text-panel-title">{% translate "How it works" %}</h2>
+  <p>{% translate "The grouping is rule-based, so it needs no training data. A string similarity method measures how alike two names are, and names whose similarity reaches the threshold join the same group." %}</p>
+  <p>{% blocktranslate with method=default_alias.label threshold=alias_threshold|floatformat:2 f1=default_alias.f1|floatformat:4 %}The default is {{ method }} with a threshold of {{ threshold }}, the best setting for SatuaNER in the thesis (F1 {{ f1 }}, Tables 4.36 and 4.37). The research mode offers all five methods and lets you change the threshold.{% endblocktranslate %}</p>
+  <div class="overflow-x-auto rounded-lg border border-line">
+    <table class="table">
+      <caption class="sr-only">{% translate "Name similarity methods and their F1 scores in the thesis" %}</caption>
+      <thead><tr><th scope="col">{% translate "Method" %}</th><th scope="col">{% translate "F1 with SatuaNER (Table 4.37)" %}</th></tr></thead>
+      <tbody>
+        {% for m in alias_methods %}
+          <tr>
+            <th scope="row" class="font-medium text-ink">{{ m.label }}{% if m.id == default_alias.id %} <span class="tag">{% translate "default" %}</span>{% endif %}</th>
+            <td>{% if m.f1 is not None %}{{ m.f1|floatformat:4 }}{% else %}–{% endif %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="panel reading" aria-labelledby="limits-title">
+  <h2 id="limits-title" class="text-panel-title">{% translate "Things to keep in mind" %}</h2>
+  <p>{% translate "Names with a suffix, such as Kakua and Kakuane, can end up in separate groups, and general terms such as pekak can form a group of their own. Check the groups before drawing conclusions." %}</p>
+</section>

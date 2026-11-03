@@ -5,6 +5,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}PrasiBali.ai{% endblock title %}</title>
+  <meta name="description" content="{% translate 'Recognise characters, group their other names, and see whether they are protagonists or antagonists in a text written in Balinese.' %}">
+  <meta property="og:title" content="PrasiBali.ai">
+  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/og-image.png' %}">
   {# Theme and mode before any CSS to avoid a flash of the wrong theme (DESIGN.md "Tema dan mode"). #}
   <script>
     (function () {
@@ -25,9 +28,11 @@
   <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
   <script src="{% static 'js/theme.js' %}" defer></script>
+  <script src="{% static 'js/nav.js' %}" defer></script>
   {% block extra_head %}{% endblock extra_head %}
 </head>
 <body class="flex min-h-screen flex-col antialiased">
+  <a class="skip-link" href="#main">{% translate "Skip to main content" %}</a>
   <div class="flex flex-1 flex-col">{% block body %}{% endblock body %}</div>
   {% include "partials/site_footer.html" %}
   {% block extra_body %}{% endblock extra_body %}

@@ -1,0 +1,2 @@
+{% load i18n %}<span class="font-semibold">{{ entry.algorithm }} + {{ entry.feature_label }} ({{ entry.variant|upper }})</span>
+<span class="block text-muted">F1 CV {% if entry.f1_cv is not None %}{{ entry.f1_cv|floatformat:4 }} ({{ entry.thesis_ref_cv }}){% else %}–{% endif %} · {% translate "F1 test" %} {% if entry.f1_test is not None %}{{ entry.f1_test|floatformat:4 }} ({{ entry.thesis_ref_test }}){% else %}–{% endif %}</span>
