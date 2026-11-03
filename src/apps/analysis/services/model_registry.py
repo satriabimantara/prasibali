@@ -77,6 +77,9 @@ def get_ner_model(name: str = DEFAULT_NER_MODEL):
     try:
         from balinese_nlp.narratives.utils import load_pretrained_character_ner_model
 
+        from . import postag_cache
+
+        postag_cache.install()  # one shared, memoised HMM POS tagger instead of one per token
         model = load_pretrained_character_ner_model(name)
     except Exception as exc:
         raise CharacterIdentificationError(detail=f"Could not load NER model {name}: {exc!r}") from exc
@@ -172,4 +175,18 @@ def warm_up(include_embedding: bool = True, log=None) -> dict[str, float]:
     step(f"classifier {DEFAULT_CLASSIFIER_ID}", lambda: get_classifier(DEFAULT_CLASSIFIER_ID, with_embedding=False))
     if include_embedding and get_classifier_entry(DEFAULT_CLASSIFIER_ID).uses_tf5:
         step("FastText (TF5)", lambda: get_classifier(DEFAULT_CLASSIFIER_ID, with_embedding=True))
+    # One short analysis loads what the first request would otherwise pay for (TextPreprocessor dictionaries,
+    # alias clustering and grouping imports, the shared POS tagger) and fills the POS cache with common words.
+    step("pipeline warm-up", lambda: _warm_pipeline(include_roles=include_embedding))
     return timings
+
+
+WARM_UP_TEXT = Path(__file__).resolve().parent.parent / "data" / "sample_satua" / "i_kancil_nulungin_i_kakua.txt"
+
+
+def _warm_pipeline(include_roles: bool) -> None:
+    from .model_catalog import validate_config
+    from .pipeline import run_full_pipeline
+
+    text = WARM_UP_TEXT.read_text(encoding="utf-8") if WARM_UP_TEXT.is_file() else "I Kancil luas ka alase."
+    run_full_pipeline(text, validate_config(task="full" if include_roles else "alias"))

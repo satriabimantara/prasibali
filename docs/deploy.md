@@ -16,7 +16,20 @@ The embedding file must be the one used to train the TF5 pickles: every TF5 esti
 ## Memory (measured on the development laptop, 3 Nov 2026)
 
 `python src/manage.py warm_models` loads SatuaNER, the label encoder, the default classifier
-(`m2-wordvector-tf5-svm`) and FastText in about 5 seconds when the files are local.
+(`m2-wordvector-tf5-svm`) and FastText, then runs one short analysis, in about 10 seconds when the files are local.
+Without a warm-up (`ANALYSIS_WARM_ON_START=false`, the default for development) the first request pays this time.
+
+## Analysis speed (warm models, same laptop)
+
+| Text | Tokens | Full pipeline |
+|---|---|---|
+| Sample satua (about 2,000 characters) | 340 | 0.03–0.06 s |
+| Longest dataset satua, "Bintang Lara" (17,000 characters) | 2,852 | 1.2 s (alias clustering 0.9 s) |
+
+Character identification used to take about 2.7 s for 370 tokens. balinese-nlp created a new HMM POS tagger for
+every token (reloading the stemmer dictionary and re-parsing `hmmmodel.txt`), so the app now uses one shared tagger
+with a per-token cache (`services/postag_cache.py`). Tags and NER output are identical
+(`tests/analysis/test_postag_cache.py`).
 
 | State of one Python process | Working set | Committed memory |
 |---|---|---|
