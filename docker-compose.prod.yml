@@ -51,7 +51,7 @@ services:
     image: caddy:2.10-alpine
     restart: unless-stopped
     environment:
-      SITE_DOMAIN: ${SITE_DOMAIN:?set SITE_DOMAIN in .env, e.g. prasibali.ai}
+      SITE_DOMAIN: ${SITE_DOMAIN:?set SITE_DOMAIN in .env, e.g. prasibali.tech}
       ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL in .env}
     ports:
       - "80:80"

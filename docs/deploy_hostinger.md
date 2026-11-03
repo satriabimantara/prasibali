@@ -1,6 +1,6 @@
 # Deploy PrasiBali.ai ke Hostinger VPS KVM 1 / KVM 2 (Ubuntu 24.04 64 bit)
 
-Panduan langkah demi langkah untuk menjalankan PrasiBali.ai di Hostinger VPS dengan domain `prasibali.id`. Semua layanan berjalan dengan Docker Compose (`docker-compose.prod.yml`), tanpa control panel. Penjelasan umum tentang arsitektur, backup, pembaruan, dan pengukuran memori ada di `docs/deploy.md`; dokumen ini berisi langkah khusus Hostinger.
+Panduan langkah demi langkah untuk menjalankan PrasiBali.ai di Hostinger VPS dengan domain `prasibali.tech`. Semua layanan berjalan dengan Docker Compose (`docker-compose.prod.yml`), tanpa control panel. Penjelasan umum tentang arsitektur, backup, pembaruan, dan pengukuran memori ada di `docs/deploy.md`; dokumen ini berisi langkah khusus Hostinger.
 
 | Spesifikasi | KVM 1 | KVM 2 |
 |---|---|---|
@@ -160,11 +160,9 @@ $ sha256sum ~/prasibali/models/balinese-word-embedding/300_fasttext_model.bin*
 
 Bandingkan hash dengan laptop (`PS> Get-FileHash models\balinese-word-embedding\300_fasttext_model.bin*`). Jika FastText tidak disalin, `warm_models` mengunduhnya sekali dari Hugging Face ke volume `hf_cache`.
 
-## 5. Domain `prasibali.id` dan DNS
+## 5. Domain `prasibali.tech` dan DNS
 
-Domain `.id` didaftarkan lewat registrar yang terakreditasi PANDI. Hostinger menyediakannya, dan paket VPS memberi domain gratis selama satu tahun; periksa apakah ekstensi `.id` termasuk. Pendaftaran `.id` bisa memerlukan verifikasi dokumen (misalnya KTP), jadi lakukan sedini mungkin.
-
-Jika domain dikelola di hPanel (Domain → DNS / Nameservers → kelola record DNS), buat:
+Domain `prasibali.tech` didapat dari promo Hostinger (gratis satu tahun) dan DNS-nya dikelola di hPanel (nameserver `*.dns-parking.com`). Di hPanel (Domain → DNS / Nameservers → kelola record DNS) pastikan:
 
 | Tipe | Nama | Isi | TTL |
 |---|---|---|---|
@@ -174,22 +172,23 @@ Jika domain dikelola di hPanel (Domain → DNS / Nameservers → kelola record D
 Hapus record A/AAAA bawaan lain untuk `@` dan `www` yang menunjuk ke server parkir Hostinger. Jika VPS punya IPv6 dan Anda menambahkan record AAAA, pastikan Docker dan Caddy menerima IPv6; bila ragu, cukup pakai record A. Cek dengan:
 
 ```bash
-$ dig +short prasibali.id
-$ dig +short www.prasibali.id
+$ dig +short prasibali.tech
+$ dig +short www.prasibali.tech
 ```
 
 ## 6. Isi `.env`
 
-Buat `~/prasibali/.env` dengan `nano .env`, lalu `chmod 600 .env`. Nilai tidak pernah di-commit. Daftar lengkap variabel ada di `docs/deploy.md` bagian 5; nilai khusus Hostinger dan `prasibali.id`:
+Buat `~/prasibali/.env` dengan `nano .env`, lalu `chmod 600 .env`. Nilai tidak pernah di-commit. Daftar lengkap variabel ada di `docs/deploy.md` bagian 5; nilai khusus Hostinger dan `prasibali.tech`:
 
 ```text
-DJANGO_ALLOWED_HOSTS=prasibali.id,www.prasibali.id
-CSRF_TRUSTED_ORIGINS=https://prasibali.id,https://www.prasibali.id
-SITE_DOMAIN=prasibali.id
+DJANGO_ALLOWED_HOSTS=prasibali.tech,www.prasibali.tech
+CSRF_TRUSTED_ORIGINS=https://prasibali.tech,https://www.prasibali.tech
+SITE_DOMAIN=prasibali.tech
 # KVM 1 (untuk KVM 2: GUNICORN_WORKERS=3 dan WEB_MEM_LIMIT=6g)
 GUNICORN_WORKERS=2
 WEB_MEM_LIMIT=3500m
-DEFAULT_FROM_EMAIL=PrasiBali.ai <alamat-gmail-anda@gmail.com>
+EMAIL_HOST_USER=alamat-mailbox@prasibali.tech
+DEFAULT_FROM_EMAIL=PrasiBali.ai <alamat-mailbox@prasibali.tech>
 ```
 
 Variabel wajib lain:
@@ -200,7 +199,7 @@ Variabel wajib lain:
 - `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD` (Gmail App Password);
 - `DEMO_USER_EMAIL`, `DEMO_USER_PASSWORD`.
 
-Catatan email: `DEFAULT_FROM_EMAIL` bawaan aplikasi memakai `no-reply@prasibali.ai`. Dengan Gmail SMTP, alamat pengirim harus alamat Gmail itu sendiri (atau alias yang terverifikasi di Gmail), jadi isi variabel ini.
+Catatan email: aplikasi mengirim email verifikasi dan reset kata sandi lewat **SMTP Hostinger Email** (`smtp.hostinger.com`, port 587 STARTTLS; ini bawaan settings). `EMAIL_HOST_USER` adalah alamat mailbox lengkap, `EMAIL_HOST_PASSWORD` adalah password mailbox (atur di hPanel → Email → kelola mailbox), dan `DEFAULT_FROM_EMAIL` harus memakai alamat mailbox yang sama. Bila port 587 bermasalah, pakai `EMAIL_PORT=465`, `EMAIL_USE_TLS=False`, `EMAIL_USE_SSL=True`. Record MX dan SPF (`include:_spf.mail.hostinger.com`) sudah dibuat Hostinger; aktifkan juga DKIM di hPanel → Email → Email deliverability agar email tidak masuk spam. Mail API Hostinger (token Bearer) tidak dipakai aplikasi.
 
 ## 7. Build dan jalankan
 
@@ -211,15 +210,15 @@ $ docker compose -f docker-compose.prod.yml up -d --build
 $ docker compose -f docker-compose.prod.yml logs -f web
 ```
 
-Build pertama butuh sekitar 20–40 menit di KVM 1 dan 10–20 menit di KVM 2 (torch dan dependensi). Saat start, container `web` menjalankan `migrate`, `createcachetable`, lalu `warm_models` (SatuaNER, classifier bawaan, FastText), memasang `HF_HUB_OFFLINE=1`, lalu menyalakan Gunicorn. Caddy mengambil sertifikat Let's Encrypt untuk `prasibali.id` dan `www.prasibali.id`; `www` dialihkan 301 ke `https://prasibali.id`.
+Build pertama butuh sekitar 20–40 menit di KVM 1 dan 10–20 menit di KVM 2 (torch dan dependensi). Saat start, container `web` menjalankan `migrate`, `createcachetable`, lalu `warm_models` (SatuaNER, classifier bawaan, FastText), memasang `HF_HUB_OFFLINE=1`, lalu menyalakan Gunicorn. Caddy mengambil sertifikat Let's Encrypt untuk `prasibali.tech` dan `www.prasibali.tech`; `www` dialihkan 301 ke `https://prasibali.tech`.
 
 Pemeriksaan:
 
 ```bash
 $ docker compose -f docker-compose.prod.yml ps                 # web "healthy"
-$ curl -s https://prasibali.id/healthz                          # {"status": "ok", "database": "ok"}
-$ curl -sI https://www.prasibali.id/ | head -n 3                # 301 ke https://prasibali.id/
-$ curl -sI https://prasibali.id/ | grep -iE "strict-transport|content-security"
+$ curl -s https://prasibali.tech/healthz                        # {"status": "ok", "database": "ok"}
+$ curl -sI https://www.prasibali.tech/ | head -n 3              # 301 ke https://prasibali.tech/
+$ curl -sI https://prasibali.tech/ | grep -iE "strict-transport|content-security"
 $ docker stats --no-stream && free -h
 ```
 

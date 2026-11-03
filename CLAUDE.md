@@ -30,7 +30,7 @@ Bahasa antarmuka: Indonesia (default) dan Inggris.
 - Tailwind CSS (standalone CLI, tanpa Node) + HTMX + Alpine.js
 - Gunicorn + Caddy (HTTPS otomatis), whitenoise untuk file statis
 - Docker Compose (lokal: `docker-compose.yml`; produksi: `docker-compose.prod.yml`)
-- SMTP Gmail via App Password (nilai dari `.env`)
+- SMTP Hostinger Email (mailbox domain `prasibali.tech`, `smtp.hostinger.com:587` STARTTLS; nilai dari `.env`). Mail API Hostinger tidak dipakai
 - pytest, pytest-django, ruff, GitHub Actions
 
 ## Struktur repo

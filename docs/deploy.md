@@ -1,10 +1,10 @@
 # Deploy PrasiBali.ai ke VPS (Ubuntu 24.04)
 
-Panduan langkah demi langkah untuk menjalankan PrasiBali.ai di VPS 8 GB RAM / 4 vCPU (Contabo Cloud VPS 10, Singapura) dengan domain `prasibali.ai`. Semua layanan berjalan dengan Docker Compose (`docker-compose.prod.yml`):
+Panduan langkah demi langkah untuk menjalankan PrasiBali.ai di VPS 8 GB RAM / 4 vCPU (Contabo Cloud VPS 10, Singapura) dengan domain `prasibali.tech`. Semua layanan berjalan dengan Docker Compose (`docker-compose.prod.yml`):
 
 | Layanan | Image | Fungsi |
 |---|---|---|
-| `caddy` | `caddy:2.10-alpine` | HTTPS otomatis (Let's Encrypt) untuk `prasibali.ai` dan `www.prasibali.ai` (dialihkan 301 ke apex), reverse proxy ke Gunicorn |
+| `caddy` | `caddy:2.10-alpine` | HTTPS otomatis (Let's Encrypt) untuk `prasibali.tech` dan `www.prasibali.tech` (dialihkan 301 ke apex), reverse proxy ke Gunicorn |
 | `web` | dibangun dari `docker/Dockerfile` (stage `runtime`) | Django + Gunicorn (worker sync, `--preload`), user non-root `app` (uid 1000) |
 | `db` | `postgres:16-alpine` | Database, volume `pgdata` |
 | `backup` | `postgres:16-alpine` | `pg_dump` harian ke `./backups/` |
@@ -13,10 +13,10 @@ Perintah yang diawali `$` dijalankan di VPS sebagai user `deploy`. Perintah yang
 
 ## 1. Prasyarat
 
-- Domain `prasibali.ai` (Cloudflare Registrar) dan VPS Ubuntu 24.04 dengan IP publik.
+- Domain `prasibali.tech` (Hostinger, DNS di hPanel) dan VPS Ubuntu 24.04 dengan IP publik. Untuk langkah khusus Hostinger, lihat `docs/deploy_hostinger.md`.
 - Kunci SSH ed25519 di laptop (`PS> ssh-keygen -t ed25519` bila belum ada).
 - Folder `models/` di laptop (isi `pretrained-models`, tidak ada di git).
-- Kredensial yang disiapkan sendiri dan **tidak pernah** ditempel ke repo atau ke Claude Code: `DJANGO_SECRET_KEY`, password Postgres, App Password Gmail, password akun demo, dan `HF_TOKEN` (hanya bila repo embedding privat).
+- Kredensial yang disiapkan sendiri dan **tidak pernah** ditempel ke repo atau ke Claude Code: `DJANGO_SECRET_KEY`, password Postgres, password mailbox Hostinger Email, password akun demo, dan `HF_TOKEN` (hanya bila repo embedding privat).
 
 ## 2. Siapkan server
 
@@ -106,12 +106,12 @@ Buat `~/prasibali/.env` (`chmod 600 .env`). Nilai tidak pernah di-commit. Variab
 | Variabel | Isi |
 |---|---|
 | `DJANGO_SECRET_KEY` | string acak panjang (`python3 -c "import secrets; print(secrets.token_urlsafe(50))"`) |
-| `DJANGO_ALLOWED_HOSTS` | `prasibali.ai,www.prasibali.ai` |
-| `CSRF_TRUSTED_ORIGINS` | `https://prasibali.ai,https://www.prasibali.ai` |
-| `SITE_DOMAIN` | `prasibali.ai` (Caddy juga melayani `www.` dan mengalihkannya) |
+| `DJANGO_ALLOWED_HOSTS` | `prasibali.tech,www.prasibali.tech` |
+| `CSRF_TRUSTED_ORIGINS` | `https://prasibali.tech,https://www.prasibali.tech` |
+| `SITE_DOMAIN` | `prasibali.tech` (Caddy juga melayani `www.` dan mengalihkannya) |
 | `ACME_EMAIL` | email untuk pemberitahuan Let's Encrypt |
 | `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | database produksi |
-| `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` | Gmail SMTP dengan App Password |
+| `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` | mailbox Hostinger Email: alamat lengkap (`...@prasibali.tech`), password mailbox, dan `PrasiBali.ai <alamat mailbox yang sama>`. `EMAIL_HOST` (`smtp.hostinger.com`), `EMAIL_PORT` (`587`), dan `EMAIL_USE_TLS` (`True`) sudah menjadi bawaan |
 | `DEMO_USER_EMAIL`, `DEMO_USER_PASSWORD` | akun demo juri (langkah 8) |
 | `GUNICORN_WORKERS` | jumlah worker (bawaan `3`; hitung dengan tabel di bagian "Memori dan jumlah worker") |
 | `WEB_MEM_LIMIT` | batas memori container `web` (bawaan `6g`) |
@@ -127,14 +127,14 @@ Buat `~/prasibali/.env` (`chmod 600 .env`). Nilai tidak pernah di-commit. Variab
 
 ## 6. DNS
 
-Di Cloudflare DNS buat dua record A ke IP VPS, status **DNS only** (awan abu-abu) agar Caddy bisa menyelesaikan tantangan Let's Encrypt:
+Di hPanel Hostinger (Domain → DNS / Nameservers) buat dua record ke IP VPS agar Caddy bisa menyelesaikan tantangan Let's Encrypt (bila DNS dikelola di Cloudflare, pakai status **DNS only**):
 
 | Tipe | Nama | Isi |
 |---|---|---|
 | A | `@` | IP_VPS |
 | A | `www` | IP_VPS |
 
-Cek dengan `dig +short prasibali.ai` dan `dig +short www.prasibali.ai`.
+Cek dengan `dig +short prasibali.tech` dan `dig +short www.prasibali.tech`.
 
 ## 7. Jalankan
 
@@ -151,9 +151,9 @@ Pemeriksaan:
 
 ```bash
 $ docker compose -f docker-compose.prod.yml ps                          # web "healthy"
-$ curl -sI https://prasibali.ai/ | grep -iE "strict-transport|content-security|x-frame"
-$ curl -sI https://www.prasibali.ai/ | head -n 3                        # 301 ke https://prasibali.ai/
-$ curl -s https://prasibali.ai/healthz                                   # {"status": "ok", "database": "ok"}
+$ curl -sI https://prasibali.tech/ | grep -iE "strict-transport|content-security|x-frame"
+$ curl -sI https://www.prasibali.tech/ | head -n 3                      # 301 ke https://prasibali.tech/
+$ curl -s https://prasibali.tech/healthz                                 # {"status": "ok", "database": "ok"}
 ```
 
 Log semua layanan berbentuk JSON satu baris per event (`docker compose ... logs web | jq .` bila `jq` terpasang). Teks satua tidak pernah dicatat.
@@ -201,7 +201,7 @@ Migrasi dijalankan otomatis oleh entrypoint. Model tidak diunduh ulang (folder `
 ## 11. Rencana cadangan
 
 - **Domain belum aktif:** isi `SITE_DOMAIN=IP-VPS-dengan-tanda-hubung.sslip.io` (misalnya `203-0-113-5.sslip.io`), sesuaikan `DJANGO_ALLOWED_HOSTS` dan `CSRF_TRUSTED_ORIGINS`, lalu `up -d`. Caddy mengambil sertifikat untuk alamat itu.
-- **Email verifikasi gagal:** periksa App Password Gmail dan log `web`. Sebagai jalan darurat sementara, verifikasi bisa diubah menjadi `optional` (keputusan pengembang, bagian 10 konteks proyek).
+- **Email verifikasi gagal:** periksa password mailbox, `DEFAULT_FROM_EMAIL` (harus alamat mailbox itu), dan log `web`; bila port 587 bermasalah, coba `EMAIL_PORT=465`, `EMAIL_USE_TLS=False`, `EMAIL_USE_SSL=True`. Sebagai jalan darurat sementara, verifikasi bisa diubah menjadi `optional` (keputusan pengembang, bagian 10 konteks proyek).
 - **Memori kurang:** turunkan `GUNICORN_WORKERS` (lihat bagian berikut).
 - **VPS bermasalah:** langkah yang sama berlaku di VPS lain; salin `models/`, `.env`, dan backup terakhir.
 

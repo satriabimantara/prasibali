@@ -19,15 +19,15 @@ def test_input_limit():
 
 def test_prod_settings_enable_security_headers(monkeypatch):
     monkeypatch.setenv("DJANGO_SECRET_KEY", "test-only-not-a-secret")
-    monkeypatch.setenv("DJANGO_ALLOWED_HOSTS", "prasibali.ai")
-    monkeypatch.setenv("CSRF_TRUSTED_ORIGINS", "https://prasibali.ai")
+    monkeypatch.setenv("DJANGO_ALLOWED_HOSTS", "prasibali.tech")
+    monkeypatch.setenv("CSRF_TRUSTED_ORIGINS", "https://prasibali.tech")
     monkeypatch.setenv("DATABASE_URL", "sqlite://:memory:")
     sys.modules.pop("config.settings.prod", None)
     prod = importlib.import_module("config.settings.prod")
     try:
         assert prod.DEBUG is False
-        assert prod.ALLOWED_HOSTS == ["prasibali.ai", "127.0.0.1", "localhost"]
-        assert prod.CSRF_TRUSTED_ORIGINS == ["https://prasibali.ai"]
+        assert prod.ALLOWED_HOSTS == ["prasibali.tech", "127.0.0.1", "localhost"]
+        assert prod.CSRF_TRUSTED_ORIGINS == ["https://prasibali.tech"]
         assert prod.SECURE_SSL_REDIRECT is True
         assert prod.SECURE_HSTS_SECONDS >= 31_536_000
         assert prod.SESSION_COOKIE_SECURE and prod.CSRF_COOKIE_SECURE
