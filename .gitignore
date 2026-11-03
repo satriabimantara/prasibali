@@ -232,3 +232,6 @@ var/
 .tools/
 # Compiled translations are committed so Docker and CI need no gettext.
 !src/locale/**/LC_MESSAGES/*.mo
+
+# Production database dumps (docker/backup.sh)
+backups/

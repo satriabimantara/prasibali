@@ -1,0 +1,26 @@
+# Caddy: automatic HTTPS (Let's Encrypt) for SITE_DOMAIN and www.SITE_DOMAIN, reverse proxy to Gunicorn.
+# SITE_DOMAIN and ACME_EMAIL come from .env (docker-compose.prod.yml). Security headers are set by Django
+# (config/settings/prod.py) so they are the same behind any proxy.
+{
+	email {$ACME_EMAIL}
+}
+
+{$SITE_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy web:8000 {
+		# Analyses can take a few seconds; Gunicorn's own timeout is 120 s.
+		transport http {
+			read_timeout 150s
+		}
+	}
+	header -Server
+	log {
+		output stdout
+		format json
+	}
+}
+
+# One canonical address: www redirects to the apex domain (developer decision, session 7).
+www.{$SITE_DOMAIN} {
+	redir https://{$SITE_DOMAIN}{uri} permanent
+}
