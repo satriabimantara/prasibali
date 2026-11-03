@@ -414,21 +414,26 @@ Ukuran huruf tersedia sebagai utilitas Tailwind dari token: `text-page-title`, `
 
 - Ikon garis SVG lewat `{% icon "nama" %}` (`apps/pages/templatetags/ui.py`, jalur ikon Lucide, lisensi ISC). Ukuran bawaan 18px, `stroke="currentColor"`, `aria-hidden="true"`.
 - Ikon selalu berdampingan dengan label teks di dalam tombol (`btn gap-2`). Tombol tanpa teks wajib punya `aria-label`.
-- Nama yang tersedia: `log-in`, `log-out`, `user-plus`, `user`, `sun`, `moon`, `languages`, `file-text`, `play`, `flask`, `arrow-right`, `arrow-left`, `book-open`, `search`, `link`, `scale`, `alert`, `info`, `rotate`, `history`, `trash`.
+- Nama yang tersedia: `log-in`, `log-out`, `user-plus`, `user`, `sun`, `moon`, `languages`, `file-text`, `play`, `flask`, `arrow-right`, `arrow-left`, `book-open`, `search`, `link`, `scale`, `alert`, `info`, `rotate`, `history`, `trash`; Sesi 5: `chevron-down`, `menu`, `x`, `settings`, `users`, `external-link`, `git-merge`, `share-2`, `quote`, `align-left`, `type`, `clipboard`, `shield`, `graduation-cap`, `package`.
+- Set ikon ini dipakai sebagai pengganti Font Awesome (keputusan Sesi 5): fungsinya sama, tanpa CDN pihak ketiga dan tanpa font ikon. Tambah ikon baru dengan menyalin jalur Lucide ke `ICONS`.
 
 ### Navigasi situs
 
-Partial `partials/site_header.html`, dipakai oleh landing, halaman autentikasi, akun, privasi, dan ruang kerja.
+Partial `partials/site_header.html` (Sesi 5), dipakai oleh semua halaman. Selalu permukaan `surface` dengan garis bawah `line`, tinggi minimal 64px. Parameter: `gutter="5vw,64px"` untuk padding landing; `hide_auth_links=True` di halaman masuk/daftar (pengalih bahasa tetap tampil).
 
 - Kiri: logo, tautan ke `/`.
-- Kanan: pengalih bahasa, tombol tema (ikon bulan atau matahari dan label), lalu tombol akun.
-  - Belum masuk: "Masuk" (`log-in`) dan "Daftar" (`user-plus`). Halaman masuk dan daftar menyembunyikan keduanya.
-  - Sudah masuk: "Analisis" (`file-text`), "Profil" (`user`), dan "Keluar" (`log-out`, POST).
-- Parameter: `bordered=True` untuk header bertepi `line` di atas `surface` (akun, privasi, ruang kerja); `gutter="5vw,64px"` untuk padding landing.
+- Tengah (1024px ke atas, `.nav-link`, `aria-current="page"` pada halaman aktif): "Analisis", "Fitur" (dropdown), "Tentang". "Dokumentasi API" baru ditambahkan bila Sesi 6 dikerjakan.
+- Dropdown "Fitur" (`.menu`, dua kolom): grup "Tersedia" (Identifikasi tokoh, Alias clustering, Klasifikasi peran; ikon + deskripsi satu baris) dan grup "Segera hadir" (Coreference, Social graph, Quote attribution, Summarization, Aksara Bali; masing-masing lencana `.tag` "Segera hadir"). Daftar berasal dari registri `apps/pages/features.py` lewat context processor `site_nav`, bukan ditulis di template.
+- Kanan: tombol tema ikon saja (`.btn-icon`; labelnya tetap ada sebagai teks pembaca layar), lalu
+  - pengunjung: pengalih bahasa ringkas "ID"/"EN" (`lang_switch.html` dengan `compact=True`; nama aksesibel memuat nama bahasa lengkap), "Masuk" (`log-in`), "Daftar" (`user-plus`, tombol utama);
+  - sudah masuk: tombol menu akun (ikon `user` + nama) berisi Profil, Riwayat analisis, Pengaturan (bahasa dan tema), garis, "Keluar" (`log-out`, POST). Isinya di partial `partials/account_links.html`.
+- Di bawah 1024px semua item pindah ke panel "Menu" (`#mobile-menu`): tautan vertikal, fitur sebagai sub-daftar, lalu pengalih bahasa + Masuk/Daftar atau tautan akun.
+- Perilaku (`static/js/nav.js`, pola *disclosure* WAI-ARIA, bukan `role="menu"`): tombol `data-disclosure` dengan `aria-expanded`/`aria-controls`; Escape menutup dan mengembalikan fokus ke tombol; klik atau fokus di luar menutup; panah atas/bawah, Home, dan End berpindah antartautan; panah bawah pada tombol tertutup membuka panel dan memfokuskan tautan pertama; hanya satu panel terbuka.
+- Tautan "Lewati ke konten utama" (`.skip-link`) adalah elemen fokus pertama di `base.html` dan menuju `#main`. Setiap layout wajib memberi `id="main"` pada `<main>`.
 
 ### Footer
 
-Partial `partials/site_footer.html`, dipasang sekali di `base.html` di bawah semua halaman: "Copyright 2026 | I Made Satria Bimantara, S.Kom., M.Kom." di kiri dan tautan "Kebijakan privasi" di kanan. Ukuran `caption`, warna `muted`, garis atas `line`.
+Partial `partials/site_footer.html`, dipasang sekali di `base.html` di bawah semua halaman: "Copyright 2026 | I Made Satria Bimantara, S.Kom., M.Kom." di kiri; tautan "Tentang" dan "Kebijakan privasi" di kanan. Ukuran `caption`, warna `muted`, garis atas `line`.
 
 ### Header ruang kerja
 
@@ -524,21 +529,18 @@ Jangan menampilkan persentase kemajuan palsu.
 
 ## Halaman
 
-### Landing `/`
+### Beranda `/` (Sesi 5)
 
-Urutan konten di kolom kiri:
+Kartu formulir masuk dihapus dari beranda (keputusan pengembang Sesi 5); masuk tetap di `/masuk/`. Urutan:
 
-1. Aksara Prasi
-2. Judul: "Analisis tokoh satua Bali dalam satu ruang kerja."
-3. Paragraf: "Kenali tokoh, satukan nama lain, dan lihat peran protagonis atau antagonis dari teks berbahasa Bali."
-4. Kutipan contoh dengan sorotan peran
+1. **Hero** dua kolom. Kiri: aksara Prasi, judul "Analisis tokoh satua Bali dalam satu ruang kerja.", paragraf lead, tombol utama "Mulai analisis" (`arrow-right`, ke `/analisis/`) dan sekunder "Lihat cara kerja" (`#cara-kerja`), lalu teks bantuan tentang akun terverifikasi. Pengguna yang sudah masuk melihat "Lanjutkan ke ruang kerja". Kanan: kartu dengan pita ikat dan kutipan contoh bersorot peran + label entitas, berketerangan "Contoh tampilan hasil".
+2. **Masalah** (`#masalah`): tiga panel kualitatif (satua kaya tokoh; satu tokoh banyak nama; alat untuk bahasa Bali masih sedikit).
+3. **Solusi** (`#solusi`): tiga panel dari registri fitur, masing-masing bertautan "Selengkapnya" ke halaman fitur, lalu catatan privasi (`alert--info`, ikon `shield`).
+4. **Cara kerja** (`#cara-kerja`): `<ol>` tiga langkah dengan `.step-number`: tempel teks satua, jalankan analisis, telusuri hasil.
+5. **Sedang dikembangkan**: lima tautan fitur "Segera hadir".
+6. **Ajakan**: panel dengan "Buat akun baru" + "Masuk" (pengunjung) atau "Buka ruang kerja" + "Riwayat analisis".
 
-Kolom kanan berisi kartu masuk: pita ikat, judul "Masuk ke akun Anda", Email, Kata sandi, tombol "Masuk", dan "Buat akun baru". Di bawahnya tiga panel: "Kenali tokoh", "Satukan nama lain", dan "Lihat perannya".
-
-- Kutipan contoh diberi keterangan "Contoh tampilan hasil", karena labelnya bukan hasil analisis.
-- Pengguna yang sudah masuk melihat kartu "Selamat datang kembali" dengan tombol utama "Lanjutkan ke ruang kerja" (`arrow-right`) sebagai pengganti formulir.
-
-Jangan menambahkan statistik, testimoni, logo mitra, atau klaim akurasi yang belum didukung data.
+Ikon panel memakai `.icon-tile` (44px, latar `surface-selected`, ikon `accent`). Jangan menambahkan statistik, testimoni, logo mitra, atau klaim akurasi yang belum didukung data.
 
 ### Masuk dan daftar `/masuk`, `/daftar`
 
@@ -549,11 +551,19 @@ Satu kartu di tengah dengan aksara Prasi dan pita ikat. Penjelasan singkat, tanp
 
 ### Akun `/akun/profil`, `/akun/hapus`
 
-Layout `templates/accounts/base_account.html` (juga untuk ganti kata sandi dan email dari allauth): header permukaan `surface` dengan pengalih bahasa, tombol tema, dan tombol "Keluar" (POST). Konten satu panel dengan lebar maksimal 720px dan navigasi Profil, Kata sandi, Email. Tanpa aksara Prasi dan pita ikat. Hapus akun memakai tombol bahaya dan konfirmasi kata sandi.
+Layout `templates/accounts/base_account.html` (juga untuk ganti kata sandi dan email dari allauth): navbar situs. Konten satu panel dengan lebar maksimal 720px dan navigasi Profil, Kata sandi, Email, Pengaturan. Tanpa aksara Prasi dan pita ikat. Hapus akun memakai tombol bahaya dan konfirmasi kata sandi.
 
-### Kebijakan privasi `/privasi`
+### Pengaturan `/akun/pengaturan/` (Sesi 5)
 
-Satu panel dengan lebar baca maksimal `72ch`, header yang sama dengan halaman akun.
+Butuh login dan email terverifikasi. Seksi "Bahasa": pilihan radio Bahasa Indonesia/English lalu tombol utama "Simpan bahasa" (POST ke `accounts:set_language`, tersimpan di profil). Seksi "Tema": dua tombol `aria-pressed` (`data-theme-set="light|dark"`, `theme.js`), disimpan di peramban. Bahasa tidak lagi ada di formulir profil.
+
+### Halaman konten: Tentang, Fitur, Kebijakan privasi (Sesi 5)
+
+Layout `templates/layouts/content.html`: navbar situs lalu satu kolom (`max-w-[1040px]`; blok `main_width` untuk privasi) dengan padding landing. Teks panjang memakai `.reading` (lebar maksimal `72ch`).
+
+- **Fitur** `/fitur/<slug>/` (publik): jejak navigasi, `.icon-tile`, judul, ringkasan. Fitur tersedia punya tombol utama "Coba di ruang kerja" ke `/analisis/?tugas=<tugas>` (nilai `tugas` di-whitelist terhadap `TASKS`), lalu isi per fitur di `templates/pages/features/<slug>.html`: "Apa yang dilakukan", "Cara kerja" dengan tabel F1 tesis, dan "Yang perlu diperhatikan". Nama model, angka F1, dan rujukan tabel dibaca dari `model_catalog`, tidak ditulis di template. Fitur "Segera hadir" hanya berisi deskripsi dan lencana. Di bawahnya kartu `.card-link` ke fitur lain.
+- **Tentang** `/tentang/`: Riset (termasuk komponen *pre-existing* dan yang dibangun untuk lomba), Tim (kartu nama, peran `.tag`, afiliasi), Publikasi (judul, penulis, venue, tahun, relevansi; tautan DOI hanya bila terverifikasi), Perangkat lunak. Data di `apps/pages/about.py`; nama, gelar, dan judul publikasi tidak diterjemahkan. Tautan eksternal: ikon `external-link`, `rel="noopener"`, teks pembaca layar "terbuka di tab baru".
+- **Kebijakan privasi** `/privasi/`: satu panel dengan lebar baca `72ch`.
 
 ### Ruang kerja analisis `/analisis`
 
@@ -572,7 +582,7 @@ Sidebar: "Analisis baru", "Riwayat analisis", "Korpus satua", "Panduan". Tampilk
 
 ### Halaman lain
 
-Riwayat dan korpus memakai tabel di dalam panel: kepala tabel `label` warna `muted`, baris dipisah `line`, hover `surface-selected`. Halaman panduan memakai lebar baca maksimal `72ch`.
+Riwayat dan korpus memakai tabel di dalam panel: kepala tabel `label` warna `muted`, baris dipisah `line` (termasuk `th` kepala baris), hover `surface-selected`. Halaman panduan memakai lebar baca maksimal `72ch`.
 
 ## Bahasa antarmuka
 
