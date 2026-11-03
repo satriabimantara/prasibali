@@ -2,13 +2,13 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-03 10:01+0800\n"
+"POT-Creation-Date: 2026-11-03 10:16+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1042,9 +1042,9 @@ msgid "About PrasiBali.ai"
 msgstr ""
 
 msgid ""
-"PrasiBali.ai brings the results of master's thesis research at Universitas "
-"Udayana into a web application for analysing the characters of Balinese "
-"satua."
+"PrasiBali.ai is an Artificial Intelligence web application with "
+"comprehensive Natural Language Processing, developed for understanding and "
+"analysing Balinese folk tales (Satua Bali)."
 msgstr ""
 
 msgid "Research"
@@ -1264,8 +1264,10 @@ msgid "PrasiBali.ai does the first reading with you"
 msgstr ""
 
 msgid ""
-"Three models from a master's thesis at Universitas Udayana work in sequence "
-"on your text. The results are an aid to analysis, not a final judgement."
+"The first Natural Language Processing model for the Balinese language for "
+"analysing and understanding Satua Bali narrative stories, developed in "
+"research by a team from Universitas Udayana and Institut Teknologi Sepuluh "
+"Nopember."
 msgstr ""
 
 msgid "Read more"
