@@ -8,18 +8,9 @@
   <meta name="description" content="{% translate 'Recognise characters, group their other names, and see whether they are protagonists or antagonists in a text written in Balinese.' %}">
   <meta property="og:title" content="PrasiBali.ai">
   <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/og-image.png' %}">
-  {# Theme and mode before any CSS to avoid a flash of the wrong theme (DESIGN.md "Tema dan mode"). #}
-  <script>
-    (function () {
-      var theme = null, mode = null;
-      try {
-        theme = localStorage.getItem("prasibali-theme");
-        mode = localStorage.getItem("prasibali-mode");
-      } catch (e) {}
-      document.documentElement.classList.toggle("dark", theme === "dark");
-      document.documentElement.dataset.mode = mode === "advanced" ? "advanced" : "simple";
-    })();
-  </script>
+  {# Theme and mode before any CSS (blocking, no defer) to avoid a flash of the wrong theme (DESIGN.md "Tema dan mode"). #}
+  {# A file, not an inline script, so the production CSP needs no 'unsafe-inline'. #}
+  <script src="{% static 'js/theme-init.js' %}"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+Balinese&family=Schibsted+Grotesk:wght@400;500;600&display=swap">
