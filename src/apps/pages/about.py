@@ -61,7 +61,7 @@ PUBLICATIONS = (
         "Data in Brief vol. 56, 110781 (Elsevier)",
         2024,
         "https://doi.org/10.1016/j.dib.2024.110781",
-        _("The Balinese satua text dataset for narrative analysis that PrasiBali.ai builds on."),
+        _("The Balinese satua text dataset for narrative analysis that PrasiBali builds on."),
     ),
 )
 

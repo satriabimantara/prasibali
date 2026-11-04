@@ -35,7 +35,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
-    """Email-based account with the profile fields PrasiBali.ai needs."""
+    """Email-based account with the profile fields PrasiBali needs."""
 
     class Role(models.TextChoices):
         STUDENT = "student", _("Student")

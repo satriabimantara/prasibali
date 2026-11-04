@@ -91,7 +91,7 @@ ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_LOGOUT_ON_GET = False
 ACCOUNT_FORMS = {"signup": "apps.accounts.forms.SignupForm"}
-ACCOUNT_EMAIL_SUBJECT_PREFIX = ""  # the sender name "PrasiBali.ai" already identifies us
+ACCOUNT_EMAIL_SUBJECT_PREFIX = ""  # the sender name "PrasiBali" already identifies us
 ACCOUNT_ADAPTER = "apps.accounts.adapters.AccountAdapter"
 # ACCOUNT_RATE_LIMITS keeps allauth's defaults (failed logins, password reset, confirmation emails).
 # They use the default cache; with several Gunicorn workers a shared cache is needed (session 7).
@@ -112,7 +112,7 @@ EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
 EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
 # Seconds before an SMTP connection gives up, so a slow mail server never blocks a sync Gunicorn worker for long.
 EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT", default=20)
-DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="PrasiBali.ai <noreply@prasibali.tech>")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="PrasiBali <noreply@prasibali.tech>")
 SERVER_EMAIL = env("SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
 
 # Internationalization: Indonesian is the default interface language, English the alternative.

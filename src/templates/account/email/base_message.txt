@@ -3,9 +3,9 @@
 {% block content %}{% endblock content %}
 
 {% translate "Warm regards," %}
-{% translate "The PrasiBali.ai team" %}
+{% translate "The PrasiBali team" %}
 {{ login_url }}
 
 --
-{% translate "This email was sent automatically by PrasiBali.ai. Please do not reply to it." %}
+{% translate "This email was sent automatically by PrasiBali. Please do not reply to it." %}
 {% endautoescape %}

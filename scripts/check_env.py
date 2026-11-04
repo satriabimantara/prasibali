@@ -1,5 +1,5 @@
 """
-Cek kesiapan environment Python untuk PrasiBali.ai.
+Cek kesiapan environment Python untuk PrasiBali.
 
 Jalankan dari akar repo, di dalam environment yang sudah aktif:
     python scripts/check_env.py
@@ -266,7 +266,7 @@ def main() -> int:
         for f in failures:
             print(f"  - {f}")
         return 1
-    print("SEMUA CEK LULUS — environment siap untuk PrasiBali.ai")
+    print("SEMUA CEK LULUS — environment siap untuk PrasiBali")
     return 0
 
 

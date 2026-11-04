@@ -1,6 +1,6 @@
 {% extends "layouts/content.html" %}
 {% load i18n ui %}
-{% block title %}{{ feature.title }} · PrasiBali.ai{% endblock title %}
+{% block title %}{{ feature.title }} · PrasiBali{% endblock title %}
 {% block content %}
   <nav aria-label="{% translate 'Breadcrumb' %}" class="text-caption text-muted">
     <ol class="flex flex-wrap items-center gap-2">
@@ -30,7 +30,7 @@
     {% include feature.body_template %}
   {% else %}
     <section class="panel reading">
-      <p>{% translate "This feature is on the PrasiBali.ai roadmap and is not available yet. The three features below already work end to end." %}</p>
+      <p>{% translate "This feature is on the PrasiBali roadmap and is not available yet. The three features below already work end to end." %}</p>
     </section>
   {% endif %}
 

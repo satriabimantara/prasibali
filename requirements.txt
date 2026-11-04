@@ -1,5 +1,5 @@
 # =============================================================================
-# PrasiBali.ai — dependensi runtime (dipakai lokal DAN Docker/produksi)
+# PrasiBali — dependensi runtime (dipakai lokal DAN Docker/produksi)
 # Python 3.11 wajib. Pasang dengan: python -m pip install -r requirements.txt
 # =============================================================================
 

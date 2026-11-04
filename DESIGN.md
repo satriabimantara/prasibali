@@ -1,8 +1,8 @@
 ---
 version: "1.0"
 name: Endek Indigo
-product: PrasiBali.ai
-description: Sistem desain PrasiBali.ai, aplikasi web analisis tokoh dalam satua Bali. Disiplin dasbor fintech premium (putih bersih, satu aksen indigo, panel bergaris tipis) dengan identitas Bali lewat aksara Prasi dan pola ikat endek. Tema terang adalah bawaan, tema gelap lewat tombol.
+product: PrasiBali
+description: Sistem desain PrasiBali, aplikasi web analisis tokoh dalam satua Bali. Disiplin dasbor fintech premium (putih bersih, satu aksen indigo, panel bergaris tipis) dengan identitas Bali lewat aksara Prasi dan pola ikat endek. Tema terang adalah bawaan, tema gelap lewat tombol.
 locale: id-ID
 
 colors:
@@ -230,9 +230,9 @@ components:
     padding: "1px 3px"
 ---
 
-# DESIGN.md: Endek Indigo untuk PrasiBali.ai
+# DESIGN.md: Endek Indigo untuk PrasiBali
 
-Dokumen ini adalah sumber kebenaran tampilan PrasiBali.ai. Saat membangun atau mengubah antarmuka:
+Dokumen ini adalah sumber kebenaran tampilan PrasiBali. Saat membangun atau mengubah antarmuka:
 
 1. Pakai token dari dokumen ini. Jangan menulis warna, ukuran huruf, atau radius di luar token.
 2. Ikuti spesifikasi komponen dan halaman di bawah sebelum membuat pola baru.
@@ -243,7 +243,7 @@ Dokumen ini adalah sumber kebenaran tampilan PrasiBali.ai. Saat membangun atau m
 
 | Hal | Keputusan |
 |---|---|
-| Produk | PrasiBali.ai: analisis tokoh dalam teks satua Bali |
+| Produk | PrasiBali: analisis tokoh dalam teks satua Bali |
 | Fungsi AI | Mengenali tokoh, mengelompokkan nama lain (alias), mengklasifikasi peran protagonis atau antagonis |
 | Pengguna | Juri lomba, peneliti, guru, siswa, Balai Bahasa, dan Dinas Kebudayaan |
 | Bahasa antarmuka | Indonesia (bawaan) dan Inggris, lewat gettext |

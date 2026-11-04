@@ -1,5 +1,5 @@
 # =============================================================================
-# PrasiBali.ai — dependensi development (TIDAK dipasang di produksi)
+# PrasiBali — dependensi development (TIDAK dipasang di produksi)
 # Pasang dengan: python -m pip install -r requirements-dev.txt
 # =============================================================================
 -r requirements.txt

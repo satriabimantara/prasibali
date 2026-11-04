@@ -24,7 +24,7 @@ DB_PASSWORD="$(openssl rand -hex 20)"
 
 umask 077
 cat > "${ENV_FILE}" <<EOF
-# PrasiBali.ai production settings (created by deploy/server/init_env.sh). Never commit this file.
+# PrasiBali production settings (created by deploy/server/init_env.sh). Never commit this file.
 
 # --- Django -------------------------------------------------------------------------------------
 DJANGO_SECRET_KEY=${SECRET_KEY}
@@ -45,7 +45,7 @@ POSTGRES_PASSWORD=${DB_PASSWORD}
 # EMAIL_HOST_PASSWORD = password of the ${MAILBOX} mailbox (hPanel -> Emails -> Email accounts).
 EMAIL_HOST_USER=${MAILBOX}
 EMAIL_HOST_PASSWORD=
-DEFAULT_FROM_EMAIL="PrasiBali.ai <${MAILBOX}>"
+DEFAULT_FROM_EMAIL="PrasiBali <${MAILBOX}>"
 
 # --- Judges' demo account (python manage.py create_demo_user) -----------------------------------
 DEMO_USER_EMAIL=

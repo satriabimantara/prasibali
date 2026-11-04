@@ -1,4 +1,4 @@
-"""PrasiBali.ai analysis pipeline: (i) character identification, (ii) alias clustering, (iii) role classification.
+"""PrasiBali analysis pipeline: (i) character identification, (ii) alias clustering, (iii) role classification.
 
 Follows scripts/test_pretrained_pipeline.py step by step (the flow verified against the real models). The only
 structural difference: task (i) keeps entity labels and positions by rebuilding names from predict_sentence() with

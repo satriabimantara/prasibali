@@ -38,7 +38,7 @@ def privacy(request):
 
 
 def about(request):
-    """About page: the research behind PrasiBali.ai, the team, publications and software."""
+    """About page: the research behind PrasiBali, the team, publications and software."""
     return render(request, "pages/about.html", {
         "team": about_content.TEAM,
         "publications": about_content.PUBLICATIONS,

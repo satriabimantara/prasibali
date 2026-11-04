@@ -6,7 +6,7 @@
 {% with current=request.resolver_match.view_name current_slug=request.resolver_match.kwargs.slug %}
 <header class="border-b border-line bg-surface">
   <div class="mx-auto flex min-h-[64px] max-w-[1440px] items-center gap-2 px-[clamp(16px,{{ gutter|default:'3vw,32px' }})] py-2 lg:gap-6">
-    <a href="{% url 'pages:landing' %}" class="inline-flex min-h-[44px] shrink-0 items-center" aria-label="{% translate 'PrasiBali.ai home' %}">
+    <a href="{% url 'pages:landing' %}" class="inline-flex min-h-[44px] shrink-0 items-center" aria-label="{% translate 'PrasiBali home' %}">
       <img src="{% static 'img/prasibali-logo-latar-terang.svg' %}" alt="PrasiBali" width="87" height="32" class="h-8 w-auto dark:hidden">
       <img src="{% static 'img/prasibali-logo-latar-gelap.svg' %}" alt="PrasiBali" width="87" height="32" class="hidden h-8 w-auto dark:block">
     </a>

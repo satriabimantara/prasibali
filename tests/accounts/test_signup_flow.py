@@ -4,6 +4,7 @@ import re
 
 import pytest
 from allauth.account.models import EmailAddress
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import mail
 from django.urls import reverse
@@ -67,11 +68,12 @@ def test_signup_verify_login(client, password):
     assert len(mail.outbox) == 1
     assert mail.outbox[0].to == [EMAIL.lower()]
     message = mail.outbox[0]
-    assert message.subject == "Aktifkan akun PrasiBali.ai Anda"
-    assert message.from_email.startswith("PrasiBali.ai")
+    assert message.subject == "Aktifkan akun PrasiBali Anda"
+    assert message.from_email == settings.DEFAULT_FROM_EMAIL  # sender name comes from .env (default "PrasiBali")
+    assert "PrasiBali.ai" not in message.subject + message.body
     assert message.body.startswith("Halo Made Bhaskara,")
     assert "Tautan ini berlaku selama 3 hari." in message.body
-    assert "Tim PrasiBali.ai" in message.body
+    assert "Tim PrasiBali" in message.body
     assert "/masuk/" in message.body
     url = confirmation_url(message.body)
 

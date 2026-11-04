@@ -1,5 +1,5 @@
 """
-Utilitas bersama untuk skrip uji PrasiBali.ai: lokasi folder model, pemuatan pickle classifier
+Utilitas bersama untuk skrip uji PrasiBali: lokasi folder model, pemuatan pickle classifier
 hasil eksperimen tesis, dan ekstraksi fitur teks (TF1-TF5).
 
 Dipakai oleh scripts/check_env.py dan scripts/test_pretrained_pipeline.py. Aplikasi web punya

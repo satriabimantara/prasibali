@@ -63,4 +63,4 @@ def test_about_page(client):
 def test_about_page_in_english(client):
     client.cookies["django_language"] = "en"
     html = client.get(reverse("pages:about")).content.decode()
-    assert "About PrasiBali.ai" in html and "Team lead" in html
+    assert "About PrasiBali" in html and "Team lead" in html

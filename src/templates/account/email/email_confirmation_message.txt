@@ -1,6 +1,6 @@
 {% extends "account/email/base_message.txt" %}
 {% load i18n %}
-{% block content %}{% autoescape off %}{% translate "We received a request to confirm this email address for your PrasiBali.ai account." %}
+{% block content %}{% autoescape off %}{% translate "We received a request to confirm this email address for your PrasiBali account." %}
 
 {% if code %}{% translate "Your verification code:" %}
 

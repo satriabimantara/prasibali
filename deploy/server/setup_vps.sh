@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# One-time VPS setup for PrasiBali.ai (Ubuntu 24.04/26.04, run as root; safe to run again).
+# One-time VPS setup for PrasiBali (Ubuntu 24.04/26.04, run as root; safe to run again).
 #
 #   scp deploy/server/setup_vps.sh root@prasibali.tech:
 #   ssh root@prasibali.tech "bash setup_vps.sh"

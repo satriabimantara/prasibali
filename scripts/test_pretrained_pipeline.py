@@ -1,5 +1,5 @@
 """
-Uji manual pipeline PrasiBali.ai pada satu teks satua Bali.
+Uji manual pipeline PrasiBali pada satu teks satua Bali.
 
 Tugas yang diuji:
   (i)   Identifikasi tokoh        -> SatuaNER, bawaan paket balinese-nlp

@@ -1,6 +1,6 @@
-# Deploy PrasiBali.ai ke VPS (Ubuntu 24.04)
+# Deploy PrasiBali ke VPS (Ubuntu 24.04)
 
-Panduan langkah demi langkah untuk menjalankan PrasiBali.ai di VPS 8 GB RAM / 4 vCPU (Contabo Cloud VPS 10, Singapura) dengan domain `prasibali.tech`. Semua layanan berjalan dengan Docker Compose (`docker-compose.prod.yml`):
+Panduan langkah demi langkah untuk menjalankan PrasiBali di VPS 8 GB RAM / 4 vCPU (Contabo Cloud VPS 10, Singapura) dengan domain `prasibali.tech`. Semua layanan berjalan dengan Docker Compose (`docker-compose.prod.yml`):
 
 | Layanan | Image | Fungsi |
 |---|---|---|
@@ -67,7 +67,7 @@ $ echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
 ## 3. Ambil kode
 
 ```bash
-$ git clone https://github.com/satriabimantara/prasibali.ai.git ~/prasibali
+$ git clone https://github.com/satriabimantara/prasibali.git ~/prasibali
 $ cd ~/prasibali
 $ mkdir -p models backups
 ```
@@ -111,7 +111,7 @@ Buat `~/prasibali/.env` (`chmod 600 .env`). Nilai tidak pernah di-commit. Variab
 | `SITE_DOMAIN` | `prasibali.tech` (Caddy juga melayani `www.` dan mengalihkannya) |
 | `ACME_EMAIL` | email untuk pemberitahuan Let's Encrypt |
 | `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | database produksi |
-| `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` | mailbox Hostinger Email: alamat lengkap (`...@prasibali.tech`), password mailbox, dan `PrasiBali.ai <alamat mailbox yang sama>`. `EMAIL_HOST` (`smtp.hostinger.com`), `EMAIL_PORT` (`587`), dan `EMAIL_USE_TLS` (`True`) sudah menjadi bawaan |
+| `EMAIL_HOST_USER`, `EMAIL_HOST_PASSWORD`, `DEFAULT_FROM_EMAIL` | mailbox Hostinger Email: alamat lengkap (`...@prasibali.tech`), password mailbox, dan `PrasiBali <alamat mailbox yang sama>`. `EMAIL_HOST` (`smtp.hostinger.com`), `EMAIL_PORT` (`587`), dan `EMAIL_USE_TLS` (`True`) sudah menjadi bawaan |
 | `DEMO_USER_EMAIL`, `DEMO_USER_PASSWORD` | akun demo juri (langkah 8) |
 | `GUNICORN_WORKERS` | jumlah worker (bawaan `3`; hitung dengan tabel di bagian "Memori dan jumlah worker") |
 | `WEB_MEM_LIMIT` | batas memori container `web` (bawaan `6g`) |

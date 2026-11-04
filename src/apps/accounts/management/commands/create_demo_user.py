@@ -28,7 +28,7 @@ class Command(BaseCommand):
         with transaction.atomic():
             user, created = User.objects.get_or_create(
                 email=email,
-                defaults={"full_name": "Demo PrasiBali.ai", "role": User.Role.GENERAL},
+                defaults={"full_name": "Demo PrasiBali", "role": User.Role.GENERAL},
             )
             user.set_password(password)
             user.is_active = True

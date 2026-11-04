@@ -1,4 +1,4 @@
-"""Static catalog of every model choice in PrasiBali.ai, one entry per thesis experiment.
+"""Static catalog of every model choice in PrasiBali, one entry per thesis experiment.
 
 Users pick models only by catalog id; ids are validated against this whitelist on the server, and file paths are
 derived from the entry, never from user input (unpickling can execute code).

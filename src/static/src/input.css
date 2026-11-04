@@ -1,4 +1,4 @@
-/* PrasiBali.ai styles. Source of truth: DESIGN.md (Endek Indigo).
+/* PrasiBali styles. Source of truth: DESIGN.md (Endek Indigo).
    Build: python scripts/tailwind.py build  ->  src/static/css/app.css (committed). */
 
 @import "tailwindcss" source(none);

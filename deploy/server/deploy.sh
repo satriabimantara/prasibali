@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build and start PrasiBali.ai from the checked-out commit (started by the post-receive hook after `git push prod
+# Build and start PrasiBali from the checked-out commit (started by the post-receive hook after `git push prod
 # master`; can also be run by hand: `bash ~/prasibali/deploy/server/deploy.sh`).
 #
 # The new image is built first; the running containers are replaced only when the build succeeds, so a failed

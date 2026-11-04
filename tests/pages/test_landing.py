@@ -1,3 +1,5 @@
+import re
+
 import pytest
 from django.urls import reverse
 
@@ -54,3 +56,17 @@ def test_landing_in_english(client):
     html = client.get("/").content.decode()
     assert "Character analysis of Balinese satua in one workspace." in html
     assert "How it works in three steps" in html and "Start analysing" in html
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("language", ["id", "en"])
+@pytest.mark.parametrize(
+    "url_name", ["pages:landing", "pages:about", "pages:privacy", "account_login", "account_signup"]
+)
+def test_product_name_is_prasibali_without_suffix(client, language, url_name):
+    """The product is called "PrasiBali" everywhere; no ".ai" (or other domain) suffix in titles or text."""
+    client.cookies["django_language"] = language
+    html = client.get(reverse(url_name)).content.decode()
+    title = re.search(r"<title>(.*?)</title>", html, re.S).group(1)
+    assert "PrasiBali" in title and ".ai" not in title
+    assert "PrasiBali.ai" not in html

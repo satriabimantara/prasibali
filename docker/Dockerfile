@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# PrasiBali.ai web image (Python 3.11), multi-stage:
+# PrasiBali web image (Python 3.11), multi-stage:
 #   css      builds src/static/css/app.css with the Tailwind standalone CLI (no Node.js)
 #   deps     installs the Python packages into /opt/venv (torch from the CPU index, no CUDA)
 #   runtime  slim image: venv + source + built CSS, collectstatic, non-root user, entrypoint

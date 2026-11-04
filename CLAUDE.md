@@ -1,11 +1,11 @@
-# PrasiBali.ai: aturan kerja untuk Claude Code
+# PrasiBali: aturan kerja untuk Claude Code
 
 Baca file ini dan `_reference/konteks_proyek.md` di awal setiap sesi sebelum menulis kode.
 Sebelum mengubah template atau CSS, baca `DESIGN.md` dan ikuti aturannya.
 
 ## Produk
 
-PrasiBali.ai adalah web app analisis satua (cerita rakyat) Bali. Fungsinya: (i) identifikasi tokoh, (ii) alias clustering, dan (iii) klasifikasi peran protagonis/antagonis. Model-modelnya berasal dari penelitian tesis S2 di Universitas Udayana. Aplikasi ini diikutkan ke AI Web Innovation Challenge, Bali Digital Festival 2026, Tahap 1.
+PrasiBali adalah web app analisis satua (cerita rakyat) Bali. Fungsinya: (i) identifikasi tokoh, (ii) alias clustering, dan (iii) klasifikasi peran protagonis/antagonis. Model-modelnya berasal dari penelitian tesis S2 pengembang di Institut Teknologi Sepuluh Nopember (2024). Aplikasi ini diikutkan ke AI Web Innovation Challenge, Bali Digital Festival 2026, Tahap 1.
 
 Bahasa antarmuka: Indonesia (default) dan Inggris.
 

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n ui %}
-{% block title %}PrasiBali.ai · {% translate "Character analysis of Balinese satua" %}{% endblock title %}
+{% block title %}PrasiBali · {% translate "Character analysis of Balinese satua" %}{% endblock title %}
 {% block body %}
 {% include "partials/site_header.html" with gutter="5vw,64px" %}
 <main id="main" class="mx-auto grid w-full max-w-[1440px] gap-16 px-[clamp(16px,5vw,64px)] pb-16 pt-10">
@@ -68,7 +68,7 @@
   {# 3. The solution: the three available features, read from the feature registry. #}
   <section id="solusi" class="grid gap-6" aria-labelledby="solution-title">
     <div class="grid max-w-[72ch] gap-2">
-      <h2 id="solution-title" class="text-page-title">{% translate "PrasiBali.ai does the first reading with you" %}</h2>
+      <h2 id="solution-title" class="text-page-title">{% translate "PrasiBali does the first reading with you" %}</h2>
       <p class="text-lead text-muted">{% translate "The first Natural Language Processing model for the Balinese language for analysing and understanding Satua Bali narrative stories, developed in research by a team from Universitas Udayana and Institut Teknologi Sepuluh Nopember." %}</p>
     </div>
     <ul class="grid gap-4 md:grid-cols-3">
@@ -81,7 +81,7 @@
         </li>
       {% endfor %}
     </ul>
-    <p class="alert alert--info flex items-start gap-2">{% icon "shield" %}<span>{% translate "All AI models run on the PrasiBali.ai server. Your texts are not sent to third-party AI services." %}</span></p>
+    <p class="alert alert--info flex items-start gap-2">{% icon "shield" %}<span>{% translate "All AI models run on the PrasiBali server. Your texts are not sent to third-party AI services." %}</span></p>
   </section>
 
   {# 4. How it works in three steps. #}
@@ -110,7 +110,7 @@
   <section class="grid gap-4" aria-labelledby="soon-title">
     <div class="grid gap-2">
       <h2 id="soon-title" class="text-panel-title">{% translate "In development" %}</h2>
-      <p class="text-muted">{% translate "These features are on the PrasiBali.ai roadmap and are not available yet." %}</p>
+      <p class="text-muted">{% translate "These features are on the PrasiBali roadmap and are not available yet." %}</p>
     </div>
     <ul class="flex flex-wrap gap-2">
       {% for f in features_soon %}

@@ -431,7 +431,7 @@ msgid ""
 msgstr ""
 
 msgid ""
-"The Balinese satua text dataset for narrative analysis that PrasiBali.ai "
+"The Balinese satua text dataset for narrative analysis that PrasiBali "
 "builds on."
 msgstr ""
 
@@ -548,15 +548,15 @@ msgstr ""
 msgid "Warm regards,"
 msgstr ""
 
-msgid "The PrasiBali.ai team"
+msgid "The PrasiBali team"
 msgstr ""
 
 msgid ""
-"This email was sent automatically by PrasiBali.ai. Please do not reply to it."
+"This email was sent automatically by PrasiBali. Please do not reply to it."
 msgstr ""
 
 msgid ""
-"We received a request to confirm this email address for your PrasiBali.ai "
+"We received a request to confirm this email address for your PrasiBali "
 "account."
 msgstr ""
 
@@ -579,7 +579,7 @@ msgid "Did not make this request? You can safely ignore this email."
 msgstr ""
 
 msgid ""
-"Thank you for signing up for PrasiBali.ai, a workspace for analysing the "
+"Thank you for signing up for PrasiBali, a workspace for analysing the "
 "characters in Balinese satua."
 msgstr ""
 
@@ -595,11 +595,11 @@ msgid ""
 msgstr ""
 
 msgid ""
-"Did not sign up for PrasiBali.ai? You can safely ignore this email. The "
+"Did not sign up for PrasiBali? You can safely ignore this email. The "
 "account will not be activated without confirmation."
 msgstr ""
 
-msgid "Activate your PrasiBali.ai account"
+msgid "Activate your PrasiBali account"
 msgstr ""
 
 msgid "Confirm your email address"
@@ -1077,11 +1077,11 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-msgid "About PrasiBali.ai"
+msgid "About PrasiBali"
 msgstr ""
 
 msgid ""
-"PrasiBali.ai is an Artificial Intelligence web application with "
+"PrasiBali is an Artificial Intelligence web application with "
 "comprehensive Natural Language Processing, developed for understanding and "
 "analysing Balinese folk tales (Satua Bali)."
 msgstr ""
@@ -1094,7 +1094,7 @@ msgid ""
 "with entity labels, alias clustering of the different names of a character, "
 "and classification of each character group as protagonist or antagonist. The "
 "thesis compared many models and features for each task; the research mode of "
-"PrasiBali.ai lets you choose them and shows their reference scores from the "
+"PrasiBali lets you choose them and shows their reference scores from the "
 "thesis."
 msgstr ""
 
@@ -1132,7 +1132,7 @@ msgid "Try it in the workspace"
 msgstr ""
 
 msgid ""
-"This feature is on the PrasiBali.ai roadmap and is not available yet. The "
+"This feature is on the PrasiBali roadmap and is not available yet. The "
 "three features below already work end to end."
 msgstr ""
 
@@ -1299,7 +1299,7 @@ msgid ""
 "are still analysed manually."
 msgstr ""
 
-msgid "PrasiBali.ai does the first reading with you"
+msgid "PrasiBali does the first reading with you"
 msgstr ""
 
 msgid ""
@@ -1313,7 +1313,7 @@ msgid "Read more"
 msgstr ""
 
 msgid ""
-"All AI models run on the PrasiBali.ai server. Your texts are not sent to "
+"All AI models run on the PrasiBali server. Your texts are not sent to "
 "third-party AI services."
 msgstr ""
 
@@ -1352,7 +1352,7 @@ msgid "In development"
 msgstr ""
 
 msgid ""
-"These features are on the PrasiBali.ai roadmap and are not available yet."
+"These features are on the PrasiBali roadmap and are not available yet."
 msgstr ""
 
 msgid "Ready for the next satua?"
@@ -1434,7 +1434,7 @@ msgstr ""
 msgid "Footer"
 msgstr ""
 
-msgid "PrasiBali.ai home"
+msgid "PrasiBali home"
 msgstr ""
 
 msgid "Main"

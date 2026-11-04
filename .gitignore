@@ -225,7 +225,7 @@ __marimo__/
 # Streamlit
 .streamlit/secrets.toml
 
-# PrasiBali.ai build/runtime output
+# PrasiBali build/runtime output
 staticfiles/
 media/
 var/

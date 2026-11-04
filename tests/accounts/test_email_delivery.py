@@ -16,7 +16,7 @@ from django.test import override_settings
 from django.urls import reverse
 from test_signup_flow import signup_data
 
-FROM = "PrasiBali.ai <noreply@prasibali.tech>"
+FROM = "PrasiBali <noreply@prasibali.tech>"
 HTTPS = {"ACCOUNT_DEFAULT_HTTP_PROTOCOL": "https", "DEFAULT_FROM_EMAIL": FROM}
 
 
