@@ -1,4 +1,4 @@
-# Deploy PrasiBali.ai v1.0 ke Hostinger VPS KVM 1 (`prasibali.tech`)
+# Deploy PrasiBali v1.0 ke Hostinger VPS KVM 1 (`prasibali.tech`)
 
 Panduan ini diikuti urut dari atas ke bawah. Bagian A–E dikerjakan **sekali** saat deploy pertama. Bagian F adalah rutinitas setiap ada rilis baru: cukup `git push prod master` dari laptop.
 
@@ -176,14 +176,23 @@ $ setsid nohup bash ~/prasibali/deploy/server/deploy.sh >> ~/prasibali/deploy.lo
 $ tail -f ~/prasibali/deploy.log
 ```
 
-Tekan `Ctrl+C` untuk berhenti mengikuti log; deploy tetap berjalan walau SSH terputus. Urutannya:
+`Ctrl+C` hanya berhenti **mengikuti** log; deploy tetap berjalan di belakang, walau SSH terputus. Baris `[1]+ Done  setsid nohup ...` yang muncul di terminal juga bukan tanda deploy selesai: itu hanya pembungkus `setsid` yang langsung keluar. Urutannya:
 
 1. build image (20–40 menit di 1 vCPU);
 2. `migrate`, lalu `warm_models` (pertama kali mengunduh FastText 2,4 GB dari Hugging Face);
 3. Gunicorn menyala dan Caddy mengambil sertifikat Let's Encrypt;
 4. log berakhir dengan `Deploy ... finished: web is healthy`.
 
-### D4. Buat akun demo juri
+**Tunggu sampai baris nomor 4 muncul** sebelum lanjut ke D4. Untuk mengecek tanpa mengikuti log terus-menerus:
+
+```bash
+$ tail -n 3 ~/prasibali/deploy.log                       # baris terakhir log
+$ pgrep -f deploy.sh > /dev/null && echo "masih berjalan" || echo "selesai"
+```
+
+Jika D4 dijalankan sebelum itu, hasilnya `service "web" is not running`. Itu bukan error; tunggu saja deploy selesai. Jika log berakhir dengan `DEPLOY FAILED`, lihat bagian H.
+
+### D4. Buat akun demo juri (setelah `web is healthy`)
 
 ```bash
 $ cd ~/prasibali
@@ -217,7 +226,7 @@ $ cd ~/prasibali
 $ docker compose -f docker-compose.prod.yml exec web python manage.py sendtestemail alamat-anda@contoh.com
 ```
 
-Pengirimnya harus `PrasiBali.ai <noreply@prasibali.tech>`; periksa juga folder spam. Jika gagal, lihat bagian H.
+Pengirimnya harus `PrasiBali <noreply@prasibali.tech>`; periksa juga folder spam. Jika gagal, lihat bagian H.
 
 Uji manual di browser (sebaiknya jendela privat):
 
@@ -259,6 +268,53 @@ Build berikutnya hanya beberapa menit, karena layer dependensi tersimpan di cach
 
 Hanya branch `master` yang di-deploy; push ke branch lain diabaikan.
 
+### F1. Rilis nama produk "PrasiBali" (tanpa `.ai`, 4 November 2026)
+
+Kode sudah memakai "PrasiBali" di judul tab, beranda, Tentang, Privasi, dan email. Tiga hal di server **tidak** ikut berubah lewat `git push`, karena berada di luar git atau di database: nama pengirim di `.env`, nama akun demo, dan sesi browser lama. Kerjakan urut.
+
+1. **Ganti nama pengirim di `.env` server** (dibuat `init_env.sh` saat deploy pertama, masih berisi `PrasiBali.ai <noreply@prasibali.tech>`):
+
+   ```bash
+   $ cd ~/prasibali
+   $ grep -n "PrasiBali" .env                       # lihat dulu baris yang akan diubah
+   $ sed -i 's/PrasiBali\.ai/PrasiBali/g' .env
+   $ grep -n "_EMAIL" .env | grep -v PASSWORD       # harus: DEFAULT_FROM_EMAIL="PrasiBali <noreply@prasibali.tech>"
+   ```
+
+   Bila `SERVER_EMAIL` tidak ada di `.env`, nilainya mengikuti `DEFAULT_FROM_EMAIL`.
+
+2. **Kirim kode dari laptop.** Deploy membuat ulang container, jadi `.env` yang baru ikut terbaca:
+
+   ```powershell
+   PS> git push prod master
+   PS> ssh deploy@prasibali.tech tail -f prasibali/deploy.log      # tunggu "web is healthy", lalu Ctrl+C
+   ```
+
+   Jika langkah 1 dikerjakan **setelah** push, jalankan deploy ulang (tabel di atas) agar `.env` terbaca.
+
+3. **Ganti nama tampilan akun demo juri** (`create_demo_user` hanya mengisi nama saat akun pertama kali dibuat, dan nama ini tampil di navbar):
+
+   ```bash
+   $ cd ~/prasibali
+   $ docker compose -f docker-compose.prod.yml exec web python manage.py shell -c "from apps.accounts.models import User; print(User.objects.filter(full_name='Demo PrasiBali.ai').update(full_name='Demo PrasiBali'))"
+   ```
+
+   Output `1` berarti satu akun diubah; `0` berarti nama sudah diganti sebelumnya.
+
+4. **Verifikasi** dari laptop dan server:
+
+   ```powershell
+   PS> ssh deploy@prasibali.tech cat prasibali/REVISION                             # harus sama dengan: git rev-parse HEAD
+   PS> curl.exe -s https://prasibali.tech/ | Select-String "<title>"                 # PrasiBali · Analisis tokoh satua Bali
+   PS> (curl.exe -s https://prasibali.tech/ | Select-String -SimpleMatch "PrasiBali.ai").Count   # harus 0
+   ```
+
+   ```bash
+   $ docker compose -f docker-compose.prod.yml exec web python manage.py sendtestemail alamat-anda@contoh.com
+   ```
+
+   Di kotak masuk, pengirim harus tampil sebagai **PrasiBali**. Gmail kadang menyimpan nama pengirim lama untuk alamat yang sama; buka header email ("Show original") untuk memastikan baris `From: PrasiBali <noreply@prasibali.tech>`. Terakhir, buka `https://prasibali.tech` di jendela privat agar tidak memakai halaman dari cache browser.
+
 ---
 
 ## G. Operasional harian
@@ -285,6 +341,8 @@ $ docker compose -f docker-compose.prod.yml restart web              # restart a
 | Gejala | Penyebab dan perbaikan |
 |---|---|
 | `ssh deploy@...` ditolak | Kunci tidak tersalin. Masuk lewat browser terminal, cek `/home/deploy/.ssh/authorized_keys`, jalankan ulang `bash setup_vps.sh` sebagai root |
+| `ssh`/`scp` ke `deploy@` ditolak padahal `ssh -i <kunci>` berhasil | Kunci laptop tidak bernama bawaan (mis. `~/.ssh/hostinger_vps`). Tambahkan blok `Host prasibali.tech` dengan `IdentityFile ~/.ssh/hostinger_vps` dan `IdentitiesOnly yes` di `~/.ssh/config` |
+| `service "web" is not running` saat D4 | Deploy (D3) belum selesai. Tunggu sampai log berakhir dengan `web is healthy` |
 | `setup_vps.sh` gagal memasang Docker di 26.04 | Jalankan `root$ apt-get install -y docker.io docker-compose-v2 docker-buildx`, lalu ulangi skrip |
 | Log: `.env is missing` / `models/ is empty` / `sha256sum` gagal | Kerjakan D2 atau C, lalu jalankan ulang deploy (tabel di F) |
 | Log: `web is unhealthy` | Baca 60 baris log yang dicetak. `Model warm-up failed` biasanya berarti unduhan Hugging Face gagal (pakai bundel `--with-fasttext`) |
@@ -309,7 +367,7 @@ EMAIL_USE_TLS=True
 EMAIL_USE_SSL=False
 EMAIL_HOST_USER=noreply@prasibali.tech
 EMAIL_HOST_PASSWORD=<password mailbox noreply>
-DEFAULT_FROM_EMAIL="PrasiBali.ai <noreply@prasibali.tech>"
+DEFAULT_FROM_EMAIL="PrasiBali <noreply@prasibali.tech>"
 ```
 
 ```powershell
