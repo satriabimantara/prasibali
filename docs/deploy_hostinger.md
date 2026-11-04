@@ -268,52 +268,131 @@ Build berikutnya hanya beberapa menit, karena layer dependensi tersimpan di cach
 
 Hanya branch `master` yang di-deploy; push ke branch lain diabaikan.
 
-### F1. Rilis nama produk "PrasiBali" (tanpa `.ai`, 4 November 2026)
+### F1. Rilis `v1.0-submission` (nama "PrasiBali", tag, dan release GitHub)
 
-Kode sudah memakai "PrasiBali" di judul tab, beranda, Tentang, Privasi, dan email. Tiga hal di server **tidak** ikut berubah lewat `git push`, karena berada di luar git atau di database: nama pengirim di `.env`, nama akun demo, dan sesi browser lama. Kerjakan urut.
+Runbook rilis Tahap 1 AIWIC 2026, dikerjakan urut dari laptop (PowerShell di folder repo) dan server. Kode sudah memakai nama "PrasiBali" tanpa `.ai`. Tiga hal di server **tidak** ikut berubah lewat `git push` karena berada di luar git atau di database: nama pengirim di `.env`, nama akun demo, dan sesi browser lama.
 
-1. **Ganti nama pengirim di `.env` server** (dibuat `init_env.sh` saat deploy pertama, masih berisi `PrasiBali.ai <noreply@prasibali.tech>`):
+Aturan utama: **commit yang di-tag harus sama dengan commit yang berjalan di server.** Jadi semua commit selesai dulu (langkah 1), baru deploy (langkah 3), lalu tag (langkah 6). Bila ada commit baru setelah deploy, ulangi dari langkah 3.
 
-   ```bash
-   $ cd ~/prasibali
-   $ grep -n "PrasiBali" .env                       # lihat dulu baris yang akan diubah
-   $ sed -i 's/PrasiBali\.ai/PrasiBali/g' .env
-   $ grep -n "_EMAIL" .env | grep -v PASSWORD       # harus: DEFAULT_FROM_EMAIL="PrasiBali <noreply@prasibali.tech>"
-   ```
+**0. Sekali saja: buka kunci SSH di ssh-agent (opsional, agar passphrase tidak ditanya berulang)**
 
-   Bila `SERVER_EMAIL` tidak ada di `.env`, nilainya mengikuti `DEFAULT_FROM_EMAIL`.
+Kunci `~/.ssh/hostinger_vps` berpassphrase. Tanpa agent, setiap `ssh`/`git push` menanyakan passphrase; itu tetap berfungsi saat dijalankan sendiri di terminal.
 
-2. **Kirim kode dari laptop.** Deploy membuat ulang container, jadi `.env` yang baru ikut terbaca:
+```powershell
+# PowerShell sebagai Administrator
+PS> Set-Service ssh-agent -StartupType Automatic
+PS> Start-Service ssh-agent
+# PowerShell biasa
+PS> ssh-add $env:USERPROFILE\.ssh\hostinger_vps
+PS> ssh-add $env:USERPROFILE\.ssh\github
+PS> ssh-add -l
+# Agar git memakai OpenSSH Windows (yang membaca agent), khusus repo ini:
+PS> git config core.sshCommand "C:/Windows/System32/OpenSSH/ssh.exe"
+PS> ssh deploy@prasibali.tech "echo ok"          # harus mencetak ok tanpa menanyakan passphrase
+```
 
-   ```powershell
-   PS> git push prod master
-   PS> ssh deploy@prasibali.tech tail -f prasibali/deploy.log      # tunggu "web is healthy", lalu Ctrl+C
-   ```
+**1. Laptop: pastikan semua sudah di-commit**
 
-   Jika langkah 1 dikerjakan **setelah** push, jalankan deploy ulang (tabel di atas) agar `.env` terbaca.
+```powershell
+PS> git status --short                           # harus kosong
+PS> git log --oneline -3
+PS> git rev-parse HEAD                           # catat: inilah commit yang akan di-deploy dan di-tag
+```
 
-3. **Ganti nama tampilan akun demo juri** (`create_demo_user` hanya mengisi nama saat akun pertama kali dibuat, dan nama ini tampil di navbar):
+**2. Server: ganti nama pengirim di `.env`** (dibuat `init_env.sh` saat deploy pertama, masih berisi `PrasiBali.ai <noreply@prasibali.tech>`). Kerjakan **sebelum** deploy, karena container membaca `.env` saat dibuat.
 
-   ```bash
-   $ cd ~/prasibali
-   $ docker compose -f docker-compose.prod.yml exec web python manage.py shell -c "from apps.accounts.models import User; print(User.objects.filter(full_name='Demo PrasiBali.ai').update(full_name='Demo PrasiBali'))"
-   ```
+```powershell
+PS> ssh deploy@prasibali.tech
+```
 
-   Output `1` berarti satu akun diubah; `0` berarti nama sudah diganti sebelumnya.
+```bash
+$ cd ~/prasibali
+$ grep -n "PrasiBali" .env                       # baris yang akan diubah (tanpa password)
+$ sed -i 's/PrasiBali\.ai/PrasiBali/g' .env
+$ grep -n "PrasiBali" .env                       # harus: DEFAULT_FROM_EMAIL="PrasiBali <noreply@prasibali.tech>"
+$ exit
+```
 
-4. **Verifikasi** dari laptop dan server:
+Bila `SERVER_EMAIL` tidak ada di `.env`, nilainya mengikuti `DEFAULT_FROM_EMAIL`.
 
-   ```powershell
-   PS> ssh deploy@prasibali.tech cat prasibali/REVISION                             # harus sama dengan: git rev-parse HEAD
-   PS> curl.exe -s https://prasibali.tech/ | Select-String "<title>"                 # PrasiBali · Analisis tokoh satua Bali
-   PS> (curl.exe -s https://prasibali.tech/ | Select-String -SimpleMatch "PrasiBali.ai").Count   # harus 0
-   ```
+**3. Laptop: deploy**
 
-   ```bash
-   $ docker compose -f docker-compose.prod.yml exec web python manage.py sendtestemail alamat-anda@contoh.com
-   ```
+```powershell
+PS> git push prod master                         # output: "Deploy started in the background"
+PS> ssh deploy@prasibali.tech "tail -f prasibali/deploy.log"
+```
 
-   Di kotak masuk, pengirim harus tampil sebagai **PrasiBali**. Gmail kadang menyimpan nama pengirim lama untuk alamat yang sama; buka header email ("Show original") untuk memastikan baris `From: PrasiBali <noreply@prasibali.tech>`. Terakhir, buka `https://prasibali.tech` di jendela privat agar tidak memakai halaman dari cache browser.
+Tunggu baris `Deploy ... finished: web is healthy` (beberapa menit; build lama hanya bila `requirements.txt` berubah), lalu `Ctrl+C`. Bila berakhir `DEPLOY FAILED`, versi lama tetap berjalan; lihat bagian H. Bila langkah 2 terlewat, kerjakan sekarang lalu deploy ulang (tabel di F).
+
+**4. Server: ganti nama tampilan akun demo juri** (`create_demo_user` hanya mengisi nama saat akun pertama kali dibuat, dan nama ini tampil di navbar):
+
+```powershell
+PS> ssh deploy@prasibali.tech
+```
+
+```bash
+$ cd ~/prasibali
+$ docker compose -f docker-compose.prod.yml exec web python manage.py shell -c "from apps.accounts.models import User; print(User.objects.filter(full_name='Demo PrasiBali.ai').update(full_name='Demo PrasiBali'))"
+$ cat REVISION                                   # harus sama dengan hasil git rev-parse HEAD di langkah 1
+$ docker compose -f docker-compose.prod.yml exec web python manage.py sendtestemail alamat-anda@contoh.com
+$ exit
+```
+
+Output `1` berarti nama akun demo diubah; `0` berarti sudah diganti sebelumnya. Subjek `sendtestemail` buatan Django ("Test email from ...") tidak memuat nama produk; yang dicek adalah pengirimnya: **PrasiBali** `<noreply@prasibali.tech>`. Gmail kadang menyimpan nama pengirim lama untuk alamat yang sama; pastikan lewat "Show original", baris `From: PrasiBali <noreply@prasibali.tech>`. Untuk melihat subjek email aplikasi ("Aktifkan akun PrasiBali Anda"), coba **Lupa kata sandi?** atau daftar akun baru.
+
+**5. Laptop: verifikasi situs**
+
+```powershell
+PS> curl.exe -s https://prasibali.tech/healthz                                   # {"status": "ok", "database": "ok"}
+PS> curl.exe -sI https://prasibali.tech/ | Select-String "HTTP/|strict-transport|content-security|x-frame"
+PS> curl.exe -s https://prasibali.tech/ | Select-String "<title>"                # PrasiBali · Analisis tokoh satua Bali
+PS> (curl.exe -s https://prasibali.tech/ | Select-String -SimpleMatch "PrasiBali.ai").Count   # harus 0
+```
+
+Lalu buka `https://prasibali.tech` di jendela privat, masuk dengan akun demo juri, dan jalankan satu analisis contoh.
+
+**6. Laptop: push ke GitHub dan buat tag**
+
+```powershell
+PS> git push origin master
+PS> git tag -a v1.0-submission -m "Bali DigiFest 2026 AIWIC - Tahap 1"
+PS> git push origin v1.0-submission
+PS> git rev-parse "v1.0-submission^{commit}"      # hash lengkap untuk proposal dan formulir panitia
+```
+
+Hash ini harus sama dengan `REVISION` di server (langkah 4).
+
+**7. Laptop: GitHub Release dengan bundel model**
+
+Lampiran rilis dipakai juri yang menjalankan Docker lokal (README, Opsi B). Bundel dibuat dengan `.venv\Scripts\python.exe scripts\bundle_models.py --output dist\release\prasibali-models-v1.0.tar.gz` (30 MB, tanpa FastText).
+
+```powershell
+PS> winget install --id GitHub.cli -e            # sekali; tutup lalu buka ulang PowerShell
+PS> gh auth login                                # GitHub.com → SSH → login lewat browser
+PS> gh release create v1.0-submission dist\release\prasibali-models-v1.0.tar.gz dist\release\SHA256SUMS `
+      --repo satriabimantara/prasibali `
+      --title "Bali DigiFest 2026 AIWIC - Tahap 1" `
+      --notes "Versi yang dinilai pada Tahap 1 AI Web Innovation Challenge, Bali Digital Festival 2026. Aplikasi: https://prasibali.tech. Lampiran: model pretrained PrasiBali v1.0 (pickle classifier peran + label encoder, tanpa FastText); ekstrak ke folder models/ sesuai README bagian Instalasi, Opsi B."
+PS> gh release view v1.0-submission --repo satriabimantara/prasibali
+```
+
+Tanpa `gh`: buka github.com → repo → **Releases** → **Draft a new release** → pilih tag `v1.0-submission` → isi judul dan catatan di atas → unggah dua file dari `dist\release\` → **Publish release**.
+
+**8. Saat submit: jadikan repo publik**
+
+Riwayat git sudah diperiksa bebas secret (4 November 2026). Ulangi sekali sebelum publik:
+
+```powershell
+PS> git log -p --all | Select-String -Pattern "(PASSWORD|SECRET_KEY|HF_TOKEN)\s*=\s*['""]?[A-Za-z0-9@#%^&*!_-]{8,}" | Select-String -NotMatch "collectstatic-only|ganti-|prasibali_ci|xxxx|throwaway|password of the|x-Secret-123|password=TEST_PASSWORD"
+```
+
+Hasil kosong berarti aman. Pengecualian di atas adalah nilai yang memang bukan secret: komentar penjelasan, nilai test sekali pakai, dan placeholder. Lalu github.com → repo → **Settings** → **General** → **Danger Zone** → **Change visibility** → **Public**, atau:
+
+```powershell
+PS> gh repo edit satriabimantara/prasibali --visibility public --accept-visibility-change-consequences
+```
+
+Setelah publik, cek di jendela privat browser: README tampil dengan screenshot, `AI_DISCLOSURE.md` terbuka, dan tautan unduh bundel model di README (bagian Opsi B) berfungsi.
 
 ---
 
@@ -342,6 +421,8 @@ $ docker compose -f docker-compose.prod.yml restart web              # restart a
 |---|---|
 | `ssh deploy@...` ditolak | Kunci tidak tersalin. Masuk lewat browser terminal, cek `/home/deploy/.ssh/authorized_keys`, jalankan ulang `bash setup_vps.sh` sebagai root |
 | `ssh`/`scp` ke `deploy@` ditolak padahal `ssh -i <kunci>` berhasil | Kunci laptop tidak bernama bawaan (mis. `~/.ssh/hostinger_vps`). Tambahkan blok `Host prasibali.tech` dengan `IdentityFile ~/.ssh/hostinger_vps` dan `IdentitiesOnly yes` di `~/.ssh/config` |
+| `Permission denied (publickey)` padahal `ssh -v` menulis `Server accepts key` | Kunci berpassphrase dan dijalankan non-interaktif (`BatchMode`, skrip, atau alat otomatis). Jalankan sendiri di terminal agar passphrase ditanya, atau muat kunci ke ssh-agent (F1 langkah 0) |
+| `git push prod` gagal `Host key verification failed`, padahal `ssh deploy@prasibali.tech` dari PowerShell berhasil | Git for Windows memakai klien SSH bawaannya sendiri. Jalankan `git push` di terminal interaktif dan jawab `yes` saat ditanya host key, atau arahkan git ke OpenSSH Windows: `git config core.sshCommand "C:/Windows/System32/OpenSSH/ssh.exe"` |
 | `service "web" is not running` saat D4 | Deploy (D3) belum selesai. Tunggu sampai log berakhir dengan `web is healthy` |
 | `setup_vps.sh` gagal memasang Docker di 26.04 | Jalankan `root$ apt-get install -y docker.io docker-compose-v2 docker-buildx`, lalu ulangi skrip |
 | Log: `.env is missing` / `models/ is empty` / `sha256sum` gagal | Kerjakan D2 atau C, lalu jalankan ulang deploy (tabel di F) |
