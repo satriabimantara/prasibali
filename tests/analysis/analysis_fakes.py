@@ -25,7 +25,7 @@ def fake_result(config, display_text="<script>alert(1)</script> I Kancil luas. K
         roles=[RoleResult("Tokoh-1", "Protagonis", "protagonis", 0.42, None, 8, None, True),
                RoleResult("Tokoh-2", "Antagonis", "antagonis", -0.3, None, 40, None, False)],
         timings={"preprocess": 0.1, "identify": 1.0, "alias": 0.1, "role": 0.5},
-        model_version={"balinese_nlp": "2.4.2", "scikit_learn": "1.2.1", "ner_model": config.ner_model,
+        model_version={"balinese_nlp": "2.4.3", "scikit_learn": "1.2.1", "ner_model": config.ner_model,
                        "alias": {"method": config.alias_method, "threshold": config.alias_threshold},
                        "classifier": {"id": config.classifier_id, "file": "svm_pretrained_model.pkl", "sha256": "abc"}},
     )

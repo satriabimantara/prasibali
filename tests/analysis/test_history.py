@@ -106,7 +106,7 @@ def test_detail_shows_model_configuration_and_result(logged_in, verified_user):
     assert "M2 · Word vector · TF5 · Support Vector Machine" in html and "terbaik menurut tesis" in html
     assert "F1 makro CV 0,6811 (Tabel 4.59)" in html and "F1 makro uji 0,6460 (Tabel 4.60)" in html
     assert "svm_pretrained_model.pkl · sha256 0123456789ab" in html
-    assert "balinese-nlp 2.4.2" in html
+    assert "balinese-nlp 2.4.3" in html
     # The stored result is shown again: highlights, groups, roles, disclaimer.
     assert 'class="entity entity--protagonis" data-char="Tokoh-1"' in html and "di bawah 0,70" in html
     assert 'id="models-title"' not in html  # configuration already shown above

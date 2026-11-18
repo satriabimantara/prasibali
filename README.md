@@ -12,7 +12,7 @@ Kenali tokoh, kelompokkan nama-nama lainnya, dan lihat apakah mereka protagonis 
 [![Website](https://img.shields.io/badge/demo-prasibali.tech-3340C2?style=flat-square)](https://prasibali.tech)
 [![Python](https://img.shields.io/badge/python-3.11-3776AB?style=flat-square&logo=python&logoColor=white)](.python-version)
 [![Django](https://img.shields.io/badge/django-5.2_LTS-092E20?style=flat-square&logo=django&logoColor=white)](requirements.txt)
-[![balinese-nlp](https://img.shields.io/badge/balinese--nlp-2.4.2-F5A623?style=flat-square)](https://pypi.org/project/balinese-nlp/2.4.2/)
+[![balinese-nlp](https://img.shields.io/badge/balinese--nlp-2.4.3-F5A623?style=flat-square)](https://pypi.org/project/balinese-nlp/2.4.3/)
 [![License](https://img.shields.io/badge/license-BSD--3--Clause-555?style=flat-square)](LICENSE)
 
 [**Website**](https://prasibali.tech) · [Panduan menjalankan](#instalasi-dan-menjalankan) · [AI & Technology Disclosure](AI_DISCLOSURE.md) · [Dataset](https://doi.org/10.17632/h2tf5ymcp9.3)
@@ -124,7 +124,7 @@ Urutan tangkapan layar mengikuti perjalanan pengguna di [prasibali.tech](https:/
 |---|---|
 | Frontend | Django Templates, Tailwind CSS 4 (standalone CLI, tanpa Node), HTMX 2, Alpine.js 3, ikon Lucide (SVG inline) |
 | Backend | Python 3.11, Django 5.2 LTS, django-allauth (akun dan verifikasi email), django-environ |
-| AI / NLP | `balinese-nlp` 2.4.2, scikit-learn 1.2.1, sklearn-crfsuite, gensim (FastText), pandas, NumPy |
+| AI / NLP | `balinese-nlp` 2.4.3, scikit-learn 1.2.1, sklearn-crfsuite, gensim (FastText), pandas, NumPy |
 | Database | PostgreSQL 16 (akun, riwayat analisis dengan konfigurasi JSON, kuota harian) |
 | Server | Gunicorn (worker sync, `--preload`), Caddy 2 (HTTPS otomatis Let's Encrypt), WhiteNoise |
 | Infrastruktur | Docker Compose, VPS Hostinger KVM 1 (Ubuntu), SMTP Hostinger Email, backup `pg_dump` harian |
@@ -310,7 +310,7 @@ Kuota akun demo sama dengan pengguna lain: 10 analisis per hari.
 
 Ringkasan berikut dirinci, termasuk versi dan lisensi setiap komponen, di **[AI_DISCLOSURE.md](AI_DISCLOSURE.md)**.
 
-- **Komponen pra-kompetisi milik pengembang:** paket [`balinese-nlp`](https://pypi.org/project/balinese-nlp/2.4.2/) (SatuaNER, alias clustering, praproses, ekstraktor fitur), pickle classifier hasil eksperimen tesis, [embedding FastText bahasa Bali](https://huggingface.co/satriabimantara/balinese_pretrained_wordembedding) di Hugging Face, [dataset satua Bali](https://doi.org/10.17632/h2tf5ymcp9.3) di Mendeley Data (CC BY 4.0), dan repositori riset [BaliStoryAnalyzer](https://github.com/satriabimantara/balinese_storyanalyzer). Aplikasi web PrasiBali sendiri dibangun untuk kompetisi ini.
+- **Komponen pra-kompetisi milik pengembang:** paket [`balinese-nlp`](https://pypi.org/project/balinese-nlp/2.4.3/) (SatuaNER, alias clustering, praproses, ekstraktor fitur), pickle classifier hasil eksperimen tesis, [embedding FastText bahasa Bali](https://huggingface.co/satriabimantara/balinese_pretrained_wordembedding) di Hugging Face, [dataset satua Bali](https://doi.org/10.17632/h2tf5ymcp9.3) di Mendeley Data (CC BY 4.0), dan repositori riset [BaliStoryAnalyzer](https://github.com/satriabimantara/balinese_storyanalyzer). Aplikasi web PrasiBali sendiri dibangun untuk kompetisi ini.
 - **Library open-source:** Django, django-allauth, scikit-learn, gensim, sklearn-crfsuite, PyTorch, Transformers, Tailwind CSS, HTMX, Alpine.js, dan lainnya, masing-masing sesuai lisensinya.
 - **Aset:** font Schibsted Grotesk dan Noto Serif Balinese (Google Fonts, SIL OFL 1.1), ikon [Lucide](https://lucide.dev) (ISC). Logo dan pola ikat dibuat khusus untuk PrasiBali.
 - **AI coding assistant:** Claude Code dan Claude.ai (Anthropic) membantu penulisan kode, test, dan dokumentasi. Semua kode ditinjau, diuji, dan menjadi tanggung jawab tim.
@@ -323,7 +323,7 @@ Publikasi dan artefak riset yang mendasari PrasiBali:
 2. Bimantara, I. M. S., Sanjaya ER, N. A., & Purwitasari, D. (2023). Character Entity Recognition Using Hybrid Binary-Particle Swarm Optimization and Conditional Random Field on Balinese Folklore Text. *Information Integration and Web Intelligence (iiWAS 2023)*, Lecture Notes in Computer Science vol. 14416, 128–133. Springer. <https://doi.org/10.1007/978-3-031-48316-5_15>
 3. Bimantara, I. M. S., Purwitasari, D., Sanjaya ER, N. A., & Natha, P. G. S. (2024). Balinese Story Texts Dataset for Narrative Text Analyses. *Data in Brief*, 56, 110781. Elsevier. <https://doi.org/10.1016/j.dib.2024.110781>
 4. Bimantara, I. M. S., Purwitasari, D., & Sanjaya ER, N. A. (2024). *Balinese Story Texts Dataset – Characters, Aliases, and their Classification* (Versi 3) [Dataset]. Mendeley Data. <https://doi.org/10.17632/h2tf5ymcp9.3>
-5. Bimantara, I. M. S. (2025). *balinese-nlp* (Versi 2.4.2) [Paket Python]. PyPI. <https://pypi.org/project/balinese-nlp/2.4.2/>
+5. Bimantara, I. M. S. (2025). *balinese-nlp* (Versi 2.4.3) [Paket Python]. PyPI. <https://pypi.org/project/balinese-nlp/2.4.3/>
 6. Bimantara, I. M. S. *balinese_pretrained_wordembedding* [Model word embedding bahasa Bali]. Hugging Face. <https://huggingface.co/satriabimantara/balinese_pretrained_wordembedding>
 7. Suwija, I. N., Darmada, I. M., & Mulyawan, I. N. R. (2019). *Kumpulan Satua (Dongeng Rakyat Bali)*. Pelawa Sari. (Sumber 120 teks satua pada dataset.)
 8. Sutton, C., & McCallum, A. (2012). An Introduction to Conditional Random Fields. *Foundations and Trends in Machine Learning*, 4(4), 267–373.

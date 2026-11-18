@@ -79,7 +79,7 @@ def test_mentions_have_labels_and_positions(app_result):
 
 def test_model_version_is_complete(app_result):
     version = app_result.model_version
-    assert version["balinese_nlp"] == "2.4.2" and version["scikit_learn"] == "1.2.1"
+    assert version["balinese_nlp"] == "2.4.3" and version["scikit_learn"] == "1.2.1"
     assert version["ner_model"] == "satuaner"
     assert version["alias"] == {"method": "jaro-distance", "threshold": 0.85}
     classifier = version["classifier"]

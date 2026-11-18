@@ -1,4 +1,4 @@
-"""Alias clustering must give the same groups in every process (the package dedupes through a set)."""
+"""Alias clustering must give the same groups for the same text in every process, anchored on first appearance."""
 
 import json
 import os
@@ -17,9 +17,11 @@ CODE = (
 )
 
 
-def test_same_groups_for_any_input_order():
-    expected = cluster_aliases(CHARACTERS, "jaro-distance", 0.85)
-    assert cluster_aliases(list(reversed(CHARACTERS)), "jaro-distance", 0.85) == expected
+def test_groups_follow_first_appearance():
+    groups = cluster_aliases(CHARACTERS, "jaro-distance", 0.85)
+    assert groups["Tokoh-1"][0] == "I Kancil"
+    reversed_groups = cluster_aliases(list(reversed(CHARACTERS)), "jaro-distance", 0.85)
+    assert reversed_groups["Tokoh-1"][0] == "timpalne"
 
 
 def test_same_groups_across_hash_seeds():

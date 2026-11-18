@@ -27,7 +27,7 @@ addopts = "-ra --strict-markers"
 filterwarnings = [
     # STATIC_ROOT only exists after collectstatic (Docker image / production).
     "ignore:No directory at:UserWarning:django.core.handlers.base",
-    # balinese-nlp 2.4.2 uses importlib.resources.path() when loading its data files.
+    # balinese-nlp 2.4.3 uses importlib.resources.path() when loading its data files.
     "ignore:path is deprecated:DeprecationWarning:balinese_nlp",
 ]
 markers = [

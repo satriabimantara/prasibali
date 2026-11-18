@@ -1,6 +1,6 @@
 """Speed-up for character identification: one shared, memoised HMM POS tagger inside balinese-nlp's NER.
 
-Why: BaseModel._prepare_input_sentence (balinese-nlp 2.4.2) calls `HiddenMarkovModelPOSTag().predict(token)` for
+Why: BaseModel._prepare_input_sentence (balinese-nlp 2.4.3) calls `HiddenMarkovModelPOSTag().predict(token)` for
 every token. Each construction builds a new TextPreprocessor and Stemmer (reloading the Balinese dictionary),
 opens hmmmodel.txt again (never closed), and every predict() parses that file again. For a 370-token satua this
 took about 2.7 s of the 2.8 s analysis, while the CRF itself takes milliseconds.

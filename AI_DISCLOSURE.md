@@ -30,11 +30,11 @@ Ketiga tahap berjalan berurutan di server PrasiBali untuk setiap analisis ([`src
 
 | Tahap | Model bawaan | Metode | Input → Output | Sumber model | Lisensi |
 |---|---|---|---|---|---|
-| (i) Identifikasi tokoh | **SatuaNER** (`satuaner.pkl`) | Conditional Random Fields dengan fitur leksikal, morfologis, konteks, dan POS tag, diseleksi dengan Hybrid Binary Particle Swarm Optimization (BPSO-CRF) | Kalimat satua (huruf Latin) → tag BIO per token dengan label `PNAME`, `ANM`, `GODS`, `ADJ`, `OBJ` | Paket `balinese-nlp` 2.4.2 (PyPI) | BSD-3-Clause |
-| (ii) Alias clustering | `AliasClusteringRuleBased` | Pengelompokan berbasis aturan dengan *pairwise string similarity* Jaro distance, ambang rata-rata 0,85 | Daftar nama tokoh unik → kelompok tokoh (`Tokoh-1`, `Tokoh-2`, ...) | Paket `balinese-nlp` 2.4.2 | BSD-3-Clause |
+| (i) Identifikasi tokoh | **SatuaNER** (`satuaner.pkl`) | Conditional Random Fields dengan fitur leksikal, morfologis, konteks, dan POS tag, diseleksi dengan Hybrid Binary Particle Swarm Optimization (BPSO-CRF) | Kalimat satua (huruf Latin) → tag BIO per token dengan label `PNAME`, `ANM`, `GODS`, `ADJ`, `OBJ` | Paket `balinese-nlp` 2.4.3 (PyPI) | BSD-3-Clause |
+| (ii) Alias clustering | `AliasClusteringRuleBased` | Pengelompokan berbasis aturan dengan *pairwise string similarity* Jaro distance, ambang rata-rata 0,85 | Daftar nama tokoh unik → kelompok tokoh (`Tokoh-1`, `Tokoh-2`, ...) | Paket `balinese-nlp` 2.4.3 | BSD-3-Clause |
 | (iii) Klasifikasi peran | **`m2-wordvector-tf4-knn`** (`knn_pretrained_model.pkl`) | K-Nearest Neighbor pada fitur TF-IDF (TF4), varian M2 | Gabungan kalimat yang menyebut tiap kelompok → `Protagonis` atau `Antagonis` | Pickle hasil eksperimen tesis (lihat §1.5) | BSD-3-Clause (bagian dari karya pengembang) |
 
-Komponen pendukung, semuanya dari `balinese-nlp` 2.4.2:
+Komponen pendukung, semuanya dari `balinese-nlp` 2.4.3:
 
 | Komponen | Fungsi |
 |---|---|
@@ -109,7 +109,7 @@ Pickle classifier tidak disimpan di git. Bundelnya (`prasibali-models-v1.0.tar.g
 | `character-classification/wordvector/m2/gnb_pretrained_model.pkl` | 12 KB | `baa2f6f674e6` |
 | `label-encoder/without_coreference_splitted_characterization.pkl` | 2,4 MB | `57cb2878d6a9` |
 
-Model NER (`satuaner.pkl`, `crf1_baseline.pkl`, `crf2_baseline.pkl`, `svm_baseline.pkl`, `hmm.pkl`) sudah termasuk di paket `balinese-nlp` 2.4.2.
+Model NER (`satuaner.pkl`, `crf1_baseline.pkl`, `crf2_baseline.pkl`, `svm_baseline.pkl`, `hmm.pkl`) sudah termasuk di paket `balinese-nlp` 2.4.3.
 
 **Word embedding FastText (TF5).** `300_fasttext_model.bin` beserta file `.npy`-nya (sekitar 2,4 GB) dari repo Hugging Face [`satriabimantara/balinese_pretrained_wordembedding`](https://huggingface.co/satriabimantara/balinese_pretrained_wordembedding), milik pengembang, lisensi BSD-3-Clause, yang sama dengan embedding saat melatih pickle TF5. File diunduh **sekali** lewat `BaliFastText` ke cache persisten (`HF_HOME`), lalu produksi berjalan dengan `HF_HUB_OFFLINE=1`. Dimensinya (300) dicek terhadap `n_features_in_` estimator sebelum dipakai. Hanya file model yang diunduh; tidak ada teks pengguna yang dikirim.
 
@@ -186,7 +186,7 @@ Versi AI/NLP dipin persis di [`requirements.txt`](requirements.txt) agar pickle 
 
 | Paket | Versi | Fungsi di PrasiBali | Lisensi |
 |---|---|---|---|
-| `balinese-nlp` | 2.4.2 | SatuaNER dan model NER lain, alias clustering, praproses, POS tagger, pengelompokan kalimat, ekstraktor fitur, pemuat FastText (karya pengembang) | BSD-3-Clause |
+| `balinese-nlp` | 2.4.3 | SatuaNER dan model NER lain, alias clustering, praproses, POS tagger, pengelompokan kalimat, ekstraktor fitur, pemuat FastText (karya pengembang) | BSD-3-Clause |
 | scikit-learn | 1.2.1 | Estimator classifier, TF-IDF, label encoder | BSD-3-Clause |
 | sklearn-crfsuite | 0.3.6 | Antarmuka CRF untuk SatuaNER | MIT |
 | python-crfsuite | 0.9.10 | Implementasi CRFsuite | MIT |
@@ -255,8 +255,8 @@ Batas penggunaan:
 | Sudah ada sebelum kompetisi | Pemilik | Status di PrasiBali |
 |---|---|---|
 | Tesis S2 *Identifikasi Tokoh dan Penokohan pada Teks Cerita Berbahasa Bali Menggunakan Pendekatan Berbasis Aturan dan Supervised Machine Learning* (ITS, 2024) | I Made Satria Bimantara | Sumber semua metode, eksperimen, dan F1 referensi |
-| SatuaNER dan model NER pembanding; alias clustering berbasis aturan | Pengembang (publikasi iiWAS 2023) | Dipakai lewat paket `balinese-nlp` 2.4.2, tidak diubah |
-| Paket PyPI [`balinese-nlp`](https://pypi.org/project/balinese-nlp/2.4.2/) 2.4.2 | Pengembang | Dependensi; tidak ada kode paket yang disalin ke repo |
+| SatuaNER dan model NER pembanding; alias clustering berbasis aturan | Pengembang (publikasi iiWAS 2023) | Dipakai lewat paket `balinese-nlp` 2.4.3; model tidak diubah (2.4.3 hanya menyimpan nama tokoh dalam urutan kemunculan pertama agar kelompok alias sama di setiap proses) |
+| Paket PyPI [`balinese-nlp`](https://pypi.org/project/balinese-nlp/2.4.3/) 2.4.3 | Pengembang | Dependensi; tidak ada kode paket yang disalin ke repo |
 | Pickle classifier peran (semua eksperimen leksikon dan word vector, varian M1 dan M2) dan label encoder | Pengembang | Dimuat apa adanya; tidak dilatih ulang |
 | Embedding FastText bahasa Bali di Hugging Face | Pengembang | Fitur TF5 |
 | Balinese Story Texts Dataset (Mendeley Data, *Data in Brief*) dan BaliSentiLex | Pengembang dan rekan penulis | Data latih model; tidak disertakan di repo |

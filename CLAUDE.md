@@ -56,7 +56,7 @@ scripts/             check_env.py, test_pretrained_pipeline.py, prasibali_models
 ## Aturan model AI
 
 ### Sumber model
-- **(i) NER tokoh dan (ii) alias clustering** memakai paket `balinese-nlp==2.4.2` dari PyPI. Jangan menyalin kode model ke dalam web app, dan jangan mengunduh model dari Google Drive.
+- **(i) NER tokoh dan (ii) alias clustering** memakai paket `balinese-nlp==2.4.3` dari PyPI. Jangan menyalin kode model ke dalam web app, dan jangan mengunduh model dari Google Drive.
 - **(iii) Classifier peran** tidak ada di dalam `balinese-nlp`. Semua pickle pretrained (hasil eksperimen tesis) berada di folder `pretrained-models/` yang path-nya dibaca dari env `PRETRAINED_MODELS_DIR`. Folder itu berisi:
   ```text
   pretrained-models/
@@ -87,7 +87,7 @@ scripts/             check_env.py, test_pretrained_pipeline.py, prasibali_models
 - **Model terbaik menurut tesis: `m2-wordvector-tf5-svm`** (`THESIS_BEST_CLASSIFIER_ID`): F1 CV tertinggi (0,6811; Tabel 4.57/4.59), dan M2 dipilih karena F1 ujinya lebih tinggi daripada M1 (0,6460 vs 0,6366; Tabel 4.60). Di Mode Peneliti ditandai "terbaik menurut tesis"; default ditandai "bawaan". `warm_models` tetap memuat FastText agar model TF5 siap tanpa menunggu.
 
 ### Word embedding (TF5) dan Hugging Face
-- TF5 = rata-rata vektor word embedding FastText bahasa Bali (Tabel 3.10 menyebut 300 dimensi). Interface di `balinese-nlp` 2.4.2 (sudah dikonfirmasi dari source pengembang):
+- TF5 = rata-rata vektor word embedding FastText bahasa Bali (Tabel 3.10 menyebut 300 dimensi). Interface di `balinese-nlp` 2.4.3 (sudah dikonfirmasi dari source pengembang):
   ```python
   from balinese_nlp.embeddings.gensims import BaliFastText
   model = BaliFastText(

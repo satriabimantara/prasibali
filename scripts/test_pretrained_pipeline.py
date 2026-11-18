@@ -5,7 +5,7 @@ Tugas yang diuji:
   (i)   Identifikasi tokoh        -> SatuaNER, bawaan paket balinese-nlp
   (ii)  Alias clustering          -> rule-based, bawaan paket balinese-nlp
   (iii) Klasifikasi peran tokoh   -> pickle eksperimen tesis di folder pretrained-models
-                                     (PRETRAINED_MODELS_DIR), sebab paket 2.4.2 belum memuat model supervised
+                                     (PRETRAINED_MODELS_DIR), sebab paket 2.4.3 belum memuat model supervised
 
 Model bawaan (iii) sama dengan default aplikasi: KNN + TF4 (TF-IDF), varian M2 (keputusan pengembang,
 4 Nov 2026). Model terbaik menurut tesis (SVM + TF5 M2): --feature TF5 --classifier-name "Support Vector Machine".
@@ -49,7 +49,7 @@ API_DUMP_NAME = "balinese_nlp_api_dump.txt"
 SENTENCE_SEP = "\\n"  # literal dua karakter: backslash + n, keluaran TextPreprocessor
 MIN_SENTENCES = 11  # batasan masukan pada tesis (Bab 1.4)
 LOW_CONTEXT_WORDS = 20  # di bawah ini, hasil klasifikasi diberi peringatan "konteks sedikit"
-EXPECTED_VERSIONS = {"balinese-nlp": "2.4.2", "scikit-learn": "1.2.1", "sklearn-crfsuite": "0.3.6", "pandas": "1.5.3"}
+EXPECTED_VERSIONS = {"balinese-nlp": "2.4.3", "scikit-learn": "1.2.1", "sklearn-crfsuite": "0.3.6", "pandas": "1.5.3"}
 
 # Modul yang relevan untuk fitur TF5 (word embedding) dan efek samping saved_file.
 API_MODULES = [
@@ -180,7 +180,7 @@ def identify_characters(ner_name: str, text: str, sentences: list[str]):
     print(f"  Model {ner_name}: {type(model).__name__}, dimuat {time.perf_counter() - started:.1f} dtk")
 
     started = time.perf_counter()
-    characters = sorted(set(BaseModel.identify_characters(preprocessed_story=text, pretrained_model=model)))
+    characters = BaseModel.identify_characters(preprocessed_story=text, pretrained_model=model)  # unik, urut kemunculan
     print(f"  Inferensi {time.perf_counter() - started:.1f} dtk, {len(characters)} sebutan tokoh unik:")
     if not characters:
         raise StepError("Tidak ada tokoh yang terdeteksi")
@@ -202,10 +202,9 @@ def show_bio_example(model, sentences: list[str], characters: list[str]) -> None
 
 def cluster_aliases(characters: list[str], similarity: str, threshold: float) -> dict:
     cls = load_class("balinese_nlp.narratives.aliasclustering.rule_based", "AliasClusteringRuleBased")
+    # balinese-nlp >= 2.4.3: fit() mempertahankan urutan kemunculan pertama, jadi hasilnya stabil antarproses dan
+    # sama dengan aplikasi (services/pipeline.py).
     model = cls(pairwise_distance=similarity, avg_threshold_similarity=threshold).fit(characters)
-    # fit() menyaring duplikat lewat set, yang urutannya berubah setiap proses (hash seed), padahal clustering
-    # bergantung pada urutan. Diurutkan agar hasilnya stabil dan sama dengan aplikasi (services/pipeline.py).
-    model.pred_characters = sorted(model.pred_characters)
     groups = model.cluster()
     print(f"  Metode {similarity}, ambang {threshold}: {len(groups)} kelompok tokoh")
     for group, aliases in groups.items():

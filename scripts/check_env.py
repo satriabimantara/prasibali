@@ -45,7 +45,7 @@ SAMPLE_CONTEXTS = [
 
 # Pin persis blok "AI / NLP" di requirements.txt.
 EXPECTED = {
-    "balinese-nlp": "2.4.2",
+    "balinese-nlp": "2.4.3",
     "scikit-learn": "1.2.1",
     "sklearn-crfsuite": "0.3.6",
     "python-crfsuite": "0.9.10",
@@ -154,7 +154,7 @@ def check_pipeline() -> None:
 
     text = preprocess(SAMPLE_SATUA)
     t0 = time.perf_counter()
-    chars = sorted(set(BaseModel.identify_characters(preprocessed_story=text, pretrained_model=model)))
+    chars = BaseModel.identify_characters(preprocessed_story=text, pretrained_model=model)
     if chars:
         ok(f"tokoh terdeteksi ({time.perf_counter() - t0:.1f} dtk): {chars}")
     else:

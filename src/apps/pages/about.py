@@ -67,9 +67,9 @@ PUBLICATIONS = (
 
 SOFTWARE = (
     Software(
-        "balinese-nlp 2.4.2",
+        "balinese-nlp 2.4.3",
         _("Python package on PyPI with the character identification and alias clustering models."),
-        "https://pypi.org/project/balinese-nlp/2.4.2/",
+        "https://pypi.org/project/balinese-nlp/2.4.3/",
     ),
     Software(
         "BaliStoryAnalyzer",

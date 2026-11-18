@@ -124,9 +124,10 @@ def _names_from_tags(tokens: list[str], tags) -> list[dict]:
 
 
 def identify_characters(story: PreprocessedStory, ner_model: str) -> tuple[list[str], list[EntityMention]]:
-    """Characters (sorted, unique) and every mention with its entity label and position in display_text."""
+    """Characters (unique, in order of first appearance, like balinese-nlp >= 2.4.3) and every mention with its
+    entity label and position in display_text."""
     model = get_ner_model(ner_model)
-    characters: set[str] = set()
+    characters: dict[str, None] = {}
     mentions: list[EntityMention] = []
     sentence_start = 0
     for sentence_index, sentence in enumerate(story.sentences):
@@ -135,7 +136,7 @@ def identify_characters(story: PreprocessedStory, ner_model: str) -> tuple[list[
         names = _names_from_tags(tokens, tags)
         # BaseModel.identify_characters joins names with '; ', splits on ';' and strips each part.
         if names:
-            characters.update(part.strip() for part in "; ".join(n["text"] for n in names).split(";"))
+            characters.update(dict.fromkeys(part.strip() for part in "; ".join(n["text"] for n in names).split(";")))
         offsets, position = [], 0
         for token in tokens:
             offsets.append(position)
@@ -149,7 +150,7 @@ def identify_characters(story: PreprocessedStory, ner_model: str) -> tuple[list[
             mentions.append(EntityMention(text, name["label"] or "?", sentence_index,
                                           sentence_start + start, sentence_start + end))
         sentence_start += len(sentence) + 1  # display_text joins sentences with one space
-    return sorted(characters), mentions
+    return list(characters), mentions
 
 
 # --------------------------------------------------------------------------- task (ii)
@@ -159,10 +160,9 @@ def cluster_aliases(characters: list[str], method: str, threshold: float) -> dic
     from balinese_nlp.narratives.aliasclustering.rule_based import AliasClusteringRuleBased
 
     clusterer = AliasClusteringRuleBased(pairwise_distance=method, avg_threshold_similarity=threshold)
+    # The greedy clustering depends on input order; balinese-nlp >= 2.4.3 keeps the order of first appearance, so
+    # the same text gives the same groups in every process and Tokoh-1 is the first character mentioned.
     clusterer.fit(list(characters))
-    # fit() deduplicates through a set, whose order changes with Python's per-process hash seed, and the greedy
-    # clustering depends on that order. Sorting makes the same text give the same groups on every run.
-    clusterer.pred_characters = sorted(clusterer.pred_characters)
     return {str(key): list(aliases) for key, aliases in clusterer.cluster().items()}
 
 

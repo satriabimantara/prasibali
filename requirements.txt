@@ -6,7 +6,7 @@
 # --- AI / NLP (PIN PERSIS — jangan diubah tanpa menguji ulang model) ---------
 # Pickle classifier peran (SVM + TF-IDF + label encoder) dibuat dengan
 # scikit-learn 1.2.1; versi lain bisa gagal memuat atau memberi hasil berbeda.
-balinese-nlp==2.4.2
+balinese-nlp==2.4.3
 scikit-learn==1.2.1
 sklearn-crfsuite==0.3.6
 python-crfsuite==0.9.10
